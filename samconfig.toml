@@ -1,0 +1,81 @@
+version = 0.1
+
+[default]
+[default.global.parameters]
+stack_name = "pharaoh-line-webhook-dev"
+resolve_s3 = true
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+parameter_overrides = [
+    "Environment=dev"
+]
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.validate.parameters]
+lint = true
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+fail_on_empty_changeset = false
+stack_name = "pharaoh-line-webhook-dev"
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"
+image_repositories = []
+
+[default.package.parameters]
+resolve_s3 = true
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+# Staging environment configuration
+[staging]
+[staging.global.parameters]
+stack_name = "pharaoh-line-webhook-staging"
+resolve_s3 = true
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = [
+    "Environment=staging"
+]
+
+[staging.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+fail_on_empty_changeset = false
+stack_name = "pharaoh-line-webhook-staging"
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"
+
+# Production environment configuration
+[prod]
+[prod.global.parameters]
+stack_name = "pharaoh-line-webhook-prod"
+resolve_s3 = true
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = [
+    "Environment=prod"
+]
+
+[prod.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+fail_on_empty_changeset = false
+stack_name = "pharaoh-line-webhook-prod"
+s3_prefix = "pharaoh-line-webhook"
+region = "us-east-1"

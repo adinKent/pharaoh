@@ -1,0 +1,193 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Line Messaging API Webhook Handler using AWS Lambda'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+    Description: Environment name
+  
+  LineChannelSecret:
+    Type: String
+    NoEcho: true
+    Description: Line Messaging API Channel Secret
+    
+  LineChannelAccessToken:
+    Type: String
+    NoEcho: true
+    Description: Line Messaging API Channel Access Token
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.13
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        LINE_CHANNEL_SECRET: !Ref LineChannelSecret
+        LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+
+Resources:
+  # Lambda Function
+  LineWebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'line-webhook-${Environment}'
+      CodeUri: ../src/
+      Handler: app.lambda_handler
+      Description: 'Handles Line Messaging API webhook notifications'
+      MemorySize: 256
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt DeadLetterQueue.Arn
+      Events:
+        LineWebhookApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LineWebhookApi
+            Path: /webhook
+            Method: post
+      Tags:
+        Environment: !Ref Environment
+        Project: pharaoh
+        Service: line-webhook
+
+  # API Gateway
+  LineWebhookApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub 'line-webhook-api-${Environment}'
+      StageName: !Ref Environment
+      EndpointConfiguration:
+        Type: REGIONAL
+      Cors:
+        AllowMethods: "'POST, OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,x-line-signature'"
+        AllowOrigin: "'*'"
+      Tags:
+        Environment: !Ref Environment
+        Project: pharaoh
+        Service: line-webhook
+
+  # CloudWatch Log Groups
+  LineWebhookFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/line-webhook-${Environment}'
+      RetentionInDays: 30
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: pharaoh
+        - Key: Service
+          Value: line-webhook
+
+  # Dead Letter Queue for failed Lambda executions
+  DeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub 'line-webhook-dlq-${Environment}'
+      MessageRetentionPeriod: 1209600  # 14 days
+      VisibilityTimeout: 60
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: pharaoh
+        - Key: Service
+          Value: line-webhook
+
+  # CloudWatch Alarms
+  LambdaErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'line-webhook-lambda-errors-${Environment}'
+      AlarmDescription: 'Lambda function errors'
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LineWebhookFunction
+      TreatMissingData: notBreaching
+
+  LambdaDurationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'line-webhook-lambda-duration-${Environment}'
+      AlarmDescription: 'Lambda function duration'
+      MetricName: Duration
+      Namespace: AWS/Lambda
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 25000  # 25 seconds
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LineWebhookFunction
+      TreatMissingData: notBreaching
+
+  ApiGateway4xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'line-webhook-api-4xx-${Environment}'
+      AlarmDescription: 'API Gateway 4xx errors'
+      MetricName: 4XXError
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub 'line-webhook-api-${Environment}'
+        - Name: Stage
+          Value: !Ref Environment
+      TreatMissingData: notBreaching
+
+  ApiGateway5xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'line-webhook-api-5xx-${Environment}'
+      AlarmDescription: 'API Gateway 5xx errors'
+      MetricName: 5XXError
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub 'line-webhook-api-${Environment}'
+        - Name: Stage
+          Value: !Ref Environment
+      TreatMissingData: notBreaching
+
+Outputs:
+  WebhookUrl:
+    Description: 'Line Webhook URL'
+    Value: !Sub 'https://${LineWebhookApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/webhook'
+    Export:
+      Name: !Sub '${AWS::StackName}-webhook-url'
+
+  LambdaFunctionArn:
+    Description: 'Lambda Function ARN'
+    Value: !GetAtt LineWebhookFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-lambda-arn'
+
+  ApiGatewayId:
+    Description: 'API Gateway ID'
+    Value: !Ref LineWebhookApi
+    Export:
+      Name: !Sub '${AWS::StackName}-api-id'

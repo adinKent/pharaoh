@@ -1,0 +1,49 @@
+{
+  "name": "pharaoh-line-webhook",
+  "version": "1.0.0",
+  "description": "AWS Lambda function to handle Line Messaging API webhooks",
+  "main": "src/app.py",
+  "scripts": {
+    "test": "python -m pytest tests/ -v",
+    "test:watch": "python -m pytest tests/ -v --watch",
+    "test:coverage": "python -m pytest tests/ --cov=src --cov-report=html --cov-report=term",
+    "lint": "flake8 src/ tests/",
+    "lint:fix": "black src/ tests/ && isort src/ tests/",
+    "build": "python -m pip install -r src/requirements.txt && npm run lint && npm test",
+    "package": "sam build --template-file infrastructure/template.yaml",
+    "deploy:dev": "npm run package && sam deploy --config-env dev",
+    "deploy:staging": "npm run package && sam deploy --config-env staging",
+    "deploy:prod": "npm run package && sam deploy --config-env prod",
+    "local:start": "sam local start-api --template-file infrastructure/template.yaml",
+    "local:invoke": "sam local invoke LineWebhookFunction --template-file infrastructure/template.yaml",
+    "logs": "sam logs --name LineWebhookFunction --stack-name pharaoh-line-webhook-dev --tail",
+    "clean": "rm -rf .aws-sam/ __pycache__/ .pytest_cache/ htmlcov/ .coverage",
+    "setup": "python -m pip install -r requirements-dev.txt && npm run build",
+    "install:deps": "python -m pip install -r requirements-dev.txt"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "line",
+    "webhook",
+    "messaging-api",
+    "serverless",
+    "sam",
+    "python"
+  ],
+  "author": "Kenche",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "python": ">=3.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/pharaoh-line-webhook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/pharaoh-line-webhook/issues"
+  },
+  "homepage": "https://github.com/your-username/pharaoh-line-webhook#readme"
+}
