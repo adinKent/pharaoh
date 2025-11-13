@@ -106,13 +106,24 @@ Use the deployment script for easy deployment:
 **Unix/Linux/macOS:**
 ```bash
 chmod +x scripts/deploy.sh
-./scripts/deploy.sh dev "your-channel-secret" "your-channel-access-token"
+# Update or create secrets, then deploy
+AWS_REGION=us-east-1 ./scripts/deploy.sh dev "your-channel-secret" "your-channel-access-token"
+
+# Reuse existing secrets already stored in SSM Parameter Store
+AWS_REGION=us-east-1 ./scripts/deploy.sh dev
 ```
 
 **Windows:**
 ```cmd
+set AWS_REGION=us-east-1
+# Update or create secrets, then deploy
 scripts\deploy.bat dev "your-channel-secret" "your-channel-access-token"
+
+rem Reuse existing secrets already stored in SSM Parameter Store
+scripts\deploy.bat dev
 ```
+
+The deployment scripts will store the provided Line channel credentials as `SecureString` parameters in AWS Systems Manager Parameter Store at `/pharaoh/{environment}/line/channel-secret` and `/pharaoh/{environment}/line/channel-access-token` before deploying the infrastructure.
 
 ### Manual Deployment
 
@@ -123,12 +134,26 @@ npm run build
 # Package the SAM application
 sam build --template-file infrastructure/template.yaml
 
+# Store or update Line channel credentials in SSM Parameter Store
+# (Optional) Update secrets in Parameter Store if you need to rotate them
+aws ssm put-parameter \
+  --name /pharaoh/dev/line/channel-secret \
+  --value "your-channel-secret" \
+  --type SecureString \
+  --overwrite
+
+aws ssm put-parameter \
+  --name /pharaoh/dev/line/channel-access-token \
+  --value "your-channel-access-token" \
+  --type SecureString \
+  --overwrite
+
 # Deploy to dev environment
 sam deploy --config-env dev \
     --parameter-overrides \
         Environment=dev \
-        LineChannelSecret="your-channel-secret" \
-        LineChannelAccessToken="your-channel-access-token"
+        LineChannelSecretParameterName=/pharaoh/dev/line/channel-secret \
+        LineChannelAccessTokenParameterName=/pharaoh/dev/line/channel-access-token
 ```
 
 ### Deploy to Different Environments

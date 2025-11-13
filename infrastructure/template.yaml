@@ -11,34 +11,40 @@ Parameters:
   
   LineChannelSecret:
     Type: String
-    NoEcho: true
-    Description: Line Messaging API Channel Secret
-    
+    Description: Line Channel Secret
+  
   LineChannelAccessToken:
     Type: String
-    NoEcho: true
-    Description: Line Messaging API Channel Access Token
-
-Globals:
-  Function:
-    Timeout: 30
-    Runtime: python3.13
-    Environment:
-      Variables:
-        ENVIRONMENT: !Ref Environment
-        LINE_CHANNEL_SECRET: !Ref LineChannelSecret
-        LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+    Description: Line Channel Access Token
 
 Resources:
+  LineChannelSecretParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/pharaoh/${Environment}/line/channel-secret"
+      Description: "Line Channel Secret"
+      Type: String
+      Value: !Ref LineChannelSecret
+
+  LineChannelAccessTokenParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/pharaoh/${Environment}/line/channel-access-token"
+      Description: "Line Channel Access Token"
+      Type: String
+      Value: !Ref LineChannelAccessToken
+
   # Lambda Function
   LineWebhookFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Runtime: python3.13
       FunctionName: !Sub 'line-webhook-${Environment}'
       CodeUri: ../src/
       Handler: app.lambda_handler
       Description: 'Handles Line Messaging API webhook notifications'
       MemorySize: 256
+      Timeout: 30
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt DeadLetterQueue.Arn
@@ -49,6 +55,11 @@ Resources:
             RestApiId: !Ref LineWebhookApi
             Path: /webhook
             Method: post
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          LINE_CHANNEL_SECRET: !Ref LineChannelSecret
+          LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
       Tags:
         Environment: !Ref Environment
         Project: pharaoh

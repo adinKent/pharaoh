@@ -2,6 +2,7 @@
 
 # Deploy script for Line webhook Lambda function
 # Usage: ./scripts/deploy.sh [environment] [line-channel-secret] [line-channel-access-token]
+# Line channel secret and access token arguments are optional when values already exist in SSM Parameter Store.
 
 set -e
 
@@ -9,20 +10,38 @@ ENVIRONMENT=${1:-dev}
 LINE_CHANNEL_SECRET=${2}
 LINE_CHANNEL_ACCESS_TOKEN=${3}
 AWS_PROFILE=${AWS_PROFILE:-default}
+AWS_REGION=${AWS_REGION:-ap-east-2}
 
-if [ -z "$LINE_CHANNEL_SECRET" ] || [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
-    echo "Error: Line channel credentials are required"
-    echo "Usage: $0 [environment] [line-channel-secret] [line-channel-access-token]"
-    echo "Environment options: dev, staging, prod"
-    exit 1
+if [ -z "$LINE_CHANNEL_SECRET" ]; then
+    echo "Line channel secret not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
+    LINE_CHANNEL_SECRET=$(aws --profile "$AWS_PROFILE" --region "$AWS_REGION" ssm get-parameter \
+        --name "/pharaoh/$ENVIRONMENT/line/channel-secret" \
+        --query Parameter.Value \
+        --output text 2>/dev/null || echo "")
 fi
 
-echo "Deploying to environment: $ENVIRONMENT"
+if [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
+    echo "Line channel access token not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
+    LINE_CHANNEL_ACCESS_TOKEN=$(aws --profile "$AWS_PROFILE" --region "$AWS_REGION" ssm get-parameter \
+        --name "/pharaoh/$ENVIRONMENT/line/channel-access-token" \
+        --query Parameter.Value \
+        --output text 2>/dev/null || echo "")
+fi
+
+echo "LINE_CHANNEL_SECRET=$LINE_CHANNEL_SECRET"
+echo "LINE_CHANNEL_ACCESS_TOKEN=$LINE_CHANNEL_ACCESS_TOKEN"
+
+if [ -z "$LINE_CHANNEL_SECRET" ] || [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
+    echo "Error: Line channel secret or access token not provided and not found in SSM Parameter Store."
+    exit 1
+fi
 
 # Build the project
 echo "Building the project..."
 python -m pip install -r requirements-dev.txt
 npm run build
+
+echo "Deploying to environment: $ENVIRONMENT"
 
 # Package the SAM application
 echo "Packaging SAM application..."
@@ -55,7 +74,7 @@ sam deploy --profile $AWS_PROFILE \
 
 # Get the webhook URL
 echo "Getting webhook URL..."
-WEBHOOK_URL=$(aws --profile $AWS_PROFILE --region ap-east-2 cloudformation describe-stacks \
+WEBHOOK_URL=$(aws --profile $AWS_PROFILE --region "$AWS_REGION" cloudformation describe-stacks \
     --stack-name pharaoh-line-webhook-$ENVIRONMENT \
     --query 'Stacks[0].Outputs[?OutputKey==`WebhookUrl`].OutputValue' \
     --output text)

@@ -5,7 +5,7 @@ version = 0.1
 stack_name = "pharaoh-line-webhook-dev"
 resolve_s3 = true
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
 parameter_overrides = [
@@ -25,7 +25,7 @@ confirm_changeset = true
 fail_on_empty_changeset = false
 stack_name = "pharaoh-line-webhook-dev"
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
 image_repositories = []
 
 [default.package.parameters]
@@ -46,7 +46,7 @@ warm_containers = "EAGER"
 stack_name = "pharaoh-line-webhook-staging"
 resolve_s3 = true
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = [
     "Environment=staging"
@@ -58,7 +58,7 @@ confirm_changeset = true
 fail_on_empty_changeset = false
 stack_name = "pharaoh-line-webhook-staging"
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
 
 # Production environment configuration
 [prod]
@@ -66,7 +66,7 @@ region = "us-east-1"
 stack_name = "pharaoh-line-webhook-prod"
 resolve_s3 = true
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = [
     "Environment=prod"
@@ -78,4 +78,4 @@ confirm_changeset = true
 fail_on_empty_changeset = false
 stack_name = "pharaoh-line-webhook-prod"
 s3_prefix = "pharaoh-line-webhook"
-region = "us-east-1"
+region = "ap-east-2"
