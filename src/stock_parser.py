@@ -1,7 +1,10 @@
 import re
 import requests
 import traceback
+import urllib.parse
 import yfinance as yf
+
+from bs4 import BeautifulSoup
 
 
 def parse_stock_command(text: str):
@@ -14,17 +17,22 @@ def parse_stock_command(text: str):
     if text == "#大盤":
         return ("^TWII", "TW")
     
-    match = re.match(r'#([A-Za-z0-9]+)', text.strip())
+    match = re.match(r'^#(.+)', text.strip())
     if match:
         symbol = match.group(1)
+        symbol = re.sub(r"\s+", "", symbol)   # remove all whitespace via regex
         # Check if it's a Taiwan stock or US stock
         # Taiwan stocks: start with digits (may contain letters at the end)
         # US stocks: start with letters
         if symbol[0].isdigit():
             return (symbol, 'TW')
-        else:
+        elif bool(re.search(r'[\u4e00-\u9fff]', symbol)):
+            symbol = get_tw_stock_symbol_from_company_name(symbol)
+            if symbol:
+                return (symbol, 'TW')
+        elif bool(re.search(r'^[A-Za-z0-9]+', symbol)):
             return (symbol.upper(), 'US')
-        
+
     return None
 
 
@@ -233,7 +241,7 @@ def get_tw_stock_name_from_twse(symbol: str):
 
 
 def get_tw_stock_name_from_tpex(symbol: str):
-    if len(symbol) == 6:
+    if len(symbol) > 4:
         url = f"https://info.tpex.org.tw/api/etfProduct?query={symbol}"
     else:
         url = f"https://info.tpex.org.tw/api/stkInfo?query={symbol}"
@@ -248,6 +256,34 @@ def get_tw_stock_name_from_tpex(symbol: str):
             return data.get('shortName', None)  # for ETF
     except Exception as e:
         print(f"Error fetching Taiwan stock name for {symbol} from tpex: {e}")
+        traceback.print_exc()
+
+    return None
+
+
+def get_tw_stock_symbol_from_company_name(company_name: str):
+    url = "https://mopsov.twse.com.tw/mops/web/ajax_autoComplete"
+    encoded_company_name = urllib.parse.quote(company_name)
+    payload = f"encodeURIComponent=1&step=1&firstin=ture&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&co_id={encoded_company_name}&sstep=1"
+    
+    try:
+        resp = requests.post(url, data=payload, timeout=10)
+        if resp.status_code == 200:
+            # Parse HTML
+            soup = BeautifulSoup(resp.content, "html.parser")
+
+            # Find the element by id
+            element = soup.find(id="autoDiv-1")
+
+            # Extract its value
+            if element and element.has_attr("value"):
+                return element["value"]
+            else:
+                print(f"Taiwan stock symbol for name {company_name} not found from twse")
+                return None
+            
+    except Exception as e:
+        print(f"Error fetching Taiwan stock symbol for name {company_name} from twse: {e}")
         traceback.print_exc()
 
     return None

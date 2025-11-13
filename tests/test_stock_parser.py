@@ -37,8 +37,8 @@ class TestParseStockCommand:
         assert parse_stock_command("##2884") is None  # Double #
         assert parse_stock_command("hello #2884") is None  # # not at start
         assert parse_stock_command("") is None  # Empty string
-        assert parse_stock_command("#2884 extra text") == ("2884", "TW")  # Should still work
-        assert parse_stock_command("#AAPL extra text") == ("AAPL", "US")  # Should still work
+        assert parse_stock_command("#2884 extra text") == ("2884extratext", "TW")  # extra space is removed
+        assert parse_stock_command("#AAPL extra text") == ("AAPLEXTRATEXT", "US")  # extra space is removed and symbol is converted to uppercase
         
     def test_edge_cases(self):
         """Test edge cases"""
