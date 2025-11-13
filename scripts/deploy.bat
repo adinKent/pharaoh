@@ -29,9 +29,6 @@ if "%LINE_CHANNEL_ACCESS_TOKEN%"=="" (
     for /f "usebackq tokens=*" %%i in (`aws --profile %AWS_PROFILE% --region %AWS_REGION% ssm get-parameter --name "/pharaoh/%ENVIRONMENT%/line/channel-access-token" --query "Parameter.Value" --output text 2^>nul`) do set LINE_CHANNEL_ACCESS_TOKEN=%%i
 )
 
-echo LINE_CHANNEL_SECRET=%LINE_CHANNEL_SECRET%
-echo LINE_CHANNEL_ACCESS_TOKEN=%LINE_CHANNEL_ACCESS_TOKEN%
-
 if "%LINE_CHANNEL_SECRET%"=="" (
     echo Error: Line channel secret not provided and not found in SSM Parameter Store.
     exit /b 1

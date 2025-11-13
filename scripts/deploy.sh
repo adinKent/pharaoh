@@ -28,9 +28,6 @@ if [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
         --output text 2>/dev/null || echo "")
 fi
 
-echo "LINE_CHANNEL_SECRET=$LINE_CHANNEL_SECRET"
-echo "LINE_CHANNEL_ACCESS_TOKEN=$LINE_CHANNEL_ACCESS_TOKEN"
-
 if [ -z "$LINE_CHANNEL_SECRET" ] || [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
     echo "Error: Line channel secret or access token not provided and not found in SSM Parameter Store."
     exit 1

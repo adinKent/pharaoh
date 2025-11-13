@@ -233,21 +233,19 @@ def get_tw_stock_name_from_twse(symbol: str):
 
 
 def get_tw_stock_name_from_tpex(symbol: str):
-    # TWSE API endpoint for stock basic information
-    url = "https://info.tpex.org.tw/api/etfProduct"  # https://info.tpex.org.tw/api/etfProduct?lang=zh-tw&query=00772B
-    try:
-        params = {
-            'query': symbol,
-            'response': 'json'
-        },
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+    if len(symbol) == 6:
+        url = f"https://info.tpex.org.tw/api/etfProduct?query={symbol}"
+    else:
+        url = f"https://info.tpex.org.tw/api/stkInfo?query={symbol}"
 
-        resp = requests.get(url, params=params, headers=headers, timeout=10)
+    try:
+        resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            return data.get('shortName', None)
+            if 'info' in data:
+                return data['info'].get('shortName', None)  # for stock
+
+            return data.get('shortName', None)  # for ETF
     except Exception as e:
         print(f"Error fetching Taiwan stock name for {symbol} from tpex: {e}")
         traceback.print_exc()
