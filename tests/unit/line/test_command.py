@@ -6,7 +6,7 @@ import os
 # Add project root to path so we can import from src
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../'))
 
-from src.line.command import get_stock_symbol_from_command, parse_line_command
+from src.line.command_parser import get_stock_symbol_from_command, parse_line_command
 
 
 class TestGetStockSymbolFromCommand:
@@ -48,7 +48,7 @@ class TestGetStockSymbolFromCommand:
 class TestParseLineCommand:
     """Test cases for parse_line_command function"""
     
-    @patch('src.line.command.get_tw_stock_price')
+    @patch('src.line.command_parser.get_tw_stock_price')
     def test_tw_stock_info(self, mock_get_tw_price):
         """Test getting Taiwan stock info"""
         mock_get_tw_price.return_value = {
@@ -64,7 +64,7 @@ class TestParseLineCommand:
         assert result['name'] == 'Yuanta Financial'
         mock_get_tw_price.assert_called_once_with("2884")
     
-    @patch('src.line.command.get_us_stock_price')
+    @patch('src.line.command_parser.get_us_stock_price')
     def test_us_stock_info(self, mock_get_us_price):
         """Test getting US stock info"""
         mock_get_us_price.return_value = {
@@ -86,7 +86,7 @@ class TestParseLineCommand:
         assert parse_line_command("2884") is None
         assert parse_line_command("") is None
     
-    @patch('src.line.command.get_tw_stock_price')
+    @patch('src.line.command_parser.get_tw_stock_price')
     def test_tw_stock_not_found(self, mock_get_tw_price):
         """Test when Taiwan stock is not found"""
         mock_get_tw_price.return_value = None
@@ -96,7 +96,7 @@ class TestParseLineCommand:
         assert result is None
         mock_get_tw_price.assert_called_once_with("9999")
     
-    @patch('src.line.command.get_us_stock_price')
+    @patch('src.line.command_parser.get_us_stock_price')
     def test_us_stock_not_found(self, mock_get_us_price):
         """Test when US stock is not found"""
         mock_get_us_price.return_value = None
