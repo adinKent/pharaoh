@@ -22,7 +22,7 @@ def parse_line_command(command_text: str) -> str | None:
     return None
 
 
-def get_stock_symbol_from_command(command_text: str):
+def get_stock_symbol_from_command(command_text: str) -> tuple[str, str] | list[tuple[str, str]] | None:
     """
     If text starts with '#', extract the symbol and return it with market type.
     For Taiwan stocks: #2330, #00930A -> ('2330', 'TW'), ('00930A', 'TW')
@@ -46,7 +46,7 @@ def get_stock_symbol_from_command(command_text: str):
     return None
 
 
-def get_stock_symbol_from_fixed_command(symbol: str):
+def get_stock_symbol_from_fixed_command(symbol: str) -> tuple[str, str] | list[tuple[str, str]] | None:
     match symbol:
         case "大盤":
             return ("^TWII", "TW")
