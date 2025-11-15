@@ -7,7 +7,7 @@ import sys
 from unittest.mock import patch, MagicMock
 
 # Add src to Python path for testing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
 
 from app import (
     lambda_handler,
