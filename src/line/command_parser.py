@@ -57,6 +57,16 @@ def get_stock_symbol_from_fixed_command(symbol: str):
                 ("^IXIC", "US"),
                 ("^SOX", "US")
             ]
+        case "日股":
+            return ("^N225", "US")
+        case "韓股":
+            return ("^KS11", "US")
+        case "亞股":
+            return [
+                ("^TWII", "TW"),
+                ("^N225", "US"),
+                ("^KS11", "US")
+            ]
         case "美元":
             return ("TWD=X", "US")
         case "日元":
