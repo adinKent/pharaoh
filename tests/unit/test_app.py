@@ -242,15 +242,6 @@ class TestEventProcessing:
 
         mock_handle_message.assert_called_once_with(event)
 
-    @patch('app.handle_follow_event')
-    def test_process_follow_event(self, mock_handle_follow):
-        """Test processing follow event"""
-        event = {'type': 'follow', 'source': {'userId': 'user1'}}
-
-        process_line_event(event)
-
-        mock_handle_follow.assert_called_once_with(event)
-
     def test_process_unknown_event(self, caplog):
         """Test processing unknown event type"""
         event = {'type': 'unknown', 'source': {'userId': 'user1'}}
@@ -275,36 +266,6 @@ class TestMessageHandling:
         handle_message_event(event)
 
         mock_send_reply.assert_not_called()
-
-    def test_handle_image_message(self, caplog):
-        """Test handling image message"""
-        event = {
-            'message': {'type': 'image', 'id': 'image-123'},
-            'source': {'userId': 'user1'},
-            'replyToken': 'reply-token'
-        }
-
-        handle_message_event(event)
-
-        assert "Image message ID: image-123" in caplog.text
-
-    def test_handle_location_message(self, caplog):
-        """Test handling location message"""
-        event = {
-            'message': {
-                'type': 'location',
-                'title': 'Test Location',
-                'address': '123 Test St',
-                'latitude': 35.0,
-                'longitude': 139.0
-            },
-            'source': {'userId': 'user1'},
-            'replyToken': 'reply-token'
-        }
-
-        handle_message_event(event)
-
-        assert "Location: Test Location, 123 Test St (35.0, 139.0)" in caplog.text
 
 
 class TestReplyMessage:

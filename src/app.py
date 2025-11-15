@@ -71,6 +71,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
     except Exception as error:
         logger.error(f'Error processing webhook: {error}')
+        logger.exception(error)
         return create_response(500, {'error': 'Internal server error'})
 
 
@@ -111,26 +112,6 @@ def process_line_event(event: Dict[str, Any]) -> None:
 
     if event_type == 'message':
         handle_message_event(event)
-    elif event_type == 'follow':
-        handle_follow_event(event)
-    elif event_type == 'unfollow':
-        handle_unfollow_event(event)
-    elif event_type == 'join':
-        handle_join_event(event)
-    elif event_type == 'leave':
-        handle_leave_event(event)
-    elif event_type == 'memberJoined':
-        handle_member_joined_event(event)
-    elif event_type == 'memberLeft':
-        handle_member_left_event(event)
-    elif event_type == 'postback':
-        handle_postback_event(event)
-    elif event_type == 'beacon':
-        handle_beacon_event(event)
-    elif event_type == 'accountLink':
-        handle_account_link_event(event)
-    elif event_type == 'things':
-        handle_things_event(event)
     else:
         logger.info(f"Unhandled event type: {event_type}")
 
@@ -160,7 +141,6 @@ def handle_message_event(event: Dict[str, Any]) -> None:
         text_message = message.get('text')
 
         try:
-            # Try to process stock command
             stock_response = parse_line_command(text_message)
 
             if stock_response:
@@ -175,170 +155,11 @@ def handle_message_event(event: Dict[str, Any]) -> None:
 
         except Exception as e:
             logger.error(f"Error processing stock command: {e}")
+            logger.exception(e)
             # Don't reply on error to avoid confusing users
-
-    elif message_type == 'image':
-        logger.info(f"Image message ID: {message.get('id')}")
-        # Handle image message
-
-    elif message_type == 'video':
-        logger.info(f"Video message ID: {message.get('id')}")
-        # Handle video message
-
-    elif message_type == 'audio':
-        logger.info(f"Audio message ID: {message.get('id')}")
-        # Handle audio message
-
-    elif message_type == 'file':
-        logger.info(f"File message ID: {message.get('id')}")
-        # Handle file message
-
-    elif message_type == 'location':
-        title = message.get('title')
-        address = message.get('address')
-        latitude = message.get('latitude')
-        longitude = message.get('longitude')
-        logger.info(f"Location: {title}, {address} ({latitude}, {longitude})")
-        # Handle location message
-
-    elif message_type == 'sticker':
-        package_id = message.get('packageId')
-        sticker_id = message.get('stickerId')
-        logger.info(f"Sticker package: {package_id}, sticker: {sticker_id}")
-        # Handle sticker message
 
     else:
         logger.info(f"Unhandled message type: {message_type}")
-
-
-def format_stock_response(stock_info) -> str:
-    """Get icon representation for ups or downs status"""
-    price_diff = stock_info['price'] - stock_info['previous_price']
-    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
-    icon = "➖"  # Unchanged
-    price_diff_percent_format = "0"
-    if price_diff > 0:
-        icon = "📈"  # Up
-        price_diff_percent_format = f"+{price_diff_percent:.2f}"
-    elif price_diff < 0:
-        icon = "📉"  # Down
-        price_diff_percent_format = f"{price_diff_percent:.2f}"
-
-    return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
-
-
-def handle_follow_event(event: Dict[str, Any]) -> None:
-    """
-    Handle follow events (when user adds your bot as friend)
-    """
-    source = event.get('source', {})
-    user_id = source.get('userId')
-
-    logger.info(f"User {user_id} followed the bot")
-
-    # You can send a welcome message here
-    # Note: Follow events don't have replyToken, use push message instead
-
-
-def handle_unfollow_event(event: Dict[str, Any]) -> None:
-    """
-    Handle unfollow events (when user removes your bot)
-    """
-    source = event.get('source', {})
-    user_id = source.get('userId')
-
-    logger.info(f"User {user_id} unfollowed the bot")
-
-    # Clean up user data if needed
-
-
-def handle_join_event(event: Dict[str, Any]) -> None:
-    """
-    Handle join events (when bot joins a group or room)
-    """
-    source = event.get('source', {})
-    source_type = source.get('type')
-    group_id = source.get('groupId')
-    room_id = source.get('roomId')
-
-    logger.info(f"Bot joined {source_type}: {group_id or room_id}")
-
-
-def handle_leave_event(event: Dict[str, Any]) -> None:
-    """
-    Handle leave events (when bot leaves a group or room)
-    """
-    source = event.get('source', {})
-    source_type = source.get('type')
-    group_id = source.get('groupId')
-    room_id = source.get('roomId')
-
-    logger.info(f"Bot left {source_type}: {group_id or room_id}")
-
-
-def handle_member_joined_event(event: Dict[str, Any]) -> None:
-    """
-    Handle member joined events
-    """
-    source = event.get('source', {})
-    joined = event.get('joined', {})
-    members = joined.get('members', [])
-
-    logger.info(f"Members joined {source.get('type')}: {members}")
-
-
-def handle_member_left_event(event: Dict[str, Any]) -> None:
-    """
-    Handle member left events
-    """
-    source = event.get('source', {})
-    left = event.get('left', {})
-    members = left.get('members', [])
-
-    logger.info(f"Members left {source.get('type')}: {members}")
-
-
-def handle_postback_event(event: Dict[str, Any]) -> None:
-    """
-    Handle postback events (from rich menu, template messages, etc.)
-    """
-    postback = event.get('postback', {})
-    source = event.get('source', {})
-    reply_token = event.get('replyToken')
-
-    logger.info(f"Postback data: {postback.get('data')}")
-
-    # Process postback data and respond accordingly
-
-
-def handle_beacon_event(event: Dict[str, Any]) -> None:
-    """
-    Handle beacon events
-    """
-    beacon = event.get('beacon', {})
-    source = event.get('source', {})
-
-    logger.info(f"Beacon event: {beacon.get('type')}, hwid: {beacon.get('hwid')}")
-
-
-def handle_account_link_event(event: Dict[str, Any]) -> None:
-    """
-    Handle account link events
-    """
-    link = event.get('link', {})
-    source = event.get('source', {})
-
-    logger.info(f"Account link result: {link.get('result')}")
-
-
-def handle_things_event(event: Dict[str, Any]) -> None:
-    """
-    Handle LINE Things events
-    """
-    things = event.get('things', {})
-    source = event.get('source', {})
-
-    logger.info(f"Things event: {things.get('type')}, device: {things.get('deviceId')}")
 
 
 def send_reply_message(reply_token: str, message: Dict[str, Any]) -> None:
@@ -379,6 +200,7 @@ def send_reply_message(reply_token: str, message: Dict[str, Any]) -> None:
 
     except Exception as error:
         logger.error(f'Error sending reply message: {error}')
+        logger.exception(error)
 
 
 def mark_message_as_read(markAsReadToken: str) -> None:
