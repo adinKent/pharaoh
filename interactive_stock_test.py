@@ -9,7 +9,7 @@ import os
 # Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from stock_parser import get_stock_info
+from src.line.command import parse_line_command
 
 def interactive_test():
     """Interactive testing of the stock parser"""
@@ -34,7 +34,7 @@ def interactive_test():
             print(f"📝 Processing: '{user_input}'")
             
             # Test the stock parser
-            result = get_stock_info(user_input)
+            result = parse_line_command(user_input)
             
             if result:
                 icon = ""

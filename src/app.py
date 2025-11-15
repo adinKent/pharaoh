@@ -5,8 +5,9 @@ import hmac
 import base64
 import logging
 import requests
+
 from typing import Dict, Any
-from stock_parser import get_stock_info
+from line.command import parse_line_command
 
 # Configure logging
 logger = logging.getLogger()
@@ -160,7 +161,7 @@ def handle_message_event(event: Dict[str, Any]) -> None:
 
         try:
             # Try to process stock command
-            stock_info = get_stock_info(text_message)
+            stock_info = parse_line_command(text_message)
 
             if stock_info:
                 # Format and send stock price response
