@@ -38,7 +38,8 @@ def interactive_test():
             result = parse_line_command(user_input)
             
             if result:
-                print(f"🎯 Bot Response: {result}")
+                print("🎯 Bot Response:")
+                print(result)
             else:
                 print("ℹ️  No stock command detected (message would be ignored)")
             

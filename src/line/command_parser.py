@@ -7,6 +7,9 @@ from quote.us_stock import get_us_stock_price
 def parse_line_command(command_text: str) -> str | None:
     parsed_result = get_stock_symbol_from_command(command_text)
     if parsed_result:
+        if isinstance(parsed_result, str):
+            return parsed_result
+
         if not isinstance(parsed_result, list):
             parsed_result = [parsed_result]
 
@@ -17,12 +20,12 @@ def parse_line_command(command_text: str) -> str | None:
             elif market == 'US':
                 stock_info_list.append(get_us_stock_price(symbol))
 
-        return "\n ".join(map(lambda stock_info: format_stock_response(stock_info), stock_info_list))
+        return "\n".join(map(lambda stock_info: format_stock_response(stock_info), stock_info_list))
             
     return None
 
 
-def get_stock_symbol_from_command(command_text: str) -> tuple[str, str] | list[tuple[str, str]] | None:
+def get_stock_symbol_from_command(command_text: str) -> str | tuple[str, str] | list[tuple[str, str]] | None:
     """
     If text starts with '#', extract the symbol and return it with market type.
     For Taiwan stocks: #2330, #00930A -> ('2330', 'TW'), ('00930A', 'TW')
@@ -46,7 +49,7 @@ def get_stock_symbol_from_command(command_text: str) -> tuple[str, str] | list[t
     return None
 
 
-def get_stock_symbol_from_fixed_command(symbol: str) -> tuple[str, str] | list[tuple[str, str]] | None:
+def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | list[tuple[str, str]] | None:
     match symbol:
         case "大盤":
             return ("^TWII", "TW")
@@ -71,6 +74,8 @@ def get_stock_symbol_from_fixed_command(symbol: str) -> tuple[str, str] | list[t
             return ("TWD=X", "US")
         case "日元":
             return ("JPYTWD=X", "US")
+        case "指令":
+            return get_full_command_list()
         case _:
             return get_tw_stock_symbol_from_company_name(symbol)
 
@@ -89,3 +94,11 @@ def format_stock_response(stock_info) -> str:
         price_diff_percent_format = f"{price_diff_percent:.2f}"
 
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
+
+
+def get_full_command_list() -> str:
+    return "\n".join([
+        "指數: #大盤, #美股, #日股, #韓股, #亞股",
+        "個股: #股票代號 (ex: #2330), #公司名稱 (ex: #台積電)",
+        "外匯: #美元, #日元"
+    ])

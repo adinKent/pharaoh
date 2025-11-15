@@ -87,16 +87,16 @@ def _fallback_stock_price(symbol: str):
     return None
 
 
-def get_tw_stock_name(symbol: str, markey_type: str):
-    if symbol == "^TWII":
-        return "台灣加權指數"
-
-    if markey_type == "TW":
-        return get_tw_stock_name_from_twse(symbol)
-    elif markey_type == "TWO":
-        return get_tw_stock_name_from_tpex(symbol)
-
-    return None
+def get_tw_stock_name(symbol: str, markey_type: str) -> str | None:
+    match markey_type:
+        case "TW":
+            if symbol == "^TWII":
+                return "台灣加權指數"
+            return get_tw_stock_name_from_twse(symbol)
+        case "TWO":
+            return get_tw_stock_name_from_tpex(symbol)
+        case _:
+            return None
 
 
 def get_tw_stock_name_from_twse(symbol: str):
