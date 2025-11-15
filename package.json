@@ -31,7 +31,7 @@
     "sam",
     "python"
   ],
-  "author": "Kenche",
+  "author": "Kent Chen",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {},
@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/pharaoh-line-webhook.git"
+    "url": "https://github.com/adinKent/pharaoh.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/pharaoh-line-webhook/issues"
+    "url": "https://github.com/adinKent/pharaoh/issues"
   },
-  "homepage": "https://github.com/your-username/pharaoh-line-webhook#readme"
+  "homepage": "https://github.com/adinKent/pharaoh#readme"
 }
