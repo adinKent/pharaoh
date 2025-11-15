@@ -5,11 +5,12 @@ Interactive script to test stock parser with user input
 
 import sys
 import os
+import traceback
 
 # Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.line.command import parse_line_command
+from src.line.command_parser import parse_line_command
 
 def interactive_test():
     """Interactive testing of the stock parser"""
@@ -37,13 +38,7 @@ def interactive_test():
             result = parse_line_command(user_input)
             
             if result:
-                icon = ""
-                if result["upsOrDowns"] == 1:
-                    icon = "🚀"
-                elif result["upsOrDowns"] == -1:
-                    icon = "💸"
-
-                print(f"🎯 Bot Response: {result["name"]}: {result["price"]} {icon}")
+                print(f"🎯 Bot Response: {result}")
             else:
                 print("ℹ️  No stock command detected (message would be ignored)")
             
@@ -54,6 +49,7 @@ def interactive_test():
             break
         except Exception as e:
             print(f"💥 Error: {e}")
+            traceback.print_exc()
             print("-" * 40)
 
 if __name__ == "__main__":

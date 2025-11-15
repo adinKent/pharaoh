@@ -161,12 +161,10 @@ def handle_message_event(event: Dict[str, Any]) -> None:
 
         try:
             # Try to process stock command
-            stock_info = parse_line_command(text_message)
+            stock_response = parse_line_command(text_message)
 
-            if stock_info:
+            if stock_response:
                 # Format and send stock price response
-                logger.info(f"Stock command detected, info: {stock_info}")
-                stock_response = format_stock_response(stock_info)
                 send_reply_message(reply_token, {
                     'type': 'text',
                     'text': stock_response
@@ -438,13 +436,3 @@ def create_response(status_code: int, body: Dict[str, Any]) -> Dict[str, Any]:
         },
         'body': json.dumps(body)
     }
-
-
-def get_ups_or_downs_icon(ups_or_downs: int) -> str:
-    """Get icon representation for ups or downs status"""
-    if ups_or_downs == 1:
-        return "📈"  # Up
-    elif ups_or_downs == -1:
-        return "📉"  # Down
-    else:
-        return "➖"  # Unchanged
