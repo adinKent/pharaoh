@@ -50,7 +50,7 @@ def interactive_test():
             break
         except Exception as e:
             print(f"💥 Error: {e}")
-            traceback.print_exc()
+            print(traceback.format_exc())
             print("-" * 40)
 
 if __name__ == "__main__":

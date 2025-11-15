@@ -1,9 +1,12 @@
+import logging
 import yfinance as yf
 
 from quote.common import get_ups_or_downs
 
+logger = logging.getLogger(__name__)
 
-def get_us_stock_price(symbol: str):
+
+def get_us_stock_price(symbol: str) -> dict | None:
     """
     Get real-time stock price for a US stock symbol using yfinance library.
     Returns a dict with price info or None if not found.
@@ -29,6 +32,7 @@ def get_us_stock_price(symbol: str):
                 'upsOrDowns': get_ups_or_downs(current_price, previous_close)
             }
     except Exception as e:
-        print(f"Error fetching US stock price with yfinance: {e}")
+        logger.error(f"Error fetching US stock price with yfinance: {e}")
+        logger.exception(e)
 
     return None

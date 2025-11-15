@@ -1,35 +1,38 @@
+import logging
 import requests
-import traceback
 import urllib.parse
 import yfinance as yf
 
 from bs4 import BeautifulSoup
 from quote.common import get_ups_or_downs
 
+logger = logging.getLogger(__name__)
 
-def get_tw_stock_price(symbol: str):
+
+def get_tw_stock_price(symbol: str) -> dict | None:
     """
     Get real-time stock price for a Taiwan stock symbol using yfinance library.
     Returns a dict with price info or None if not found.
     """
     try:
-        yahoo_symbol = symbol if symbol == "^TWII" else f"{symbol}.TW"
+        market_type = "TW"
+        yahoo_symbol = symbol if symbol == "^TWII" else f"{symbol}.{market_type}"
         ticker = yf.Ticker(yahoo_symbol)
         
         # Get current price info
         info = ticker.info
-        stock_name = get_tw_stock_name(symbol, "TW")
 
         if not info or info.get('regularMarketPrice') is None :
             # fallback to TWO market
-            yahoo_symbol = f"{symbol}.TWO"
+            market_type = "TWO"
+            yahoo_symbol = f"{symbol}.{market_type}"
             ticker = yf.Ticker(yahoo_symbol)
             info = ticker.info
-            stock_name = get_tw_stock_name(symbol, "TWO")
 
         history = ticker.history(period="1d")
 
         if not history.empty and info:
+            stock_name = get_tw_stock_name(symbol, market_type)
             current_price = info.get('regularMarketPrice') or info.get('currentPrice')
             previous_close = info.get('regularMarketPreviousClose')
 
@@ -49,7 +52,8 @@ def get_tw_stock_price(symbol: str):
         # Fallback to simple web scraping if yfinance not available
         return _fallback_stock_price(symbol)
     except Exception as e:
-        print(f"Error fetching stock price with yfinance: {e}")
+        logger.error(f"Error fetching stock price with yfinance: {e}")
+        logger.exception(e)
         return _fallback_stock_price(symbol)
 
     return None
@@ -82,7 +86,8 @@ def _fallback_stock_price(symbol: str):
                     'time': None
                 }
     except Exception as e:
-        print(f"Error with fallback method: {e}")
+        logger.error(f"Error with fallback method: {e}")
+        logger.exception(e)
     
     return None
 
@@ -164,8 +169,9 @@ def get_tw_stock_name_from_twse(symbol: str):
                         return stock_data[1]  # Stock name
         
     except Exception as e:
-        print(f"Error fetching Taiwan stock name for {symbol} from tpse: {e}")
-    
+        logger.error(f"Error fetching Taiwan stock name for {symbol} from tpse: {e}")
+        logger.exception(e)
+
     return None
 
 
@@ -184,8 +190,8 @@ def get_tw_stock_name_from_tpex(symbol: str):
 
             return data.get('shortName', None)  # for ETF
     except Exception as e:
-        print(f"Error fetching Taiwan stock name for {symbol} from tpex: {e}")
-        traceback.print_exc()
+        logger.error(f"Error fetching Taiwan stock name for {symbol} from tpex: {e}")
+        logger.exception(e)
 
     return None
 
@@ -208,11 +214,11 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
             if element and element.has_attr("value"):
                 return element["value"]
             else:
-                print(f"Taiwan stock symbol for name {company_name} not found from twse")
+                logger.warning(f"Taiwan stock symbol for name {company_name} not found from twse")
                 return None
             
     except Exception as e:
-        print(f"Error fetching Taiwan stock symbol for name {company_name} from twse: {e}")
-        traceback.print_exc()
+        logger.error(f"Error fetching Taiwan stock symbol for name {company_name} from twse: {e}")
+        logger.exception(e)
 
     return None

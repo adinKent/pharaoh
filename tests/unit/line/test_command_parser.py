@@ -93,7 +93,7 @@ class TestGetStockSymbolFromFixedCommand:
     @patch('src.line.command_parser.get_tw_stock_symbol_from_company_name')
     def test_unknown_command_fallback(self, mock_get_symbol):
         """Test unknown command falls back to company name lookup"""
-        mock_get_symbol.return_value = ("2330", "TW")
+        mock_get_symbol.return_value = "2330"
         result = get_stock_symbol_from_fixed_command("台積電")
         assert result == ("2330", "TW")
         mock_get_symbol.assert_called_once_with("台積電")
@@ -198,11 +198,7 @@ class TestParseLineCommand:
         """Test when Taiwan stock is not found"""
         mock_get_tw_price.return_value = None
         
-        # When stock is not found, format_stock_response will be called with None
-        # which will raise a TypeError when trying to access stock_info['price']
-        with pytest.raises((TypeError, KeyError)):
-            parse_line_command("#9999")
-        
+        assert parse_line_command("#9999") == ""
         mock_get_tw_price.assert_called_once_with("9999")
     
     @patch('src.line.command_parser.get_us_stock_price')
@@ -210,11 +206,7 @@ class TestParseLineCommand:
         """Test when US stock is not found"""
         mock_get_us_price.return_value = None
         
-        # When stock is not found, format_stock_response will be called with None
-        # which will raise a TypeError when trying to access stock_info['price']
-        with pytest.raises((TypeError, KeyError)):
-            parse_line_command("#INVALID")
-        
+        assert parse_line_command("#INVALID") == ""
         mock_get_us_price.assert_called_once_with("INVALID")
     
     @patch('src.line.command_parser.get_tw_stock_price')

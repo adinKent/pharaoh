@@ -15,10 +15,14 @@ def parse_line_command(command_text: str) -> str | None:
 
         stock_info_list = []
         for (symbol, market) in parsed_result:
+            stock_info = None
             if market == 'TW':
-                stock_info_list.append(get_tw_stock_price(symbol))
+                stock_info = get_tw_stock_price(symbol)
             elif market == 'US':
-                stock_info_list.append(get_us_stock_price(symbol))
+                stock_info = get_us_stock_price(symbol)
+
+            if stock_info:
+                stock_info_list.append(stock_info)
 
         return "\n".join(map(lambda stock_info: format_stock_response(stock_info), stock_info_list))
             
@@ -77,7 +81,11 @@ def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | 
         case "指令":
             return get_full_command_list()
         case _:
-            return get_tw_stock_symbol_from_company_name(symbol)
+            symbol_from_company_name = get_tw_stock_symbol_from_company_name(symbol)
+            if symbol_from_company_name:
+                return (symbol_from_company_name, "TW")
+
+    return None
 
 
 def format_stock_response(stock_info) -> str:
