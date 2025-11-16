@@ -2,6 +2,8 @@ import re
 
 from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
 from quote.us_stock import get_us_stock_price
+from quote.index import get_index_price
+from quote.future import get_future_price
 from line.command_mappings import get_all_commands
 
 
@@ -15,12 +17,19 @@ def parse_line_command(command_text: str) -> str | None:
             parsed_result = [parsed_result]
 
         stock_info_list = []
-        for (symbol, market) in parsed_result:
+        for (symbol, market_type) in parsed_result:
             stock_info = None
-            if market == 'TW':
-                stock_info = get_tw_stock_price(symbol)
-            elif market == 'US':
-                stock_info = get_us_stock_price(symbol)
+            match market_type:
+                case 'TW':
+                    stock_info = get_tw_stock_price(symbol)
+                case 'US':
+                    stock_info = get_us_stock_price(symbol)
+                case 'IND':
+                    stock_info = get_index_price(symbol)
+                case 'FUT':
+                    stock_info = get_future_price(symbol)
+                case _:
+                    stock_info = get_us_stock_price(symbol)
 
             if stock_info:
                 stock_info_list.append(stock_info)

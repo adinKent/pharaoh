@@ -1,44 +1,49 @@
 INDEX_COMMANDS = {
-    "大盤": ("^TWII", "TW"),
-    "日股": ("^N225", "US"),
-    "韓股": ("^KS11", "US"),
+    "大盤": ("^TWII", "IND"),
+    "日股": ("^N225", "IND"),
+    "韓股": ("^KS11", "IND"),
+    "亞股": [
+        ("^TWII", "IND"),
+        ("^N225", "IND"),
+        ("^KS11", "IND")
+    ],
     "美股": [
-        ("^GSPC", "US"),
-        ("^DJI", "US"),
-        ("^IXIC", "US"),
-        ("^SOX", "US")
+        ("^GSPC", "IND"),
+        ("^DJI", "IND"),
+        ("^IXIC", "IND"),
+        ("^SOX", "IND")
     ]
 }
 
 CURRENCY_COMMANDS = {
-    "美元": ("TWD=X", "US"),
-    "日元": ("JPYTWD=X", "US")
+    "美元": ("TWD=X", "FUT"),
+    "日元": ("JPYTWD=X", "FUT")
 }
 
 COMEX_COMMANDS = {
-    "黃金": ("GC=F", "US"),
-    "白銀": ("SI=F", "US"),
+    "黃金": ("GC=F", "FUT"),
+    "白銀": ("SI=F", "FUT"),
     "貴金屬": [
-        ("GC=F", "US"),
-        ("SI=F", "US")
+        ("GC=F", "FUT"),
+        ("SI=F", "FUT")
     ],
-    "石油": ("CL=F", "US")
+    "原油": ("CL=F", "FUT")
 }
 
 BONDS_COMMANDS = {
     "債券": [
-        ("^FVX", "US"),
-        ("^TNX", "US"),
-        ("^TYX", "US")
+        ("^FVX", "FUT"),
+        ("^TNX", "FUT"),
+        ("^TYX", "FUT")
     ]
 }
 
 COIN_COMMANDS = {
-    "比特幣": ("BTC-USD", "US"),
-    "以太幣": ("ETH-USD", "US"),
+    "比特幣": ("BTC-USD", "FUT"),
+    "以太幣": ("ETH-USD", "FUT"),
     "虛擬幣": [
-        ("BTC-USD", "US"),
-        ("ETH-USD", "US")
+        ("BTC-USD", "FUT"),
+        ("ETH-USD", "FUT")
     ]
 }
 

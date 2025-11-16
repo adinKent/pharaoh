@@ -4,7 +4,7 @@ import urllib.parse
 import yfinance as yf
 
 from bs4 import BeautifulSoup
-from quote.common import get_ups_or_downs
+from quote.output import format_price_output
 
 logger = logging.getLogger(__name__)
 
@@ -32,22 +32,10 @@ def get_tw_stock_price(symbol: str) -> dict | None:
         history = ticker.history(period="1d")
 
         if not history.empty and info:
-            stock_name = get_tw_stock_name(symbol, market_type)
-            current_price = info.get('regularMarketPrice') or info.get('currentPrice')
-            previous_close = info.get('regularMarketPreviousClose')
+            result = format_price_output(symbol, info)
+            result['name'] = get_tw_stock_name(symbol, market_type) or result['name']
 
-            if not stock_name:
-                stock_name = info.get('shortName', info.get('longName', f'Stock {symbol}'))  # fallback to yahoo's result
-
-            return {
-                'symbol': symbol,
-                'name': stock_name,
-                'price': round(current_price, 2),
-                'previous_price': round(previous_close, 2),
-                'currency': info.get('currency', 'TWD'),
-                'time': None,
-                'upsOrDowns': get_ups_or_downs(current_price, previous_close)
-            }
+            return result
     except ImportError:
         # Fallback to simple web scraping if yfinance not available
         return _fallback_stock_price(symbol)
@@ -95,8 +83,6 @@ def _fallback_stock_price(symbol: str):
 def get_tw_stock_name(symbol: str, markey_type: str) -> str | None:
     match markey_type:
         case "TW":
-            if symbol == "^TWII":
-                return "台灣加權指數"
             return get_tw_stock_name_from_twse(symbol)
         case "TWO":
             return get_tw_stock_name_from_tpex(symbol)

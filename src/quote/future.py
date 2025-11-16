@@ -6,7 +6,7 @@ from quote.output import format_price_output
 logger = logging.getLogger(__name__)
 
 
-def get_us_stock_price(symbol: str) -> dict | None:
+def get_future_price(symbol: str) -> dict | None:
     """
     Get real-time stock price for a US stock symbol using yfinance library.
     Returns a dict with price info or None if not found.
@@ -16,7 +16,7 @@ def get_us_stock_price(symbol: str) -> dict | None:
         
         # Get current price info
         info = ticker.info
-        history = ticker.history(period="5d")
+        history = ticker.history(period="5d")  # history may be empty if period is 1d for future. Need more days
 
         if not history.empty and info:
             return format_price_output(symbol, info)
