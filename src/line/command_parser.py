@@ -2,6 +2,7 @@ import re
 
 from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
 from quote.us_stock import get_us_stock_price
+from line.command_mappings import get_all_commands
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -54,38 +55,15 @@ def get_stock_symbol_from_command(command_text: str) -> str | tuple[str, str] | 
 
 
 def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | list[tuple[str, str]] | None:
-    match symbol:
-        case "大盤":
-            return ("^TWII", "TW")
-        case "美股":
-            return [
-                ("^GSPC", "US"),
-                ("^DJI", "US"),
-                ("^IXIC", "US"),
-                ("^SOX", "US")
-            ]
-        case "日股":
-            return ("^N225", "US")
-        case "韓股":
-            return ("^KS11", "US")
-        case "亞股":
-            return [
-                ("^TWII", "TW"),
-                ("^N225", "US"),
-                ("^KS11", "US")
-            ]
-        case "美元":
-            return ("TWD=X", "US")
-        case "日元":
-            return ("JPYTWD=X", "US")
-        case "指令":
-            return get_full_command_list()
-        case _:
-            symbol_from_company_name = get_tw_stock_symbol_from_company_name(symbol)
-            if symbol_from_company_name:
-                return (symbol_from_company_name, "TW")
+    command_mappings = get_all_commands()
+    result = command_mappings.get(symbol, None)
+    
+    if not result:
+        result = get_tw_stock_symbol_from_company_name(symbol)
+        if result:
+            result = (result, "TW")
 
-    return None
+    return result
 
 
 def format_stock_response(stock_info) -> str:
@@ -102,11 +80,3 @@ def format_stock_response(stock_info) -> str:
         price_diff_percent_format = f"{price_diff_percent:.2f}"
 
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
-
-
-def get_full_command_list() -> str:
-    return "\n".join([
-        "指數: #大盤, #美股, #日股, #韓股, #亞股",
-        "個股: #股票代號 (ex: #2330), #公司名稱 (ex: #台積電)",
-        "外匯: #美元, #日元"
-    ])
