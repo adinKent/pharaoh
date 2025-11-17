@@ -1,7 +1,7 @@
 FIXED_SYMBOL_NAME_MAPPINGS = {
     "^TWII": "台灣加權指數",
     "^N225": "日經225",
-    "^KS11": "韓國KOSPI指數",
+    "^KS11": "韓國KOSPI",
     "GC=F": "黃金",
     "SI=F": "白銀",
     "CL=F": "原油",

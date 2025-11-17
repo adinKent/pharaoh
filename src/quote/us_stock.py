@@ -16,7 +16,7 @@ def get_us_stock_price(symbol: str) -> dict | None:
         
         # Get current price info
         info = ticker.info
-        history = ticker.history(period="5d")
+        history = ticker.history(period="2d")
 
         if not history.empty and info:
             return format_price_output(symbol, info)

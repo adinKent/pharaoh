@@ -16,7 +16,7 @@ def get_future_price(symbol: str) -> dict | None:
         
         # Get current price info
         info = ticker.info
-        history = ticker.history(period="5d")  # history may be empty if period is 1d for future. Need more days
+        history = ticker.history(period="2d")
 
         if not history.empty and info:
             return format_price_output(symbol, info)

@@ -16,7 +16,7 @@ def get_tw_stock_price(symbol: str) -> dict | None:
     """
     try:
         market_type = "TW"
-        yahoo_symbol = symbol if symbol == "^TWII" else f"{symbol}.{market_type}"
+        yahoo_symbol = f"{symbol}.{market_type}"
         ticker = yf.Ticker(yahoo_symbol)
         
         # Get current price info
@@ -29,7 +29,7 @@ def get_tw_stock_price(symbol: str) -> dict | None:
             ticker = yf.Ticker(yahoo_symbol)
             info = ticker.info
 
-        history = ticker.history(period="1d")
+        history = ticker.history(period="2d")
 
         if not history.empty and info:
             result = format_price_output(symbol, info)
