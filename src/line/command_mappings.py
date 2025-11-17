@@ -15,6 +15,15 @@ INDEX_COMMANDS = {
     ]
 }
 
+INDEX_FUTURE_COMMANDS = {
+    "美股期": [
+        ("ES=F", "IND"),
+        ("YM=F", "IND"),
+        ("NQ=F", "IND"),
+        ("SOX=F", "IND")
+    ]
+}
+
 CURRENCY_COMMANDS = {
     "美元": ("TWD=X", "FUT"),
     "日元": ("JPYTWD=X", "FUT")
@@ -56,6 +65,7 @@ HELP_COMMANDS = {
     "指令": "\n".join([
         f"指數: {format_command_help(INDEX_COMMANDS)}",
         "個股: #股票代號 (ex: #2330), #公司名稱 (ex: #台積電)",
+        f"美股期: {format_command_help(INDEX_FUTURE_COMMANDS)}",
         f"外匯: {format_command_help(CURRENCY_COMMANDS)}",
         f"原物料: {format_command_help(COMEX_COMMANDS)}",
         f"債券: {format_command_help(BONDS_COMMANDS)}",
@@ -65,6 +75,7 @@ HELP_COMMANDS = {
 
 ALL_COMMANDS = {
     **INDEX_COMMANDS,
+    **INDEX_FUTURE_COMMANDS,
     **CURRENCY_COMMANDS,
     **COMEX_COMMANDS,
     **BONDS_COMMANDS,
