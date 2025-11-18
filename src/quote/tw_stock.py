@@ -1,10 +1,9 @@
-from datetime import datetime
-
 import logging
 import requests
 import urllib.parse
 import yfinance as yf
 
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from quote.output import format_price_output
 
@@ -212,48 +211,18 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
     return None
 
 
-def get_display_width(text):
-    width = 0
-    for char in text:
-        if '\u4e00' <= char <= '\u9fff':  # Check for CJK characters
-            width += 2
-        else:
-            width += 1
-    return width
-
-
-def ljust_wide(text, width, fillchar=' '):
-    """Left-justify a string based on display width."""
-    text_width = get_display_width(text)
-    if text_width >= width:
-        return text
-    
-    padding_needed = width - text_width
-    return text + fillchar * padding_needed
-
-
-def rjust_wide(text, width, fillchar=' '):
-    """Left-justify a string based on display width."""
-    text_width = get_display_width(text)
-    if text_width >= width:
-        return text
-    
-    padding_needed = width - text_width
-    return fillchar * padding_needed + text
-
-
-def format_twse_fund_result_table(result: dict) -> str:
+def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
     """
-    Format TWSE fund result JSON to a plain text table.
+    Format TWSE fund result JSON to a pretty text.
     """
-    if not result or result.get('stat') != 'OK':
-        return 'No valid data.'
+    if not bug_sell_data or bug_sell_data.get('stat') != 'OK':
+        return None
 
-    fields = result.get('fields', [])
-    data = result.get('data', [])
-    title = result.get('title', '')
-    notes = result.get('notes', [])
-    hints = result.get('hints', '')
+    fields = bug_sell_data.get('fields', [])
+    data = bug_sell_data.get('data', [])
+    title = bug_sell_data.get('title', '')
+    notes = bug_sell_data.get('notes', [])
+    hints = bug_sell_data.get('hints', '')
 
     # Convert numeric columns (except the first column) to units of 100 million
     converted_data = []
@@ -268,54 +237,54 @@ def format_twse_fund_result_table(result: dict) -> str:
             new_row.append(new_cell)
         converted_data.append(new_row)
 
-    # Calculate column widths (max cell width in each column + 3 spaces)
-    col_widths = [len(f) for f in fields]
-    for row in converted_data:
-        for i, cell in enumerate(row):
-            col_widths[i] = max(col_widths[i], get_display_width(str(cell)))
-            # col_widths[i] = max(col_widths[i], len(str(cell)))
-    
-    col_widths = [w + 2 for w in col_widths]
-
-    # Build table
     lines = []
     if title:
         lines += [title, '']
-        
-    header_cells = [ljust_wide(fields[0], col_widths[0])]
-    for i in range(1, len(fields)):
-        header_cells.append(rjust_wide(fields[i], col_widths[i]))
-    
-    header = ' | '.join(header_cells)
-    lines.append(header)
 
-    # Separator
-    sep = []
-    for i in range(0, len(col_widths)):
-        sep.append(ljust_wide('-', col_widths[i], fillchar='-'))
+    foreign_row = converted_data[3]
+    for i in range(1, len(foreign_row)):
+        lines.append(f"外資{fields[i]}:{foreign_row[i].rjust(8)}")
 
-    lines.append("-+-".join(sep))
-    
-    # Rows: left-justify first column, right-justify numbers
-    for row in converted_data:
-        row_cells = [ljust_wide(str(row[0]), col_widths[0])]
+    lines.append("")  # separator
+
+    for row in [converted_data[2], converted_data[0], converted_data[1], converted_data[5]]:  # 投信、自營商(自行買賣)、自營商(避險)、合計
         for i in range(1, len(row)):
-            row_cells.append(rjust_wide(str(row[i]), col_widths[i]))
-        line = ' | '.join(row_cells)
-        lines.append(line)
+            lines.append(f"{row[0]}{fields[i]}:{row[i].rjust(8)}")
+        lines.append("")
 
-    lines.append('')
     lines.append('單位：億元')
 
     return '\n'.join(lines)
 
 
-def get_twse_fund_today_result() -> str | None:
+def previous_working_day(date):
+    # Go backwards until it's Monday–Friday
+    while date.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
+        date -= timedelta(days=1)
+    return date
+
+
+def get_effective_date():
+    now = datetime.now()
+    cutoff = now.replace(hour=15, minute=0, second=0, microsecond=0)
+    
+    if now >= cutoff:
+        # After 3PM → today (if weekday), else previous working day
+        if now.weekday() < 5:
+            return now.date()
+        else:
+            return previous_working_day(now.date() - timedelta(days=1))
+    else:
+        # Before 3PM → previous working day
+        return previous_working_day(now.date() - timedelta(days=1))
+
+
+def get_twse_buy_sell_today_result() -> str | None:
     """
-    Fetch today's fund result from TWSE using the provided URL format.
+    Fetch today's buy sell result from TWSE using the provided URL format.
     Format the JSON response to a table like str, or None on failure.
     """
-    today = datetime.now().strftime('%Y%m%d')
+    today = get_effective_date().strftime('%Y%m%d')
     url = (
         f"https://www.twse.com.tw/rwd/zh/fund/BFI82U?"
         f"type=day&dayDate={today}&weekDate={today}&monthDate={today}&response=json&_={int(datetime.now().timestamp() * 1000)}"
@@ -323,7 +292,7 @@ def get_twse_fund_today_result() -> str | None:
     try:
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
-        return format_twse_fund_result_table(resp.json())
+        return format_twse_buy_and_sell_result(resp.json())
     except Exception as e:
         logger.error(f"Error fetching TWSE fund result: {e}")
         logger.exception(e)
