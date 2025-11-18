@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import logging
 import requests
 import urllib.parse
@@ -208,3 +210,121 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
         logger.exception(e)
 
     return None
+
+
+def get_display_width(text):
+    width = 0
+    for char in text:
+        if '\u4e00' <= char <= '\u9fff':  # Check for CJK characters
+            width += 2
+        else:
+            width += 1
+    return width
+
+
+def ljust_wide(text, width, fillchar=' '):
+    """Left-justify a string based on display width."""
+    text_width = get_display_width(text)
+    if text_width >= width:
+        return text
+    
+    padding_needed = width - text_width
+    return text + fillchar * padding_needed
+
+
+def rjust_wide(text, width, fillchar=' '):
+    """Left-justify a string based on display width."""
+    text_width = get_display_width(text)
+    if text_width >= width:
+        return text
+    
+    padding_needed = width - text_width
+    return fillchar * padding_needed + text
+
+
+def format_twse_fund_result_table(result: dict) -> str:
+    """
+    Format TWSE fund result JSON to a plain text table.
+    """
+    if not result or result.get('stat') != 'OK':
+        return 'No valid data.'
+
+    fields = result.get('fields', [])
+    data = result.get('data', [])
+    title = result.get('title', '')
+    notes = result.get('notes', [])
+    hints = result.get('hints', '')
+
+    # Convert numeric columns (except the first column) to units of 100 million
+    converted_data = []
+    for row in data:
+        new_row = [row[0]]
+        for cell in row[1:]:
+            try:
+                num = float(cell.replace(',', ''))
+                new_cell = f"{num / 100_000_000:.2f}"
+            except Exception:
+                new_cell = cell
+            new_row.append(new_cell)
+        converted_data.append(new_row)
+
+    # Calculate column widths (max cell width in each column + 3 spaces)
+    col_widths = [len(f) for f in fields]
+    for row in converted_data:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], get_display_width(str(cell)))
+            # col_widths[i] = max(col_widths[i], len(str(cell)))
+    
+    col_widths = [w + 2 for w in col_widths]
+
+    # Build table
+    lines = []
+    if title:
+        lines += [title, '']
+        
+    header_cells = [ljust_wide(fields[0], col_widths[0])]
+    for i in range(1, len(fields)):
+        header_cells.append(rjust_wide(fields[i], col_widths[i]))
+    
+    header = ' | '.join(header_cells)
+    lines.append(header)
+
+    # Separator
+    sep = []
+    for i in range(0, len(col_widths)):
+        sep.append(ljust_wide('-', col_widths[i], fillchar='-'))
+
+    lines.append("-+-".join(sep))
+    
+    # Rows: left-justify first column, right-justify numbers
+    for row in converted_data:
+        row_cells = [ljust_wide(str(row[0]), col_widths[0])]
+        for i in range(1, len(row)):
+            row_cells.append(rjust_wide(str(row[i]), col_widths[i]))
+        line = ' | '.join(row_cells)
+        lines.append(line)
+
+    lines.append('')
+    lines.append('單位：億元')
+
+    return '\n'.join(lines)
+
+
+def get_twse_fund_today_result() -> str | None:
+    """
+    Fetch today's fund result from TWSE using the provided URL format.
+    Format the JSON response to a table like str, or None on failure.
+    """
+    today = datetime.now().strftime('%Y%m%d')
+    url = (
+        f"https://www.twse.com.tw/rwd/zh/fund/BFI82U?"
+        f"type=day&dayDate={today}&weekDate={today}&monthDate={today}&response=json&_={int(datetime.now().timestamp() * 1000)}"
+    )
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        return format_twse_fund_result_table(resp.json())
+    except Exception as e:
+        logger.error(f"Error fetching TWSE fund result: {e}")
+        logger.exception(e)
+        return None

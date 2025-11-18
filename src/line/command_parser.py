@@ -5,6 +5,7 @@ from quote.us_stock import get_us_stock_price
 from quote.index import get_index_price
 from quote.future import get_future_price
 from line.command_mappings import get_all_commands
+from quote.tw_stock import get_twse_fund_today_result
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -59,6 +60,13 @@ def get_stock_symbol_from_command(command_text: str) -> str | tuple[str, str] | 
             return get_stock_symbol_from_fixed_command(symbol)
         elif bool(re.search(r'^[A-Za-z0-9]+', symbol)):
             return (symbol.upper(), 'US')
+
+    other_match = re.match(r'^F(.+)', command_text.strip())
+    if other_match:
+        symbol = other_match.group(1)
+        symbol = re.sub(r"\s+", "", symbol)   # remove all whitespace via regex
+        if symbol == "大盤":
+            return get_twse_fund_today_result()
 
     return None
 
