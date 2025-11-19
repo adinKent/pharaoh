@@ -4,6 +4,7 @@ import urllib.parse
 import yfinance as yf
 
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 from quote.output import format_price_output
 
@@ -265,7 +266,7 @@ def previous_working_day(date):
 
 
 def get_effective_date():
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Taipei"))
     cutoff = now.replace(hour=15, minute=0, second=0, microsecond=0)
     
     if now >= cutoff:
