@@ -8,56 +8,54 @@ from unittest.mock import patch
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../'))
 
 from src.line.command_parser import (
-    get_stock_symbol_from_command,
+    get_stock_symbol_and_market_type,
     parse_line_command,
     get_stock_symbol_from_fixed_command,
-    format_stock_response
+    format_stock_price_response
 )
 
 
-class TestGetStockSymbolFromCommand:
-    """Test cases for get_stock_symbol_from_command function"""
+class TestGetStockSymbolAndMarketType:
+    """Test cases for get_stock_symbol_and_marke_type function"""
     
     def test_valid_stock_symbol(self):
         """Test parsing valid stock symbols starting with #"""
-        assert get_stock_symbol_from_command("#2884") == ("2884", "TW")
-        assert get_stock_symbol_from_command("#2330") == ("2330", "TW")
-        assert get_stock_symbol_from_command("#1234") == ("1234", "TW")
-        assert get_stock_symbol_from_command("#AAPL") == ("AAPL", "US")
-        assert get_stock_symbol_from_command("#TSLA") == ("TSLA", "US")
-        assert get_stock_symbol_from_command("#aapl") == ("AAPL", "US")  # Should convert to uppercase
+        assert get_stock_symbol_and_market_type("2884") == ("2884", "TW")
+        assert get_stock_symbol_and_market_type("2330") == ("2330", "TW")
+        assert get_stock_symbol_and_market_type("1234") == ("1234", "TW")
+        assert get_stock_symbol_and_market_type("AAPL") == ("AAPL", "US")
+        assert get_stock_symbol_and_market_type("TSLA") == ("TSLA", "US")
+        assert get_stock_symbol_and_market_type("aapl") == ("AAPL", "US")  # Should convert to uppercase
         
     def test_valid_stock_symbol_with_spaces(self):
         """Test parsing with leading/trailing spaces"""
-        assert get_stock_symbol_from_command("  #2884  ") == ("2884", "TW")
-        assert get_stock_symbol_from_command("\t#2330\n") == ("2330", "TW")
-        assert get_stock_symbol_from_command("  #AAPL  ") == ("AAPL", "US")
+        assert get_stock_symbol_and_market_type("  2884  ") == ("2884", "TW")
+        assert get_stock_symbol_and_market_type("\t2330\n") == ("2330", "TW")
+        assert get_stock_symbol_and_market_type("  AAPL  ") == ("AAPL", "US")
         
     def test_invalid_formats(self):
         """Test various invalid formats"""
-        assert get_stock_symbol_from_command("2884") is None  # No # prefix
-        assert get_stock_symbol_from_command("#") is None  # Just #
-        assert get_stock_symbol_from_command("##2884") is None  # Double #
-        assert get_stock_symbol_from_command("hello #2884") is None  # # not at start
-        assert get_stock_symbol_from_command("") is None  # Empty string
-        assert get_stock_symbol_from_command("#2884 extra text") == ("2884extratext", "TW")  # extra space is removed
-        assert get_stock_symbol_from_command("#AAPL extra text") == ("AAPLEXTRATEXT", "US")  # extra space is removed and symbol is converted to uppercase
+        assert get_stock_symbol_and_market_type("#") is None  # Just #
+        assert get_stock_symbol_and_market_type("##2884") is None  # Double #
+        assert get_stock_symbol_and_market_type("") is None  # Empty string
+        assert get_stock_symbol_and_market_type("2884 extra text") == ("2884extratext", "TW")  # extra space is removed
+        assert get_stock_symbol_and_market_type("AAPL extra text") == ("AAPLEXTRATEXT", "US")  # extra space is removed and symbol is converted to uppercase
         
     def test_edge_cases(self):
         """Test edge cases"""
-        assert get_stock_symbol_from_command("#0") == ("0", "TW")
-        assert get_stock_symbol_from_command("#123456") == ("123456", "TW")  # Long number
-        assert get_stock_symbol_from_command("#A") == ("A", "US")  # Single letter
-        assert get_stock_symbol_from_command("#ABC123") == ("ABC123", "US")  # Mixed alphanumeric
+        assert get_stock_symbol_and_market_type("0") == ("0", "TW")
+        assert get_stock_symbol_and_market_type("123456") == ("123456", "TW")  # Long number
+        assert get_stock_symbol_and_market_type("A") == ("A", "US")  # Single letter
+        assert get_stock_symbol_and_market_type("ABC123") == ("ABC123", "US")  # Mixed alphanumeric
     
     def test_fixed_commands(self):
         """Test fixed commands like #大盤, #美股, etc."""
         # These should be handled by get_stock_symbol_from_fixed_command internally
-        result = get_stock_symbol_from_command("#大盤")
+        result = get_stock_symbol_and_market_type("大盤")
         assert result == ("^TWII", "IND")
         
         # Test #美股 returns a list
-        result = get_stock_symbol_from_command("#美股")
+        result = get_stock_symbol_and_market_type("美股")
         assert isinstance(result, list)
         assert len(result) == 4
 
@@ -99,8 +97,8 @@ class TestGetStockSymbolFromFixedCommand:
         mock_get_symbol.assert_called_once_with("台積電")
 
 
-class TestFormatStockResponse:
-    """Test cases for format_stock_response function"""
+class TestFormatStockPriceResponse:
+    """Test cases for format_stock_price_response function"""
     
     def test_format_price_up(self):
         """Test formatting when price is up"""
@@ -110,7 +108,7 @@ class TestFormatStockResponse:
             'price': 150.0,
             'previous_price': 140.0
         }
-        result = format_stock_response(stock_info)
+        result = format_stock_price_response(stock_info)
         assert 'Apple Inc.' in result
         assert 'AAPL' in result
         assert '150.0' in result
@@ -125,7 +123,7 @@ class TestFormatStockResponse:
             'price': 140.0,
             'previous_price': 150.0
         }
-        result = format_stock_response(stock_info)
+        result = format_stock_price_response(stock_info)
         assert 'Apple Inc.' in result
         assert 'AAPL' in result
         assert '140.0' in result
@@ -140,7 +138,7 @@ class TestFormatStockResponse:
             'price': 150.0,
             'previous_price': 150.0
         }
-        result = format_stock_response(stock_info)
+        result = format_stock_price_response(stock_info)
         assert 'Apple Inc.' in result
         assert 'AAPL' in result
         assert '150.0' in result

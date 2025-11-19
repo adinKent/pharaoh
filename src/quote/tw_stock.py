@@ -11,7 +11,7 @@ from quote.output import format_price_output
 logger = logging.getLogger(__name__)
 
 
-def get_tw_stock_price(symbol: str) -> dict | None:
+def get_tw_stock_price(symbol: str, period: str = '2d') -> dict | None:
     """
     Get real-time stock price for a Taiwan stock symbol using yfinance library.
     Returns a dict with price info or None if not found.
@@ -31,10 +31,10 @@ def get_tw_stock_price(symbol: str) -> dict | None:
             ticker = yf.Ticker(yahoo_symbol)
             info = ticker.info
 
-        history = ticker.history(period="2d")
+        history = ticker.history(period=period)
 
         if not history.empty and info:
-            result = format_price_output(symbol, info)
+            result = format_price_output(symbol, info, history)
             result['name'] = get_tw_stock_name(symbol, market_type) or result['name']
 
             return result
