@@ -154,5 +154,5 @@ def handle_stock_basic_analysis_qutoe(symbol_in_command) -> str:
         f'{format_stock_price_response(stock_info)}', '',
         *stock_only_info,
         f'5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}',
-        f'季線: {round(ma60, 2)}  半線: {round(ma120, 2)}  年線: {round(ma240, 2)}'
+        f'季線: {round(ma60, 2)}  半年線: {round(ma120, 2)}  年線: {round(ma240, 2)}'
     ])
