@@ -1,12 +1,18 @@
 import logging
+import csv
 import requests
 import urllib.parse
 import yfinance as yf
+import re
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
+from io import StringIO
 from bs4 import BeautifulSoup
+from pymongo import UpdateOne
+
 from quote.output import format_price_output
+from utils.mongo_helper import get_mongo_client
 
 logger = logging.getLogger(__name__)
 
@@ -280,7 +286,7 @@ def get_effective_date():
         return previous_working_day(now.date() - timedelta(days=1))
 
 
-def get_twse_buy_sell_today_result() -> str | None:
+def get_institues_buy_sell_today_result() -> str | None:
     """
     Fetch today's buy sell result from TWSE using the provided URL format.
     Format the JSON response to a table like str, or None on failure.
@@ -296,5 +302,243 @@ def get_twse_buy_sell_today_result() -> str | None:
         return format_twse_buy_and_sell_result(resp.json())
     except Exception as e:
         logger.error(f"Error fetching TWSE fund result: {e}")
+        logger.exception(e)
+        return None
+
+
+def get_twse_buy_sell_today_result() -> list[dict] | None:
+    """
+    Downloads and parses the foreign and other investor trade summary from TWSE.
+
+    The data is fetched from a CSV endpoint for a specific date.
+    URL: https://www.twse.com.tw/rwd/zh/fund/T86?date=YYYYMMDD&selectType=ALL&response=csv
+
+    Returns:
+        A list of dictionaries, where each dictionary represents a stock's
+        trade data, or None if fetching or parsing fails.
+    """
+    today = get_effective_date().strftime('%Y%m%d')
+    url = f"https://www.twse.com.tw/rwd/zh/fund/T86?date={today}&selectType=ALL&response=csv"
+
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+
+        # The response text contains informational headers and footers.
+        # We need to find where the actual CSV starts.
+        lines = resp.text.splitlines()
+        csv_content = []
+        data_started = False
+        for line in lines:
+            if '證券代號' in line:
+                data_started = True
+            if data_started and line.strip():
+                if '說明' in line:  # data end
+                    break
+                else:
+                    csv_content.append(line)
+
+        reader = csv.DictReader(StringIO('\n'.join(csv_content)))
+        return [row for row in reader]
+    except Exception as e:
+        logger.error(f"Error fetching or parsing TWSE bug and sell CSV for date {url}: {e}")
+        logger.exception(e)
+        return None
+
+
+def get_tpex_buy_sell_today_result() -> list[dict] | None:
+    """
+    Downloads and parses the foreign and other investor trade summary from TPEX.
+
+    The data is fetched from a CSV endpoint for a specific date.
+    URL: https://www.tpex.org.tw/www/zh-tw/insti/dailyTrade?type=Daily&sect=AL&date=YYYY-MM--DD&id=&response=csv
+
+    Returns:
+        A list of dictionaries, where each dictionary represents a stock's
+        trade data, or None if fetching or parsing fails.
+    """
+    today = urllib.parse.quote(get_effective_date().strftime('%Y-%m-%d'))
+    url = f"https://www.tpex.org.tw/www/zh-tw/insti/dailyTrade?type=Daily&sect=AL&date={today}id=&response=csv"
+
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+
+        # The response text contains informational headers and footers.
+        lines = resp.text.splitlines()
+        csv_content = []
+        data_started = False
+        for line in lines:
+            if '代號' in line and '名稱' in line:
+                data_started = True
+            if data_started and line.strip():
+                if re.search(r"共\d+筆", line):  # data end
+                    break
+                else:
+                    csv_content.append(line)
+
+        reader = csv.DictReader(StringIO('\n'.join(csv_content)))
+        return [row for row in reader]
+    except Exception as e:
+        logger.error(f"Error fetching or parsing TWSE bug and sell CSV for date {url}: {e}")
+        logger.exception(e)
+        return None
+
+
+def sync_all_buy_sell_today_result_to_db():
+    try:
+        with get_mongo_client() as client:
+            try:
+                db = client['TaiwanMarket']
+                collection = db['buyAndSell']
+            except Exception as e:
+                logger.error(f"Failed to connect to MongoDB: {e}")
+                logger.exception(e)
+                return
+
+            trade_date = get_effective_date().strftime('%Y-%m-%d')
+            db_bulk_operations = []
+            twse_result = get_twse_buy_sell_today_result()
+            if twse_result:
+                for row in twse_result:
+                    doc = normalize_twse_stock_buy_sell_to_db_format(row)
+                    doc['date'] = trade_date
+                    doc['market'] = 'TWSE'
+                    db_bulk_operations.append(UpdateOne(
+                        {'_id': doc['symbol']},
+                        {'$set': doc},
+                        upsert=True
+                    ))
+
+            tpex_result = get_tpex_buy_sell_today_result()
+            if tpex_result:
+                for row in tpex_result:
+                    doc = normalize_tpex_stock_buy_sell_to_db_format(row)
+                    doc['date'] = trade_date
+                    doc['market'] = 'TPEX'
+                    db_bulk_operations.append(UpdateOne(
+                        {'_id': doc['symbol']},
+                        {'$set': doc},
+                        upsert=True
+                    ))
+
+            if len(db_bulk_operations) > 0:
+                result = collection.bulk_write(db_bulk_operations)
+                logger.info(f"Synced to DB. Matched: {result.matched_count}, Upserted: {result.upserted_count}")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {e}")
+        logger.exception(e)
+
+
+def normalize_twse_stock_buy_sell_to_db_format(row:dict) -> dict:
+    '''
+    0: 證券代號
+    1: 證券名稱
+    2: 外陸資買進股數(不含外資自營商)
+    3: 外陸資賣出股數(不含外資自營商)
+    4: 外陸資買賣超股數(不含外資自營商)
+    5: 外資自營商買進股數
+    6: 外資自營商賣出股數
+    7: 外資自營商買賣超股數
+    8: 投信買進股數
+    9: 投信賣出股數
+    10:投信買賣超股數
+    11:自營商買賣超股數
+    12:自營商買進股數(自行買賣)
+    13:自營商賣出股數(自行買賣)
+    14:自營商買賣超股數(自行買賣)
+    15:自營商買進股數(避險)
+    16:自營商賣出股數(避險)
+    17:自營商買賣超股數(避險)
+    18:三大法人買賣超股數
+    '''
+
+    return {
+        'symbol': re.sub(r'[="\s]', '', row['證券代號']),
+        'name': re.sub(r'[="\s]', '', row['證券名稱']),
+        'foreignBuy': row['外陸資買進股數(不含外資自營商)'],
+        'foreignSell': row['外陸資賣出股數(不含外資自營商)'],
+        'foreignNet': row['外陸資買賣超股數(不含外資自營商)'],
+        'foreignDealerBuy': row['外資自營商買進股數'],
+        'foreignDealerSell': row['外資自營商賣出股數'],
+        'foreignDealerNet': row['外資自營商買賣超股數'],
+        'investTrustBuy': row['投信買進股數'],
+        'investTrustSell': row['投信賣出股數'],
+        'investTrustNet': row['投信買賣超股數'],
+        'dealerTotalNet': row['自營商買賣超股數'],
+        'dealerBuy': row['自營商買進股數(自行買賣)'],
+        'dealerSell': row['自營商賣出股數(自行買賣)'],
+        'dealerNet': row['自營商買賣超股數(自行買賣)'],
+        'dealerHedgeBuy': row['自營商買進股數(避險)'],
+        'dealerHedgeSell': row['自營商賣出股數(避險)'],
+        'dealerHedgeNet': row['自營商買賣超股數(避險)'],
+        'totalNet': row['三大法人買賣超股數']
+    }
+
+
+def normalize_tpex_stock_buy_sell_to_db_format(row:dict) -> dict:
+    '''
+    0: 代號
+    1: 名稱
+    2: 外資及陸資(不含外資自營商)-買進股數
+    3: 外資及陸資(不含外資自營商)-賣出股數
+    4: 外資及陸資(不含外資自營商)-買賣超股數
+    5: 外資自營商-買進股數
+    6: 外資自營商-賣出股數
+    7: 外資自營商-買賣超股數
+    8: 外資及陸資-買進股數
+    9: 外資及陸資-賣出股數
+    10: 外資及陸資-買賣超股數
+    11: 投信-買進股數
+    12: 投信-賣出股數
+    13: 投信-買賣超股數
+    14: 自營商(自行買賣)-買進股數
+    15: 自營商(自行買賣)-賣出股數
+    16: 自營商(自行買賣)-買賣超股數
+    17: 自營商(避險)-買進股數
+    18: 自營商(避險)-賣出股數
+    19: 自營商(避險)-買賣超股數
+    20: 自營商-買進股數
+    21: 自營商-賣出股數
+    22: 自營商-買賣超股數
+    23: 三大法人買賣超股數合計
+    '''
+
+    return {
+        'symbol': re.sub(r'[="\s]', '', row['代號']),
+        'name': re.sub(r'[="\s]', '', row['名稱']),
+        'foreignBuy': row['外資及陸資(不含外資自營商)-買進股數'],
+        'foreignSell': row['外資及陸資(不含外資自營商)-賣出股數'],
+        'foreignNet': row['外資及陸資(不含外資自營商)-買賣超股數'],
+        'foreignDealerBuy': row['外資自營商-買進股數'],
+        'foreignDealerSell': row['外資自營商-賣出股數'],
+        'foreignDealerNet': row['外資自營商-買賣超股數'],
+        'foreignTotalBuy': row['外資及陸資-買進股數'],
+        'foreignTotalSell': row['外資及陸資-賣出股數'],
+        'foreignTotalNet': row['外資及陸資-買賣超股數'],
+        'investTrustBuy': row['投信-買進股數'],
+        'investTrustSell': row['投信-賣出股數'],
+        'investTrustNet': row['投信-買賣超股數'],
+        'dealerBuy': row['自營商(自行買賣)-買進股數'],
+        'dealerSell': row['自營商(自行買賣)-賣出股數'],
+        'dealerNet': row['自營商(自行買賣)-買賣超股數'],
+        'dealerHedgeBuy': row['自營商(避險)-買進股數'],
+        'dealerHedgeSell': row['自營商(避險)-賣出股數'],
+        'dealerHedgeNet': row['自營商(避險)-買賣超股數'],
+        'dealerTotalBuy': row['自營商-買進股數'],
+        'dealerTotalSell': row['自營商-賣出股數'],
+        'dealerTotalNet': row['自營商-買賣超股數'],
+        'totalNet': row['三大法人買賣超股數合計']
+    }
+
+
+def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
+    try:
+        with get_mongo_client() as client:
+            db = client['TaiwanMarket']
+            collection = db['buyAndSell']
+            return collection.find_one({'_id': symbol})
+    except Exception as e:
+        logger.error(f"Error fetching buy/sell data for symbol {symbol}: {e}")
         logger.exception(e)
         return None

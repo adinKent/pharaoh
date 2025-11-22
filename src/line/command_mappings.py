@@ -65,6 +65,8 @@ HELP_COMMANDS = {
     "指令": "\n".join([
         f"指數: {format_command_help(INDEX_COMMANDS)}",
         "個股: #股票代號 (ex: #2330), #公司名稱 (ex: #台積電)",
+        "技術分析: A大盤 A股票代號 (ex: A2330), A公司名稱 (ex: A台積電)",
+        "三大法人買賣超: F大盤 F股票代號 (ex: F2330), F公司名稱 (ex: F台積電)",
         f"美股期: {format_command_help(INDEX_FUTURE_COMMANDS)}",
         f"外匯: {format_command_help(CURRENCY_COMMANDS)}",
         f"原物料: {format_command_help(COMEX_COMMANDS)}",

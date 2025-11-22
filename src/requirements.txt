@@ -2,3 +2,5 @@ requests==2.31.0
 boto3==1.34.0
 botocore==1.34.0
 yfinance==0.2.66
+pymongo==4.15
+pymongo-auth-aws==1.3

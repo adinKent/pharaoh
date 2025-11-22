@@ -5,7 +5,7 @@ from quote.us_stock import get_us_stock_price
 from quote.index import get_index_price
 from quote.future import get_future_price
 from line.command_mappings import get_all_commands
-from quote.tw_stock import get_twse_buy_sell_today_result
+from quote.tw_stock import get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -17,18 +17,15 @@ def parse_line_command(command_text: str) -> str | None:
     """
     price_qutoe_command_match = re.match(r'^#(.+)', command_text.strip())
     if price_qutoe_command_match:
-        return handle_stock_price_qutoe(price_qutoe_command_match)
-
-    buy_and_sell_quote_match = re.match(r'^F(.+)', command_text.strip())
-    if buy_and_sell_quote_match:
-        symbol = buy_and_sell_quote_match.group(1)
-        symbol = re.sub(r"\s+", "", symbol)   # remove all whitespace via regex
-        if symbol == "大盤":
-            return get_twse_buy_sell_today_result()
+        return handle_stock_price_quote(price_qutoe_command_match)
 
     basic_analysis_command_match = re.match(r'^A(.+)', command_text.strip())
     if basic_analysis_command_match:
-        return handle_stock_basic_analysis_qutoe(basic_analysis_command_match)
+        return handle_stock_basic_analysis_quote(basic_analysis_command_match)
+
+    buy_and_sell_quote_match = re.match(r'^F(.+)', command_text.strip())
+    if buy_and_sell_quote_match:
+        return handle_buy_and_sell_quote(buy_and_sell_quote_match)
 
     return None
 
@@ -62,9 +59,12 @@ def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | 
     return result
 
 
-def handle_stock_price_qutoe(symbol_in_command) -> str:
+def handle_stock_price_quote(symbol_in_command) -> str:
     symbol_name = symbol_in_command.group(1)
     symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if isinstance(symbol_list, str):
+        return symbol_list
+
     if not isinstance(symbol_list, list):
         symbol_list = [symbol_list]
 
@@ -105,7 +105,7 @@ def format_stock_price_response(stock_info) -> str:
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
 
 
-def handle_stock_basic_analysis_qutoe(symbol_in_command) -> str:
+def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     symbol_name = symbol_in_command.group(1)
     symbol_list = get_stock_symbol_and_market_type(symbol_name)
     if isinstance(symbol_list, list):
@@ -156,3 +156,57 @@ def handle_stock_basic_analysis_qutoe(symbol_in_command) -> str:
         f'5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}',
         f'季線: {round(ma60, 2)}  半線: {round(ma120, 2)}  年線: {round(ma240, 2)}'
     ])
+
+
+def format_symbol_buy_sell_response(data: dict) -> str:
+    """Formats the buy/sell data into a readable string."""
+    if not data:
+        return "找不到該股票的買賣超資料。"
+
+    # Helper to format numbers. Assumes values are strings with commas.
+    def format_net(value_str: str) -> str:
+        num = int(value_str.replace(',', ''))
+        return f"{num // 1000} 張"
+
+    return "\n".join([
+        f"{data.get('date')} 三大法人買賣超:",
+        "",
+        f"外資買進: {format_net(data.get('foreignBuy', '0'))}",
+        f"外資賣出: {format_net(data.get('foreignSell', '0'))}",
+        f"外資買賣差額: {format_net(data.get('foreignNet', '0'))}",
+        "",
+        f"投信買進: {format_net(data.get('investTrustBuy', '0'))}",
+        f"投信賣出: {format_net(data.get('investTrustSell', '0'))}",
+        f"投信買賣差額: {format_net(data.get('investTrustNet', '0'))}",
+        "",
+        f"自營商(自行買賣)買進: {format_net(data.get('dealerBuy', '0'))}",
+        f"自營商(自行買賣)賣出: {format_net(data.get('dealerSell', '0'))}",
+        f"自營商(自行買賣)買賣差額: {format_net(data.get('dealerNet', '0'))}",
+        "",
+        f"自營商(避險)買進: {format_net(data.get('dealerHedgeBuy', '0'))}",
+        f"自營商(避險)賣出: {format_net(data.get('dealerHedgeSell', '0'))}",
+        f"自營商(避險)買賣差額: {format_net(data.get('dealerHedgeNet', '0'))}",
+        "",
+        f"自營商合計買賣差額: {format_net(data.get('dealerTotalNet', '0'))}",
+        "",
+        f"三大法人合計買賣差額: {format_net(data.get('totalNet', '0'))}"
+    ])
+
+
+def handle_buy_and_sell_quote(symbol_in_command) -> str:
+    symbol_name = symbol_in_command.group(1)
+    symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if isinstance(symbol_list, list):
+        symbol_list = symbol_list[0]
+
+    (symbol, market_type) = symbol_list
+    if symbol == "^TWII":
+        return get_institues_buy_sell_today_result()
+
+    data = get_symbol_buy_sell_today_result(symbol)
+    if data:
+        real_time_price_quote = handle_stock_price_quote(symbol_in_command)
+        return "\n".join([
+            real_time_price_quote, "",
+            format_symbol_buy_sell_response(data)
+        ])
