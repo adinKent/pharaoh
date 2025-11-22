@@ -76,6 +76,23 @@ Resources:
                 Action: secretsmanager:GetSecretValue
                 Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/pharaoh/${Environment}/*"
 
+  SyncTwDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.13
+      FunctionName: !Sub 'sync-tw-data-${Environment}'
+      CodeUri: ../src/
+      Handler: sync_tw_data.handler
+      Description: 'Scheduled task to sync daily buy/sell data from TWSE/TPEX to MongoDB.'
+      MemorySize: 256
+      Timeout: 300 # 5 minutes, as fetching data can be slow
+      Role: !GetAtt LineWebhookFunctionRole.Arn
+      Events:
+        ScheduledSync:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(1 9 ? * MON-FRI *)' # 5:01 PM in Taipei (UTC+8)
+
   # Lambda Function
   LineWebhookFunction:
     Type: AWS::Serverless::Function
