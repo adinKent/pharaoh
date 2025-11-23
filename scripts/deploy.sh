@@ -10,25 +10,7 @@ AWS_PROFILE=${AWS_PROFILE:-default}
 AWS_REGION=${AWS_REGION:-ap-east-2}
 
 ENVIRONMENT=${1:-dev}
-LINE_CHANNEL_SECRET=${2}
-LINE_CHANNEL_ACCESS_TOKEN=${3}
-MONGODB_CONNECTION_STR=${4}
-
-if [ -z "$LINE_CHANNEL_SECRET" ]; then
-    echo "Line channel secret not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
-    LINE_CHANNEL_SECRET=$(aws --profile "$AWS_PROFILE" --region "$AWS_REGION" ssm get-parameter \
-        --name "/pharaoh/$ENVIRONMENT/line/channel-secret" \
-        --query Parameter.Value \
-        --output text 2>/dev/null || echo "")
-fi
-
-if [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
-    echo "Line channel access token not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
-    LINE_CHANNEL_ACCESS_TOKEN=$(aws --profile "$AWS_PROFILE" --region "$AWS_REGION" ssm get-parameter \
-        --name "/pharaoh/$ENVIRONMENT/line/channel-access-token" \
-        --query Parameter.Value \
-        --output text 2>/dev/null || echo "")
-fi
+MONGODB_CONNECTION_STR=${2}
 
 if [ -z "$MONGODB_CONNECTION_STR" ]; then
     echo "MongoDB connection string not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
@@ -36,16 +18,6 @@ if [ -z "$MONGODB_CONNECTION_STR" ]; then
         --name "/pharaoh/$ENVIRONMENT/mongodb/coonnect-str" \
         --query Parameter.Value \
         --output text 2>/dev/null || echo "")
-fi
-
-if [ -z "$LINE_CHANNEL_SECRET" ]; then
-    echo "Error: Line channel secret not provided and not found in SSM Parameter Store."
-    exit 1
-fi
-
-if [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
-    echo "Error: Line channel access token not provided and not found in SSM Parameter Store."
-    exit 1
 fi
 
 if [ -z "$MONGODB_CONNECTION_STR" ]; then
@@ -81,13 +53,10 @@ fi
 sam deploy --profile $AWS_PROFILE \
     --stack-name pharaoh-line-webhook-$ENVIRONMENT \
     --resolve-s3 \
-    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM\
+    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --no-confirm-changeset \
     --config-env $ENVIRONMENT \
     --parameter-overrides \
-        Environment=$ENVIRONMENT \
-        LineChannelSecret=$LINE_CHANNEL_SECRET \
-        LineChannelAccessToken=$LINE_CHANNEL_ACCESS_TOKEN \
         MongoDbConnectionStr=$MONGODB_CONNECTION_STR 
         
 # Get the webhook URL

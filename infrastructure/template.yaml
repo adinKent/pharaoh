@@ -8,36 +8,11 @@ Parameters:
     Default: dev
     AllowedValues: [dev, staging, prod]
     Description: Environment name
-  
-  LineChannelSecret:
-    Type: String
-    Description: Line Channel Secret
-  
-  LineChannelAccessToken:
-    Type: String
-    Description: Line Channel Access Token
-
   MongoDbConnectionStr:
     Type: String
     Description: MongoDB connection string
     
 Resources:
-  LineChannelSecretParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: !Sub "/pharaoh/${Environment}/line/channel-secret"
-      Description: "Line Channel Secret"
-      Type: String
-      Value: !Ref LineChannelSecret
-
-  LineChannelAccessTokenParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: !Sub "/pharaoh/${Environment}/line/channel-access-token"
-      Description: "Line Channel Access Token"
-      Type: String
-      Value: !Ref LineChannelAccessToken
-
   MongoDbConnectionStrParameter:
     Type: AWS::SSM::Parameter
     Properties:
@@ -118,8 +93,8 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
-          LINE_CHANNEL_SECRET: !Ref LineChannelSecret
-          LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+          LINE_CHANNEL_SECRET: !Sub '{{resolve:secretsmanager:/pharaoh/${Environment}/line/channel-secret}}'
+          LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:secretsmanager:/pharaoh/${Environment}/line/channel-access-token}}'
       Tags:
         Environment: !Ref Environment
         Project: pharaoh
