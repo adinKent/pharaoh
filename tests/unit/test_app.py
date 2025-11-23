@@ -1,349 +1,122 @@
 import json
 import os
-import base64
-import hmac
-import hashlib
 import sys
 from unittest.mock import patch, MagicMock
 
 # Add src to Python path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
 
-from app import (
-    lambda_handler,
-    verify_signature,
-    process_line_event,
-    handle_message_event,
-    send_reply_message,
-    create_response
-)
+from app import lambda_handler
+from linebot.v3.exceptions import InvalidSignatureError
+from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 
-class TestLineWebhookHandler:
-    """Test cases for the Line webhook handler"""
+class TestApp:
+    """Test cases for the refactored app.py using line-bot-sdk."""
 
     def setup_method(self):
-        """Set up test environment variables"""
-        os.environ['LINE_CHANNEL_SECRET'] = 'test-channel-secret'
-        os.environ['LINE_CHANNEL_ACCESS_TOKEN'] = 'test-access-token'
+        """Set up test environment variables before each test."""
+        self.patcher = patch.dict(os.environ, {
+            'LINE_CHANNEL_SECRET': 'test-secret',
+            'LINE_CHANNEL_ACCESS_TOKEN': 'test-token'
+        })
+        self.patcher.start()
 
     def teardown_method(self):
-        """Clean up environment variables"""
-        if 'LINE_CHANNEL_SECRET' in os.environ:
-            del os.environ['LINE_CHANNEL_SECRET']
-        if 'LINE_CHANNEL_ACCESS_TOKEN' in os.environ:
-            del os.environ['LINE_CHANNEL_ACCESS_TOKEN']
+        """Clean up environment variables after each test."""
+        self.patcher.stop()
 
-    def test_missing_channel_secret(self):
-        """Test handler returns 500 when LINE_CHANNEL_SECRET is missing"""
-        del os.environ['LINE_CHANNEL_SECRET']
-
-        event = {
-            'headers': {'x-line-signature': 'test-signature'},
-            'body': json.dumps({'events': []}),
-            'isBase64Encoded': False
-        }
- 
-        result = lambda_handler(event, None)
+    @patch('app.handler')
+    def test_lambda_handler_success(self, mock_handler):
+        """Test lambda_handler successfully processes a valid event."""
         
-        assert result['statusCode'] == 500
-        assert json.loads(result['body'])['error'] == 'Server configuration error'
-
-    # def test_missing_signature_header(self):
-    #     """Test handler returns 400 when signature header is missing"""
-    #     event = {
-    #         'headers': {},
-    #         'body': json.dumps({'events': []}),
-    #         'isBase64Encoded': False
-    #     }
-
-    #     result = lambda_handler(event, None)
-
-    #     assert result['statusCode'] == 400
-    #     assert json.loads(result['body'])['error'] == 'Missing signature'
-
-    # def test_base64_encoded_body(self):
-    #     """Test handler correctly decodes base64 encoded body"""
-    #     body_data = json.dumps({'events': []})
-    #     base64_body = base64.b64encode(body_data.encode()).decode()
-
-    #     event = {
-    #         'headers': {'x-line-signature': 'invalid-signature'},
-    #         'body': base64_body,
-    #         'isBase64Encoded': True
-    #     }
-
-    #     result = lambda_handler(event, None)
-
-    #     # Should fail on signature verification, not body parsing
-    #     assert result['statusCode'] == 403
-    #     assert json.loads(result['body'])['error'] == 'Invalid signature'
-
-    # def test_plain_text_body(self):
-    #     """Test handler correctly handles plain text body"""
-    #     event = {
-    #         'headers': {'x-line-signature': 'invalid-signature'},
-    #         'body': json.dumps({'events': []}),
-    #         'isBase64Encoded': False
-    #     }
-
-    #     result = lambda_handler(event, None)
-
-    #     # Should fail on signature verification, not body parsing
-    #     assert result['statusCode'] == 403
-    #     assert json.loads(result['body'])['error'] == 'Invalid signature'
-
-    def test_invalid_json_body(self):
-        """Test handler returns 400 for invalid JSON"""
         event = {
-            'headers': {'x-line-signature': 'test-signature'},
-            'body': 'invalid-json',
-            'isBase64Encoded': False
+            'headers': {'x-line-signature': 'valid-signature'},
+            'body': '{"events":[]}'
         }
 
+        # Act
         result = lambda_handler(event, None)
 
-        assert result['statusCode'] == 400
-        assert json.loads(result['body'])['error'] == 'Invalid JSON payload'
-
-    # def test_valid_signature(self):
-    #     """Test handler accepts valid signature"""
-    #     body = json.dumps({'events': []})
-    #     signature = base64.b64encode(
-    #         hmac.new(
-    #             'test-channel-secret'.encode(),
-    #             body.encode(),
-    #             hashlib.sha256
-    #         ).digest()
-    #     ).decode()
-
-    #     event = {
-    #         'headers': {'x-line-signature': signature},
-    #         'body': body,
-    #         'isBase64Encoded': False
-    #     }
-
-    #     result = lambda_handler(event, None)
-
-    #     assert result['statusCode'] == 200
-    #     response_body = json.loads(result['body'])
-    #     assert response_body['message'] == 'Webhook processed successfully'
-    #     assert response_body['eventsProcessed'] == 0
-
-    # def test_invalid_signature(self):
-    #     """Test handler rejects invalid signature"""
-    #     event = {
-    #         'headers': {'x-line-signature': 'invalid-signature'},
-    #         'body': json.dumps({'events': []}),
-    #         'isBase64Encoded': False
-    #     }
-
-    #     result = lambda_handler(event, None)
-
-    #     assert result['statusCode'] == 403
-    #     assert json.loads(result['body'])['error'] == 'Invalid signature'
-
-    def test_multiple_events_processing(self):
-        """Test handler processes multiple events"""
-        body = json.dumps({
-            'events': [
-                {'type': 'message', 'source': {'userId': 'user1'}, 'message': {'type': 'text', 'text': 'hello'}},
-                {'type': 'follow', 'source': {'userId': 'user2'}}
-            ]
-        })
-        signature = base64.b64encode(
-            hmac.new(
-                'test-channel-secret'.encode(),
-                body.encode(),
-                hashlib.sha256
-            ).digest()
-        ).decode()
-
-        event = {
-            'headers': {'x-line-signature': signature},
-            'body': body,
-            'isBase64Encoded': False
-        }
-
-        result = lambda_handler(event, None)
-
+        # Assert
+        mock_handler.handle.assert_called_once_with('{"events":[]}', 'valid-signature')
         assert result['statusCode'] == 200
-        response_body = json.loads(result['body'])
-        assert response_body['message'] == 'Webhook processed successfully'
-        assert response_body['eventsProcessed'] == 2
+        assert json.loads(result['body'])['message'] == 'Webhook processed successfully'
 
-    def test_unexpected_error_handling(self):
-        """Test handler handles unexpected errors gracefully"""
-        # Create an event that will cause an error during processing
-        result = lambda_handler(None, None)
+    @patch('app.handler')
+    def test_lambda_handler_invalid_signature(self, mock_handler):
+        """Test lambda_handler returns 400 on InvalidSignatureError."""
+        mock_handler.handle.side_effect = InvalidSignatureError("Invalid signature")
+        
+        event = {
+            'headers': {'x-line-signature': 'invalid-signature'},
+            'body': '{"events":[]}'
+        }
 
+        # Act
+        result = lambda_handler(event, None)
+
+        # Assert
+        assert result['statusCode'] == 400
+        assert json.loads(result['body'])['error'] == 'Invalid signature'
+
+    @patch('app.handler')
+    def test_lambda_handler_general_exception(self, mock_handler):
+        """Test lambda_handler returns 500 on a general exception."""
+        mock_handler.handle.side_effect = Exception("Something went wrong")
+        
+        event = {
+            'headers': {'x-line-signature': 'valid-signature'},
+            'body': '{"events":[]}'
+        }
+
+        # Act
+        result = lambda_handler(event, None)
+
+        # Assert
         assert result['statusCode'] == 500
         assert json.loads(result['body'])['error'] == 'Internal server error'
 
-    def test_cors_headers(self):
-        """Test handler returns proper CORS headers"""
-        body = json.dumps({'events': []})
-        signature = base64.b64encode(
-            hmac.new(
-                'test-channel-secret'.encode(),
-                body.encode(),
-                hashlib.sha256
-            ).digest()
-        ).decode()
+    @patch('app.send_reply_message')
+    @patch('app.parse_line_command')
+    def test_text_message_event_with_command(self, mock_parse_command, mock_send_reply):
+        """Test that a text message with a valid command triggers a reply."""
+        # This is an integration-style test of the handler logic
+        # Arrange
+        mock_parse_command.return_value = "Stock Price: $100"
 
-        event = {
-            'headers': {'x-line-signature': signature},
-            'body': body,
-            'isBase64Encoded': False
-        }
+        # Simulate the SDK calling the decorated handler
+        from app import line_bot_api, handle_text_message
+        mock_event = MagicMock(spec=MessageEvent)
+        mock_event.reply_token = 'test-reply-token'
+        mock_event.message = MagicMock(spec=TextMessageContent)
+        mock_event.message.text = '#AAPL'
+        mock_event.message.mark_as_read_token = None
 
-        result = lambda_handler(event, None)
+        # Act
+        handle_text_message(mock_event)
 
-        expected_headers = {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-            'Access-Control-Allow-Methods': 'POST,OPTIONS'
-        }
-        assert result['headers'] == expected_headers
-
-
-class TestSignatureVerification:
-    """Test cases for signature verification"""
-
-    def test_verify_signature_valid(self):
-        """Test signature verification with valid signature"""
-        body = 'test body'
-        secret = 'test-secret'
-        expected_signature = base64.b64encode(
-            hmac.new(secret.encode(), body.encode(), hashlib.sha256).digest()
-        ).decode()
-
-        assert verify_signature(body, secret, expected_signature) is True
-
-    def test_verify_signature_invalid(self):
-        """Test signature verification with invalid signature"""
-        body = 'test body'
-        secret = 'test-secret'
-        invalid_signature = 'invalid-signature'
-
-        assert verify_signature(body, secret, invalid_signature) is False
-
-
-class TestEventProcessing:
-    """Test cases for event processing"""
-
-    @patch('app.handle_message_event')
-    def test_process_message_event(self, mock_handle_message):
-        """Test processing message event"""
-        event = {'type': 'message', 'source': {'userId': 'user1'}}
-
-        process_line_event(event)
-
-        mock_handle_message.assert_called_once_with(event)
-
-    def test_process_unknown_event(self, caplog):
-        """Test processing unknown event type"""
-        event = {'type': 'unknown', 'source': {'userId': 'user1'}}
-
-        process_line_event(event)
-
-        assert "Unhandled event type: unknown" in caplog.text
-
-
-class TestMessageHandling:
-    """Test cases for message handling"""
+        # Assert
+        mock_parse_command.assert_called_once_with('#AAPL')
+        mock_send_reply.assert_called_once_with(line_bot_api, 'test-reply-token', "Stock Price: $100")
 
     @patch('app.send_reply_message')
-    def test_handle_text_message(self, mock_send_reply):
-        """Test handling text message"""
-        event = {
-            'message': {'type': 'text', 'text': 'hello'},
-            'source': {'userId': 'user1'},
-            'replyToken': 'reply-token'
-        }
+    @patch('app.parse_line_command')
+    def test_text_message_event_no_command(self, mock_parse_command, mock_send_reply):
+        """Test that a text message without a command does not trigger a reply."""
+        # Arrange
+        mock_parse_command.return_value = None
 
-        handle_message_event(event)
+        from app import handle_text_message
+        mock_event = MagicMock(spec=MessageEvent)
+        mock_event.reply_token = 'test-reply-token'
+        mock_event.message = MagicMock(spec=TextMessageContent)
+        mock_event.message.text = 'hello world'
+        mock_event.message.mark_as_read_token = None
 
+        # Act
+        handle_text_message(mock_event)
+
+        # Assert
+        mock_parse_command.assert_called_once_with('hello world')
         mock_send_reply.assert_not_called()
-
-
-class TestReplyMessage:
-    """Test cases for sending reply messages"""
-
-    def setup_method(self):
-        """Set up test environment variables"""
-        os.environ['LINE_CHANNEL_ACCESS_TOKEN'] = 'test-access-token'
-
-    def teardown_method(self):
-        """Clean up environment variables"""
-        if 'LINE_CHANNEL_ACCESS_TOKEN' in os.environ:
-            del os.environ['LINE_CHANNEL_ACCESS_TOKEN']
-
-    def test_missing_access_token(self, caplog):
-        """Test send_reply_message with missing access token"""
-        del os.environ['LINE_CHANNEL_ACCESS_TOKEN']
-
-        send_reply_message('reply-token', {'type': 'text', 'text': 'test'})
-
-        assert "LINE_CHANNEL_ACCESS_TOKEN environment variable is not set" in caplog.text
-
-    def test_missing_reply_token(self, caplog):
-        """Test send_reply_message with missing reply token"""
-        send_reply_message(None, {'type': 'text', 'text': 'test'})
-
-        assert "Reply token is required for reply messages" in caplog.text
-
-    @patch('requests.post')
-    def test_successful_reply(self, mock_post, caplog):
-        """Test successful reply message sending"""
-        mock_response = MagicMock()
-        mock_response.ok = True
-        mock_post.return_value = mock_response
-
-        send_reply_message('reply-token', {'type': 'text', 'text': 'test'})
-
-        mock_post.assert_called_once_with(
-            'https://api.line.me/v2/bot/message/reply',
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer test-access-token'
-            },
-            json={
-                'replyToken': 'reply-token',
-                'messages': [{'type': 'text', 'text': 'test'}]
-            }
-        )
-        assert "Reply message sent successfully" in caplog.text
-
-    @patch('requests.post')
-    def test_failed_reply(self, mock_post, caplog):
-        """Test failed reply message sending"""
-        mock_response = MagicMock()
-        mock_response.ok = False
-        mock_response.status_code = 400
-        mock_response.text = 'Bad Request'
-        mock_post.return_value = mock_response
-
-        send_reply_message('reply-token', {'type': 'text', 'text': 'test'})
-
-        assert "Failed to send reply message: 400 Bad Request" in caplog.text
-
-
-class TestResponseCreation:
-    """Test cases for response creation"""
-
-    def test_create_response(self):
-        """Test creating HTTP response"""
-        response = create_response(200, {'message': 'success'})
-
-        assert response['statusCode'] == 200
-        assert response['headers']['Content-Type'] == 'application/json'
-        assert json.loads(response['body']) == {'message': 'success'}
-
-    def test_create_error_response(self):
-        """Test creating error response"""
-        response = create_response(500, {'error': 'internal error'})
-
-        assert response['statusCode'] == 500
-        assert json.loads(response['body']) == {'error': 'internal error'}
