@@ -144,9 +144,9 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
         trailing_pe = round(full_info.get('trailingPE', 0), 1)
         stock_only_info.append(f'PE: {trailing_pe}')
 
-    if full_info.get('forwardPE', None):
-        forward_pe = round(full_info.get('forwardPE', 0), 1)
-        stock_only_info.append(f'ForwardPE: {forward_pe}')
+    # if full_info.get('forwardPE', None): forwardPE is not correct by yFinance's query
+    #     forward_pe = round(full_info.get('forwardPE', 0), 1)
+    #     stock_only_info.append(f'ForwardPE: {forward_pe}')
 
     if len(stock_only_info) > 0:
         stock_only_info = ["  ".join(stock_only_info), ""]
@@ -162,7 +162,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     return "\n".join([
         technical_analysis_content,
         "",
-        "AI技術分析:",
+        "AI分析:",
         "",
         ai_analysis_content
     ])
