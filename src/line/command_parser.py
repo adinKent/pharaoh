@@ -6,6 +6,7 @@ from quote.index import get_index_price
 from quote.future import get_future_price
 from line.command_mappings import get_all_commands
 from quote.tw_stock import get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
+from utils.gemini_helper import generate_gemini_technical_analysis_response
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -150,11 +151,20 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     if len(stock_only_info) > 0:
         stock_only_info = ["  ".join(stock_only_info), ""]
 
-    return "\n".join([
+    technical_analysis_content = "\n".join([
         f'{format_stock_price_response(stock_info)}', '',
         *stock_only_info,
         f'5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}',
         f'季線: {round(ma60, 2)}  半年線: {round(ma120, 2)}  年線: {round(ma240, 2)}'
+    ])
+
+    ai_analysis_content = generate_gemini_technical_analysis_response(technical_analysis_content)
+    return "\n".join([
+        technical_analysis_content,
+        "",
+        "AI技術分析:",
+        "",
+        ai_analysis_content
     ])
 
 

@@ -20,6 +20,7 @@ MONGODB_USERNAME=""
 MONGODB_PASSWORD=""
 LINE_CHANNEL_SECRET=""
 LINE_CHANNEL_ACCESS_TOKEN=""
+GEMINI_API_KEY=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -45,6 +46,10 @@ while [[ $# -gt 0 ]]; do
         LINE_CHANNEL_ACCESS_TOKEN="$2"
         shift 2
         ;;
+        --gemini-api-key)
+        GEMINI_API_KEY="$2"
+        shift 2
+        ;;
         *)    # unknown option
         echo "Unknown option: $1"
         exit 1
@@ -52,7 +57,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
+if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ]; then
     echo "Error: No credentials provided to update."
     echo "Usage: ./scripts/init.sh [--env <env>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
     exit 1
@@ -106,6 +111,21 @@ if [ -n "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
         echo "LINE Access Token does not exist. Creating a new secret..."
         aws secretsmanager create-secret --name "$SECRET_NAME" --description "LINE Channel Access Token for Pharaoh in $ENVIRONMENT" --secret-string "$LINE_CHANNEL_ACCESS_TOKEN" --profile "$AWS_PROFILE" --region "$AWS_REGION"
         echo "LINE Access Token created successfully."
+    fi
+fi
+
+if [ -n "$GEMINI_API_KEY" ]; then
+    SECRET_NAME="/pharaoh/$ENVIRONMENT/google/gemini-api-key"
+    echo "Checking for existing Google Gemini API key: $SECRET_NAME"
+
+    if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "GEMINI API key already exists. Updating its value..."
+        aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$GEMINI_API_KEY" --profile "$AWS_PROFILE" --region "$AWS_REGION"
+        echo "GEMINI API key value updated successfully."
+    else
+        echo "GEMINI API key does not exist. Creating a new secret..."
+        aws secretsmanager create-secret --name "$SECRET_NAME" --description "GEMINI API key for Pharaoh in $ENVIRONMENT" --secret-string "$GEMINI_API_KEY" --profile "$AWS_PROFILE" --region "$AWS_REGION"
+        echo "GEMINI API key created successfully."
     fi
 fi
 
