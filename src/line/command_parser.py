@@ -1,4 +1,5 @@
 import re
+import math
 
 from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
 from quote.us_stock import get_us_stock_price
@@ -176,7 +177,7 @@ def format_symbol_buy_sell_response(data: dict) -> str:
     # Helper to format numbers. Assumes values are strings with commas.
     def format_net(value_str: str) -> str:
         num = int(value_str.replace(',', ''))
-        return f"{num // 1000} 張"
+        return f"{math.trunc(num/1000)} 張"
 
     return "\n".join([
         f"{data.get('date')} 三大法人買賣超:",
