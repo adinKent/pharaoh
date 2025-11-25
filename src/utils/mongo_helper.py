@@ -1,14 +1,14 @@
 import json
 
 from pymongo import MongoClient
-from utils.aws_helper import get_ssm_parameter, get_secret
+from utils.aws_helper import get_ssm_parameter
 
 
 def get_mongo_client() -> MongoClient:
     try:
         connection_string_template = get_ssm_parameter("mongodb/coonnect-str")
 
-        credentials_string = get_secret("mongodb/credentials")
+        credentials_string = get_ssm_parameter("mongodb/credentials")
         credentials = json.loads(credentials_string)
         username = credentials['username']
         password = credentials['password']

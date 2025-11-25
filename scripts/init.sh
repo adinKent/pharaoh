@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Initialization script to store secrets in AWS Secrets Manager.
+# Initialization script to store secrets in AWS SSM Parameter Store.
 # Usage:
 #   Update MongoDB credentials:
 #     ./scripts/init.sh --env dev --mongo-user <user> --mongo-password <pass>
@@ -69,64 +69,49 @@ if [ -n "$MONGODB_USERNAME" ] || [ -n "$MONGODB_PASSWORD" ]; then
         exit 1
     fi
     
-    SECRET_NAME="/pharaoh/$ENVIRONMENT/mongodb/credentials"
-    SECRET_JSON=$(printf '{"username":"%s","password":"%s"}' "$MONGODB_USERNAME" "$MONGODB_PASSWORD")
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/mongodb/credentials"
+    PARAM_VALUE=$(printf '{"username":"%s","password":"%s"}' "$MONGODB_USERNAME" "$MONGODB_PASSWORD")
 
-    echo "Checking for existing MongoDB secret: $SECRET_NAME"
+    echo "Checking for existing MongoDB parameter: $PARAM_NAME"
 
-    if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
-        echo "MongoDB secret already exists. Updating its value..."
-        aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$SECRET_JSON" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "MongoDB secret value updated successfully."
-    else
-        echo "MongoDB secret does not exist. Creating a new secret..."
-        aws secretsmanager create-secret --name "$SECRET_NAME" --description "MongoDB credentials for Pharaoh in $ENVIRONMENT" --secret-string "$SECRET_JSON" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "MongoDB secret created successfully."
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "MongoDB parameter already exists. Updating its value..."
     fi
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "MongoDB credentials for Pharaoh in $ENVIRONMENT" --overwrite --value "$PARAM_VALUE" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 if [ -n "$LINE_CHANNEL_SECRET" ]; then
-    SECRET_NAME="/pharaoh/$ENVIRONMENT/line/channel-secret"
-    echo "Checking for existing LINE Channel Secret: $SECRET_NAME"
-    if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
-        echo "LINE Channel Secret already exists. Updating its value..."
-        aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$LINE_CHANNEL_SECRET" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "LINE Channel Secret value updated successfully."
-    else
-        echo "LINE Channel Secret does not exist. Creating a new secret..."
-        aws secretsmanager create-secret --name "$SECRET_NAME" --description "LINE Channel Secret for Pharaoh in $ENVIRONMENT" --secret-string "$LINE_CHANNEL_SECRET" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "LINE Channel Secret created successfully."
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/line/channel-secret"
+    echo "Checking for existing LINE Channel Secret parameter: $PARAM_NAME"
+
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "LINE Channel Secret parameter already exists. Updating its value..."
     fi
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "LINE Channel Secret for Pharaoh in $ENVIRONMENT" --overwrite --value "$LINE_CHANNEL_SECRET" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 if [ -n "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
-    SECRET_NAME="/pharaoh/$ENVIRONMENT/line/channel-access-token"
-    echo "Checking for existing LINE Access Token: $SECRET_NAME"
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/line/channel-access-token"
+    echo "Checking for existing LINE Access Token parameter: $PARAM_NAME"
 
-    if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
-        echo "LINE Access Token already exists. Updating its value..."
-        aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$LINE_CHANNEL_ACCESS_TOKEN" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "LINE Access Token value updated successfully."
-    else
-        echo "LINE Access Token does not exist. Creating a new secret..."
-        aws secretsmanager create-secret --name "$SECRET_NAME" --description "LINE Channel Access Token for Pharaoh in $ENVIRONMENT" --secret-string "$LINE_CHANNEL_ACCESS_TOKEN" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "LINE Access Token created successfully."
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "LINE Access Token parameter already exists. Updating its value..."
     fi
+    
+    aws ssm put-parameter --name "$PARAM_NAME" --description "LINE Channel Access Token for Pharaoh in $ENVIRONMENT" --overwrite --value "$LINE_CHANNEL_ACCESS_TOKEN" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 if [ -n "$GEMINI_API_KEY" ]; then
-    SECRET_NAME="/pharaoh/$ENVIRONMENT/google/gemini-api-key"
-    echo "Checking for existing Google Gemini API key: $SECRET_NAME"
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/google/gemini-api-key"
+    echo "Checking for existing Google Gemini API key parameter: $PARAM_NAME"
 
-    if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
-        echo "GEMINI API key already exists. Updating its value..."
-        aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$GEMINI_API_KEY" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "GEMINI API key value updated successfully."
-    else
-        echo "GEMINI API key does not exist. Creating a new secret..."
-        aws secretsmanager create-secret --name "$SECRET_NAME" --description "GEMINI API key for Pharaoh in $ENVIRONMENT" --secret-string "$GEMINI_API_KEY" --profile "$AWS_PROFILE" --region "$AWS_REGION"
-        echo "GEMINI API key created successfully."
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "GEMINI API key parameter already exists. Updating its value..."
     fi
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "GEMINI API key for Pharaoh in $ENVIRONMENT" --overwrite --value "$GEMINI_API_KEY" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 echo ""

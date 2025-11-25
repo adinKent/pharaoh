@@ -1,8 +1,8 @@
 from google import genai
 
-from utils.aws_helper import get_secret
+from utils.aws_helper import get_ssm_parameter
 
-client = genai.Client(api_key=get_secret("google/gemini-api-key"))
+client = genai.Client(api_key=get_ssm_parameter("google/gemini-api-key"))
 
 
 def generate_gemini_technical_analysis_response(prompt_content: str) -> str:

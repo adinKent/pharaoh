@@ -93,8 +93,8 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
-          LINE_CHANNEL_SECRET: !Sub '{{resolve:secretsmanager:/pharaoh/${Environment}/line/channel-secret}}'
-          LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:secretsmanager:/pharaoh/${Environment}/line/channel-access-token}}'
+          LINE_CHANNEL_SECRET: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-secret}}'
+          LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-access-token}}'
       Tags:
         Environment: !Ref Environment
         Project: pharaoh
