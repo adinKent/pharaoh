@@ -39,13 +39,14 @@ pharaoh/
 │   ├── deploy.sh           # Unix deployment script
 │   ├── deploy.bat          # Windows deployment script
 │   └── local.sh            # Local development script
+├── .env.example            # Environment variables template
+├── .pylintrc               # pylint configuration
 ├── package.json            # Project metadata and scripts
 ├── requirements-dev.txt    # Development dependencies
 ├── samconfig.toml          # SAM deployment configuration
-├── pytest.ini             # Pytest configuration
+├── pytest.ini              # Pytest configuration
 ├── setup.cfg               # Flake8 configuration
 ├── pyproject.toml          # Black and isort configuration
-├── .env.example           # Environment variables template
 ├── local-env.json         # Local development environment
 └── README.md              # This file
 ```
@@ -205,7 +206,7 @@ python -m pytest tests/ --cov=src --cov-report=html --cov-report=term
 python -m pytest tests/test_app.py -v
 
 # Lint code
-flake8 src/ tests/
+pylint src/ tests/
 
 # Format code
 black src/ tests/

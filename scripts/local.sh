@@ -44,7 +44,7 @@ fi
 # Build the project
 echo "Building the project..."
 python -m pytest tests/ -v
-flake8 src/ tests/
+pylint src/ tests/
 
 # Start local API Gateway
 echo "Starting local API Gateway on port 3000..."

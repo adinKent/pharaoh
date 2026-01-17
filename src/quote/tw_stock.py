@@ -1,21 +1,19 @@
+import urllib.parse
 import logging
 import csv
-import requests
-import urllib.parse
-import yfinance as yf
 import re
-
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from io import StringIO
+
+import requests
+import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
-
-from quote.output import format_price_output
-from utils.mongo_helper import get_mongo_client
+from src.quote.output import format_price_output
+from src.utils.mongo_helper import get_mongo_client
 
 logger = logging.getLogger(__name__)
-
 
 def get_tw_stock_price(symbol: str, period: str = '2d') -> dict | None:
     """
@@ -26,7 +24,7 @@ def get_tw_stock_price(symbol: str, period: str = '2d') -> dict | None:
         market_type = "TW"
         yahoo_symbol = f"{symbol}.{market_type}"
         ticker = yf.Ticker(yahoo_symbol)
-        
+
         # Get current price info
         info = ticker.info
 
@@ -48,7 +46,7 @@ def get_tw_stock_price(symbol: str, period: str = '2d') -> dict | None:
         # Fallback to simple web scraping if yfinance not available
         return _fallback_stock_price(symbol)
     except Exception as e:
-        logger.error(f"Error fetching stock price with yfinance: {e}")
+        logger.error("Error fetching stock price with yfinance: %s", e)
         logger.exception(e)
         return _fallback_stock_price(symbol)
 
@@ -65,7 +63,7 @@ def _fallback_stock_price(symbol: str):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        
+
         resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
@@ -73,7 +71,7 @@ def _fallback_stock_price(symbol: str):
                 # Get the most recent data
                 latest_data = data['data'][-1]
                 price = float(latest_data[1])  # Close price
-                
+
                 return {
                     'symbol': symbol,
                     'name': f'Stock {symbol}',
@@ -82,9 +80,9 @@ def _fallback_stock_price(symbol: str):
                     'time': None
                 }
     except Exception as e:
-        logger.error(f"Error with fallback method: {e}")
+        logger.error("Error with fallback method: %s", e)
         logger.exception(e)
-    
+
     return None
 
 
@@ -114,56 +112,56 @@ def get_tw_stock_name_from_twse(symbol: str):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        
+
         resp = requests.get(url, params=params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            
+
             # Check if the response contains stock data
             if data.get('stat') == 'OK':
                 # The stock name is usually in the title field
                 title = data.get('title', '')
                 if title:
                     # Extract stock name from title, Format: "114年10月 2884 玉山金           各日成交資訊"
-                    
+
                     parts = title.split()
                     if len(parts) >= 4:
                         stock_name = parts[-2]
                         return stock_name
-        
+
         # Alternative API endpoint for company basic info
         alt_url = "https://www.twse.com.tw/rwd/zh/company/codeQuery"
         alt_params = {
             'STK_NO': symbol
         }
-        
+
         resp = requests.get(alt_url, params=alt_params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            
+
             # Extract company name from response
             if 'data' in data and data['data']:
                 for item in data['data']:
                     if len(item) >= 2 and item[0] == symbol:
                         return item[1]  # Company name is usually in the second column
-        
+
         # Try another endpoint for listed companies
         list_url = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL"
         list_params = {
             'response': 'json'
         }
-        
+
         resp = requests.get(list_url, params=list_params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            
+
             if data.get('stat') == 'OK' and 'data' in data:
                 for stock_data in data['data']:
                     if len(stock_data) >= 2 and stock_data[0] == symbol:
                         return stock_data[1]  # Stock name
-        
+
     except Exception as e:
-        logger.error(f"Error fetching Taiwan stock name for {symbol} from tpse: {e}")
+        logger.error("Error fetching Taiwan stock name for %s from tpse: %s", symbol, e)
         logger.exception(e)
 
     return None
@@ -194,7 +192,7 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
     url = "https://mopsov.twse.com.tw/mops/web/ajax_autoComplete"
     encoded_company_name = urllib.parse.quote(company_name)
     payload = f"encodeURIComponent=1&step=1&firstin=ture&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&co_id={encoded_company_name}&sstep=1"
-    
+
     try:
         resp = requests.post(url, data=payload, timeout=10)
         if resp.status_code == 200:
@@ -208,11 +206,11 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
             if element and element.has_attr("value"):
                 return element["value"]
             else:
-                logger.warning(f"Taiwan stock symbol for name {company_name} not found from twse")
+                logger.warning("Taiwan stock symbol for name %s not found from twse", company_name)
                 return None
-            
+
     except Exception as e:
-        logger.error(f"Error fetching Taiwan stock symbol for name {company_name} from twse: {e}")
+        logger.error("Error fetching Taiwan stock symbol for name %s from twse: %s", company_name, e)
         logger.exception(e)
 
     return None
@@ -274,7 +272,7 @@ def previous_working_day(date):
 def get_effective_date():
     now = datetime.now(ZoneInfo("Asia/Taipei"))
     cutoff = now.replace(hour=15, minute=0, second=0, microsecond=0)
-    
+
     if now >= cutoff:
         # After 3PM → today (if weekday), else previous working day
         if now.weekday() < 5:
@@ -301,7 +299,7 @@ def get_institues_buy_sell_today_result() -> str | None:
         resp.raise_for_status()
         return format_twse_buy_and_sell_result(resp.json())
     except Exception as e:
-        logger.error(f"Error fetching TWSE fund result: {e}")
+        logger.error("Error fetching TWSE fund result: %s", e)
         logger.exception(e)
         return None
 
@@ -341,7 +339,7 @@ def get_twse_buy_sell_today_result() -> list[dict] | None:
         reader = csv.DictReader(StringIO('\n'.join(csv_content)))
         return [row for row in reader]
     except Exception as e:
-        logger.error(f"Error fetching or parsing TWSE bug and sell CSV for date {url}: {e}")
+        logger.error("Error fetching or parsing TWSE bug and sell CSV for date %s: %s", url, e)
         logger.exception(e)
         return None
 
@@ -380,7 +378,7 @@ def get_tpex_buy_sell_today_result() -> list[dict] | None:
         reader = csv.DictReader(StringIO('\n'.join(csv_content)))
         return [row for row in reader]
     except Exception as e:
-        logger.error(f"Error fetching or parsing TWSE bug and sell CSV for date {url}: {e}")
+        logger.error("Error fetching or parsing TWSE bug and sell CSV for date %s: %s", url, e)
         logger.exception(e)
         return None
 
@@ -392,7 +390,7 @@ def sync_all_buy_sell_today_result_to_db():
                 db = client['TaiwanMarket']
                 collection = db['buyAndSell']
             except Exception as e:
-                logger.error(f"Failed to connect to MongoDB: {e}")
+                logger.error("Failed to connect to MongoDB: %s", e)
                 logger.exception(e)
                 return
 
@@ -424,9 +422,9 @@ def sync_all_buy_sell_today_result_to_db():
 
             if len(db_bulk_operations) > 0:
                 result = collection.bulk_write(db_bulk_operations)
-                logger.info(f"Synced to DB. Matched: {result.matched_count}, Upserted: {result.upserted_count}")
+                logger.info("Synced to DB. Matched: %s, Upserted: %s", result.matched_count, result.upserted_count)
     except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {e}")
+        logger.error("Failed to connect to MongoDB: %s", e)
         logger.exception(e)
 
 
@@ -539,6 +537,6 @@ def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
             collection = db['buyAndSell']
             return collection.find_one({'_id': symbol})
     except Exception as e:
-        logger.error(f"Error fetching buy/sell data for symbol {symbol}: {e}")
+        logger.error("Error fetching buy/sell data for symbol %s: %s", symbol, e)
         logger.exception(e)
         return None

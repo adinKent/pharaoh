@@ -1,13 +1,13 @@
 import re
 import math
 
-from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
-from quote.us_stock import get_us_stock_price
-from quote.index import get_index_price
-from quote.future import get_future_price
-from line.command_mappings import get_all_commands
-from quote.tw_stock import get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
-from utils.gemini_helper import generate_gemini_technical_analysis_response
+from src.quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
+from src.quote.us_stock import get_us_stock_price
+from src.quote.index import get_index_price
+from src.quote.future import get_future_price
+from src.line.command_mappings import get_all_commands
+from src.quote.tw_stock import get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
+from src.utils.gemini_helper import generate_gemini_technical_analysis_response
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -34,7 +34,7 @@ def parse_line_command(command_text: str) -> str | None:
 
 def get_stock_symbol_and_market_type(symbol:str):
     symbol = re.sub(r"\s+", "", symbol)   # remove all whitespace via regex
-    
+
     # Check if it's a Taiwan stock or US stock
     # Taiwan stocks: start with digits (may contain letters at the end)
     # US stocks: start with letters
@@ -45,14 +45,14 @@ def get_stock_symbol_and_market_type(symbol:str):
             return get_stock_symbol_from_fixed_command(symbol)
         elif bool(re.search(r'^[A-Za-z0-9]+', symbol)):
             return (symbol.upper(), 'US')
-    
+
     return None
 
 
 def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | list[tuple[str, str]] | None:
     command_mappings = get_all_commands()
     result = command_mappings.get(symbol, None)
-    
+
     if not result:
         result = get_tw_stock_symbol_from_company_name(symbol)
         if result:
@@ -129,7 +129,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
 
     full_info = stock_info['fullInfo']
     history = stock_info['history']
-    
+
     ma5 = history['Close'].rolling(window=5).mean().iloc[-1]
     ma20 = history['Close'].rolling(window=20).mean().iloc[-1]
     ma60 = history['Close'].rolling(window=60).mean().iloc[-1]
@@ -140,7 +140,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     if full_info.get('dividendYield', None):
         dividend_yield = round(full_info.get('dividendYield', 0), 1)
         stock_only_info.append(f'殖利率: {dividend_yield}%')
-    
+
     if full_info.get('trailingPE', None):
         trailing_pe = round(full_info.get('trailingPE', 0), 1)
         stock_only_info.append(f'PE: {trailing_pe}')

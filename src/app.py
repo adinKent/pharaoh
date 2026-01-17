@@ -21,7 +21,7 @@ from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent
 )
-from line.command_parser import parse_line_command
+from src.line.command_parser import parse_line_command
 
 # Configure logging
 logger = logging.getLogger()
@@ -55,7 +55,7 @@ def handle_text_message(event):
         else:
             logger.info("No quote command is detected, not to reply.")
     except Exception as e:
-        logger.error(f"Error processing command: {e}")
+        logger.error("Error processing command: %s", e)
         logger.exception(e)
 
 
@@ -63,7 +63,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
     AWS Lambda function to handle Line Messaging API webhooks.
     """
-    logger.info(f"Received event: {json.dumps(event, indent=2)}")
+    logger.info("Received event: %s", json.dumps(event, indent=2))
     try:
         headers = event.get('headers', {})
         signature = headers.get('x-line-signature') or headers.get('X-Line-Signature')
@@ -74,15 +74,15 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         logger.error("Invalid signature. Please check your channel secret.")
         return create_response(400, {'error': 'Invalid signature'})
     except Exception as error:
-        logger.error(f'Error processing webhook: {error}')
+        logger.error("Error processing webhook: %s", error)
         logger.exception(error)
         return create_response(500, {'error': 'Internal server error'})
 
 
-def send_reply_message(line_bot_api: MessagingApi, reply_token: str, text: str) -> None:
+def send_reply_message(message_api: MessagingApi, reply_token: str, text: str) -> None:
     """Uses the Line SDK to send a reply message."""
     try:
-        line_bot_api.reply_message(
+        message_api.reply_message(
             ReplyMessageRequest(
                 reply_token=reply_token,
                 messages=[TextMessage(text=text)]
@@ -90,22 +90,22 @@ def send_reply_message(line_bot_api: MessagingApi, reply_token: str, text: str) 
         )
         logger.info("Send reply message successfully.")
     except Exception as e:
-        logger.error(f"Failed to reply message: {e}")
+        logger.error("Failed to reply message: %s", e)
 
 
-def mark_message_as_read(line_bot_api: MessagingApi, mark_as_read_token: str) -> None:
+def mark_message_as_read(message_api: MessagingApi, mark_as_read_token: str) -> None:
     """Uses the Line SDK's underlying ApiClient to mark a message as read."""
     # The v3 SDK doesn't have a high-level method for this specific action yet.
     # The correct approach is to use the underlying client to make the API call.
     try:
-        line_bot_api.mark_messages_as_read_by_token(
+        message_api.mark_messages_as_read_by_token(
             MarkMessagesAsReadByTokenRequest(
                 mark_as_read_token=mark_as_read_token
             )
         )
         logger.info("Mark message as read successfully.")
     except Exception as e:
-        logger.error(f"Failed to mark message as read: {e}")
+        logger.error("Failed to mark message as read: %s", e)
 
 
 def create_response(status_code: int, body: Dict[str, Any]) -> Dict[str, Any]:

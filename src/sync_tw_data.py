@@ -1,5 +1,5 @@
 import logging
-from quote.tw_stock import sync_all_buy_sell_today_result_to_db
+from src.quote.tw_stock import sync_all_buy_sell_today_result_to_db
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -19,6 +19,6 @@ def handler(event, context):
             'body': 'Synchronization successful.'
         }
     except Exception as e:
-        logger.error(f"Failed to execute daily trade data synchronization job: {e}")
+        logger.error("Failed to execute daily trade data synchronization job: %s", e)
         logger.exception(e)
         raise e
