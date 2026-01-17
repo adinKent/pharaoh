@@ -1,7 +1,7 @@
 import json
 
 from pymongo import MongoClient
-from src.utils.aws_helper import get_ssm_parameter
+from utils.aws_helper import get_ssm_parameter
 
 
 def get_mongo_client() -> MongoClient:

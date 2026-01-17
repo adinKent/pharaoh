@@ -1,7 +1,7 @@
 from unittest.mock import patch
 import pytest
 
-from src.line.command_parser import (
+from line.command_parser import (
     get_stock_symbol_and_market_type,
     parse_line_command,
     get_stock_symbol_from_fixed_command,
@@ -82,7 +82,7 @@ class TestGetStockSymbolFromFixedCommand:
         result = get_stock_symbol_from_fixed_command("日元")
         assert result == ("JPYTWD=X", "FUT")
 
-    @patch('src.line.command_parser.get_tw_stock_symbol_from_company_name')
+    @patch('line.command_parser.get_tw_stock_symbol_from_company_name')
     def test_unknown_command_fallback(self, mock_get_symbol):
         """Test unknown command falls back to company name lookup"""
         mock_get_symbol.return_value = "2330"
@@ -143,7 +143,7 @@ class TestFormatStockPriceResponse:
 class TestParseLineCommand:
     """Test cases for parse_line_command function"""
 
-    @patch('src.line.command_parser.get_tw_stock_price')
+    @patch('line.command_parser.get_tw_stock_price')
     def test_tw_stock_info(self, mock_get_tw_price):
         """Test getting Taiwan stock info"""
         mock_get_tw_price.return_value = {
@@ -161,7 +161,7 @@ class TestParseLineCommand:
         assert 'Yuanta Financial' in result
         mock_get_tw_price.assert_called_once_with("2884")
 
-    @patch('src.line.command_parser.get_us_stock_price')
+    @patch('line.command_parser.get_us_stock_price')
     def test_us_stock_info(self, mock_get_us_price):
         """Test getting US stock info"""
         mock_get_us_price.return_value = {
@@ -185,7 +185,7 @@ class TestParseLineCommand:
         assert parse_line_command("2884") is None
         assert parse_line_command("") is None
 
-    @patch('src.line.command_parser.get_tw_stock_price')
+    @patch('line.command_parser.get_tw_stock_price')
     def test_tw_stock_not_found(self, mock_get_tw_price):
         """Test when Taiwan stock is not found"""
         mock_get_tw_price.return_value = None
@@ -193,7 +193,7 @@ class TestParseLineCommand:
         assert parse_line_command("#9999") == ""
         mock_get_tw_price.assert_called_once_with("9999")
 
-    @patch('src.line.command_parser.get_us_stock_price')
+    @patch('line.command_parser.get_us_stock_price')
     def test_us_stock_not_found(self, mock_get_us_price):
         """Test when US stock is not found"""
         mock_get_us_price.return_value = None
@@ -201,7 +201,7 @@ class TestParseLineCommand:
         assert parse_line_command("#INVALID") == ""
         mock_get_us_price.assert_called_once_with("INVALID")
 
-    @patch('src.line.command_parser.get_index_price')
+    @patch('line.command_parser.get_index_price')
     def test_multiple_stocks(self, get_index_price):
         """Test parsing multiple stocks (like #美股)"""
         get_index_price.side_effect = [

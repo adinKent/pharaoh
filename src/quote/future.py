@@ -1,7 +1,7 @@
 import logging
 import yfinance as yf
 
-from src.quote.output import format_price_output
+from quote.output import format_price_output
 
 logger = logging.getLogger(__name__)
 

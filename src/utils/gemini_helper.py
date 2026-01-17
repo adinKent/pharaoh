@@ -1,6 +1,6 @@
 from google import genai
 
-from src.utils.aws_helper import get_ssm_parameter
+from utils.aws_helper import get_ssm_parameter
 
 client = genai.Client(api_key=get_ssm_parameter("google/gemini-api-key"))
 

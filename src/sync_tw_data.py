@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import boto3
 
-from src.quote.tw_stock import get_effective_date, sync_all_buy_sell_today_result_to_db
+from quote.tw_stock import get_effective_date, sync_all_buy_sell_today_result_to_db
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

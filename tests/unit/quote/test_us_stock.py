@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 import pandas as pd
 
-from src.quote.us_stock import get_us_stock_price
+from quote.us_stock import get_us_stock_price
 
 # Mock yfinance at module level
 sys.modules['yfinance'] = Mock()
@@ -11,7 +11,7 @@ sys.modules['yfinance'] = Mock()
 class TestGetUsStockPrice:
     """Test cases for get_us_stock_price function"""
 
-    @patch('src.quote.us_stock.yf.Ticker')
+    @patch('quote.us_stock.yf.Ticker')
     def test_successful_us_stock_fetch(self, mock_ticker_class):
         """Test successful US stock price fetch using yfinance"""
         # Mock the ticker instance
@@ -41,7 +41,7 @@ class TestGetUsStockPrice:
         assert result['currency'] == 'USD'
         assert result['upsOrDowns'] == -1
 
-    @patch('src.quote.us_stock.yf.Ticker')
+    @patch('quote.us_stock.yf.Ticker')
     def test_us_stock_not_found(self, mock_ticker_class):
         """Test when US stock symbol is not found"""
         mock_ticker = Mock()
@@ -54,7 +54,7 @@ class TestGetUsStockPrice:
         result = get_us_stock_price("INVALID")
         assert result is None
 
-    @patch('src.quote.us_stock.yf.Ticker')
+    @patch('quote.us_stock.yf.Ticker')
     def test_us_stock_yfinance_error(self, mock_ticker_class):
         """Test when yfinance fails for US stocks"""
         mock_ticker_class.side_effect = Exception("API error")

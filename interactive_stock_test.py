@@ -10,7 +10,7 @@ import traceback
 # Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.line.command_parser import parse_line_command
+from line.command_parser import parse_line_command
 
 def interactive_test():
     """Interactive testing of the stock parser"""

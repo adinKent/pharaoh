@@ -10,8 +10,8 @@ import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
-from src.quote.output import format_price_output
-from src.utils.mongo_helper import get_mongo_client
+from quote.output import format_price_output
+from utils.mongo_helper import get_mongo_client
 
 logger = logging.getLogger(__name__)
 

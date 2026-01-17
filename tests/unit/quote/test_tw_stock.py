@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 import pytest
 import pandas as pd
 
-from src.quote.tw_stock import _fallback_stock_price, get_tw_stock_price
+from quote.tw_stock import _fallback_stock_price, get_tw_stock_price
 
 # Mock yfinance at module level
 sys.modules['yfinance'] = Mock()
@@ -12,8 +12,8 @@ sys.modules['yfinance'] = Mock()
 class TestGetTwStockPrice:
     """Test cases for get_tw_stock_price function"""
 
-    @patch('src.quote.tw_stock.get_tw_stock_name')
-    @patch('src.quote.tw_stock.yf.Ticker')
+    @patch('quote.tw_stock.get_tw_stock_name')
+    @patch('quote.tw_stock.yf.Ticker')
     def test_successful_stock_fetch_with_yfinance(self, mock_ticker_class, mock_get_tw_stock_name):
         """Test successful stock price fetch using yfinance"""
         # Mock the ticker instance
@@ -46,7 +46,7 @@ class TestGetTwStockPrice:
         assert result['currency'] == 'TWD'
         assert result['upsOrDowns'] == 1
 
-    @patch('src.quote.tw_stock.yf.Ticker')
+    @patch('quote.tw_stock.yf.Ticker')
     def test_stock_not_found_yfinance(self, mock_ticker_class):
         """Test when stock symbol is not found with yfinance"""
         mock_ticker = Mock()
@@ -59,8 +59,8 @@ class TestGetTwStockPrice:
         result = get_tw_stock_price("9999")
         assert result is None
 
-    @patch('src.quote.tw_stock.yf')
-    @patch('src.quote.tw_stock._fallback_stock_price')
+    @patch('quote.tw_stock.yf')
+    @patch('quote.tw_stock._fallback_stock_price')
     def test_fallback_when_yfinance_fails(self, mock_fallback, mock_yf):
         """Test fallback method when yfinance fails"""
         # Make yfinance raise an exception
@@ -80,7 +80,7 @@ class TestGetTwStockPrice:
         assert result['symbol'] == "2884"
         mock_fallback.assert_called_once_with("2884")
 
-    @patch('src.quote.tw_stock.requests.get')
+    @patch('quote.tw_stock.requests.get')
     def test_fallback_twse_api(self, mock_get):
         """Test fallback using TWSE API"""
         mock_response = Mock()

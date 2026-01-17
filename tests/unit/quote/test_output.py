@@ -2,7 +2,7 @@ import sys
 import os
 
 import pytest
-from src.quote.output import get_ups_or_downs
+from quote.output import get_ups_or_downs
 
 # Add project root to path so we can import from src
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../src'))

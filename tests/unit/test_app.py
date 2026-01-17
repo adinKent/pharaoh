@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from linebot.v3.exceptions import InvalidSignatureError
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
-from src.app import lambda_handler, handle_text_message, line_bot_api
+from app import lambda_handler, handle_text_message, line_bot_api
 
 
 class TestApp:
@@ -23,7 +23,7 @@ class TestApp:
         """Clean up environment variables after each test."""
         self.patcher.stop()
 
-    @patch('src.app.handler')
+    @patch('app.handler')
     def test_lambda_handler_success(self, mock_handler):
         """Test lambda_handler successfully processes a valid event."""
 
@@ -40,7 +40,7 @@ class TestApp:
         assert result['statusCode'] == 200
         assert json.loads(result['body'])['message'] == 'Webhook processed successfully'
 
-    @patch('src.app.handler')
+    @patch('app.handler')
     def test_lambda_handler_invalid_signature(self, mock_handler):
         """Test lambda_handler returns 400 on InvalidSignatureError."""
         mock_handler.handle.side_effect = InvalidSignatureError("Invalid signature")
@@ -57,7 +57,7 @@ class TestApp:
         assert result['statusCode'] == 400
         assert json.loads(result['body'])['error'] == 'Invalid signature'
 
-    @patch('src.app.handler')
+    @patch('app.handler')
     def test_lambda_handler_general_exception(self, mock_handler):
         """Test lambda_handler returns 500 on a general exception."""
         mock_handler.handle.side_effect = Exception("Something went wrong")
@@ -74,8 +74,8 @@ class TestApp:
         assert result['statusCode'] == 500
         assert json.loads(result['body'])['error'] == 'Internal server error'
 
-    @patch('src.app.send_reply_message')
-    @patch('src.app.parse_line_command')
+    @patch('app.send_reply_message')
+    @patch('app.parse_line_command')
     def test_text_message_event_with_command(self, mock_parse_command, mock_send_reply):
         """Test that a text message with a valid command triggers a reply."""
         # This is an integration-style test of the handler logic
@@ -97,8 +97,8 @@ class TestApp:
         mock_parse_command.assert_called_once_with('#AAPL')
         mock_send_reply.assert_called_once_with(line_bot_api, 'test-reply-token', "Stock Price: $100")
 
-    @patch('src.app.send_reply_message')
-    @patch('src.app.parse_line_command')
+    @patch('app.send_reply_message')
+    @patch('app.parse_line_command')
     def test_text_message_event_no_command(self, mock_parse_command, mock_send_reply):
         """Test that a text message without a command does not trigger a reply."""
         # Arrange

@@ -21,7 +21,7 @@ from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent
 )
-from src.line.command_parser import parse_line_command
+from line.command_parser import parse_line_command
 
 # Configure logging
 logger = logging.getLogger()
