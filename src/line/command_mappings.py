@@ -26,6 +26,7 @@ INDEX_FUTURE_COMMANDS = {
 
 CURRENCY_COMMANDS = {
     "美元": ("TWD=X", "FUT"),
+    "美金": ("TWD=X", "FUT"),
     "日元": ("JPYTWD=X", "FUT")
 }
 
