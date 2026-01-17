@@ -384,6 +384,9 @@ def get_tpex_buy_sell_today_result() -> list[dict] | None:
 
 
 def sync_all_buy_sell_today_result_to_db():
+    matched_count = 0
+    upserted_count = 0
+
     try:
         with get_mongo_client() as client:
             try:
@@ -392,7 +395,7 @@ def sync_all_buy_sell_today_result_to_db():
             except Exception as e:
                 logger.error("Failed to connect to MongoDB: %s", e)
                 logger.exception(e)
-                return
+                return (0, 0)
 
             trade_date = get_effective_date().strftime('%Y-%m-%d')
             db_bulk_operations = []
@@ -420,12 +423,17 @@ def sync_all_buy_sell_today_result_to_db():
                         upsert=True
                     ))
 
+
             if len(db_bulk_operations) > 0:
                 result = collection.bulk_write(db_bulk_operations)
+                matched_count = result.matched_count
+                upserted_count = result.upserted_count
                 logger.info("Synced to DB. Matched: %s, Upserted: %s", result.matched_count, result.upserted_count)
     except Exception as e:
         logger.error("Failed to connect to MongoDB: %s", e)
         logger.exception(e)
+
+    return (matched_count, upserted_count)
 
 
 def normalize_twse_stock_buy_sell_to_db_format(row:dict) -> dict:
