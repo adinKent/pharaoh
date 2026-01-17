@@ -1,11 +1,5 @@
-import sys
-import os
-
-import pytest
 from unittest.mock import patch
-
-# Add project root to path so we can import from src
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../'))
+import pytest
 
 from src.line.command_parser import (
     get_stock_symbol_and_market_type,
@@ -53,7 +47,7 @@ class TestGetStockSymbolAndMarketType:
         # These should be handled by get_stock_symbol_from_fixed_command internally
         result = get_stock_symbol_and_market_type("大盤")
         assert result == ("^TWII", "IND")
-        
+
         # Test #美股 returns a list
         result = get_stock_symbol_and_market_type("美股")
         assert isinstance(result, list)

@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from linebot.v3.exceptions import InvalidSignatureError
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
-from src.app import lambda_handler
+from src.app import lambda_handler, handle_text_message, line_bot_api
 
 
 class TestApp:
@@ -83,7 +83,7 @@ class TestApp:
         mock_parse_command.return_value = "Stock Price: $100"
 
         # Simulate the SDK calling the decorated handler
-        from src.app import handle_text_message, line_bot_api
+
         mock_event = MagicMock(spec=MessageEvent)
         mock_event.reply_token = 'test-reply-token'
         mock_event.message = MagicMock(spec=TextMessageContent)
@@ -104,7 +104,6 @@ class TestApp:
         # Arrange
         mock_parse_command.return_value = None
 
-        from src.app import handle_text_message
         mock_event = MagicMock(spec=MessageEvent)
         mock_event.reply_token = 'test-reply-token'
         mock_event.message = MagicMock(spec=TextMessageContent)
