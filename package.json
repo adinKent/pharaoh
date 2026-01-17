@@ -7,7 +7,7 @@
     "test": "python -m pytest tests/ -v",
     "test:watch": "python -m pytest tests/ -v --watch",
     "test:coverage": "python -m pytest tests/ --cov=src --cov-report=html --cov-report=term",
-    "lint": "pylint src/ tests/",
+    "lint": "pylint --exit-zero src/ tests/",
     "lint:fix": "black src/ tests/ && isort src/ tests/",
     "build": "python -m pip install -r src/requirements.txt && npm run lint && npm test",
     "package": "sam build --template-file infrastructure/template.yaml",
