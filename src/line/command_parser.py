@@ -1,14 +1,15 @@
 import re
 import math
 
-from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name
+from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name, get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
 from quote.us_stock import get_us_stock_price
 from quote.index import get_index_price
 from quote.future import get_future_price
 from line.command_mappings import get_all_commands
-from quote.tw_stock import get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
 from utils.gemini_helper import generate_gemini_technical_analysis_response
 
+
+MAX_COMMAND_TEXT_LENGTH = 20
 
 def parse_line_command(command_text: str) -> str | None:
     """
@@ -17,6 +18,9 @@ def parse_line_command(command_text: str) -> str | None:
     For US stocks: #AAPL -> ('AAPL', 'US')
     Otherwise, return None.
     """
+    if len(command_text) > MAX_COMMAND_TEXT_LENGTH:
+        return None
+
     price_qutoe_command_match = re.match(r'^#(.+)', command_text.strip())
     if price_qutoe_command_match:
         return handle_stock_price_quote(price_qutoe_command_match)

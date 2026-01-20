@@ -3,6 +3,7 @@ import pytest
 
 from line.command_parser import (
     get_stock_symbol_and_market_type,
+    MAX_COMMAND_TEXT_LENGTH,
     parse_line_command,
     get_stock_symbol_from_fixed_command,
     format_stock_price_response
@@ -184,6 +185,11 @@ class TestParseLineCommand:
         assert parse_line_command("Hello world") is None
         assert parse_line_command("2884") is None
         assert parse_line_command("") is None
+
+    def test_command_too_long(self):
+        """Test overly long commands are ignored"""
+        too_long_command = "#" + ("A" * (MAX_COMMAND_TEXT_LENGTH + 1))
+        assert parse_line_command(too_long_command) is None
 
     @patch('line.command_parser.get_tw_stock_price')
     def test_tw_stock_not_found(self, mock_get_tw_price):
