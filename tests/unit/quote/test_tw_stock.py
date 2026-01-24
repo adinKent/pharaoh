@@ -12,26 +12,31 @@ sys.modules['yfinance'] = Mock()
 class TestGetTwStockPrice:
     """Test cases for get_tw_stock_price function"""
 
-    @patch('quote.tw_stock.get_tw_stock_name')
     @patch('quote.tw_stock.yf.Ticker')
-    def test_successful_stock_fetch_with_yfinance(self, mock_ticker_class, mock_get_tw_stock_name):
-        """Test successful stock price fetch using yfinance"""
-        # Mock the ticker instance
+    @patch('quote.tw_stock.quote_stock')
+    def test_successful_stock_fetch_with_yfinance(self, mock_fugle_quote_stock, mock_ticker_class):
+        """Test successful stock price fetch using fugle and yfinance"""
+        # Mock quote result from fugle
+        mock_fugle_quote_stock.return_value = {
+            "exchange": "TWSE",
+            "symbol": "2330",
+            "name": "台積電",
+            "lastPrice": 525.0,
+            "previousClose": 510.0
+        }
+
         mock_ticker = Mock()
         mock_ticker_class.return_value = mock_ticker
 
-        # Mock get_tw_stock_name to return the expected name
-        mock_get_tw_stock_name.return_value = '台積電'
-
-        # Mock the info and history
+        # Mock the yahoo finance info and history
         mock_ticker.info = {
-            'shortName': 'Taiwan Semiconductor',
-            'currency': 'TWD',
-            'regularMarketPrice': 525,
-            'regularMarketPreviousClose': 510
+            "shortName": "Taiwan Semiconductor",
+            "currentPrice": 525,
+            "regularMarketPrice": 525,
+            "regularMarketPreviousClose": 510,
+            "currency": "TWD",
         }
 
-        # Mock history DataFrame
         mock_history = pd.DataFrame({
             'Close': [525.0]
         })
@@ -45,6 +50,7 @@ class TestGetTwStockPrice:
         assert result['price'] == 525.0
         assert result['currency'] == 'TWD'
         assert result['upsOrDowns'] == 1
+        mock_fugle_quote_stock.assert_called_once_with("2330")
 
     @patch('quote.tw_stock.yf.Ticker')
     def test_stock_not_found_yfinance(self, mock_ticker_class):
@@ -59,10 +65,32 @@ class TestGetTwStockPrice:
         result = get_tw_stock_price("9999")
         assert result is None
 
+    @patch('quote.tw_stock.quote_stock')
+    @patch('quote.tw_stock._fallback_stock_price')
+    def test_fallback_when_fugle_fails(self, mock_fallback, mock_fugle_quote_stock):
+        """Test fallback method when fugleyfinance fails"""
+        # Make yfinance raise an exception
+        mock_fugle_quote_stock.side_effect = Exception("fugle error")
+
+        # Mock fallback to return data
+        mock_fallback.return_value = {
+            'symbol': '2884',
+            'name': 'Stock 2884',
+            'price': 25.5,
+            'currency': 'TWD'
+        }
+
+        result = get_tw_stock_price("2884")
+
+        assert result is not None
+        assert result['symbol'] == "2884"
+        mock_fallback.assert_called_once_with("2884")
+
+
     @patch('quote.tw_stock.yf')
     @patch('quote.tw_stock._fallback_stock_price')
     def test_fallback_when_yfinance_fails(self, mock_fallback, mock_yf):
-        """Test fallback method when yfinance fails"""
+        """Test fallback method when fugleyfinance fails"""
         # Make yfinance raise an exception
         mock_yf.Ticker.side_effect = Exception("yfinance error")
 
@@ -74,7 +102,7 @@ class TestGetTwStockPrice:
             'currency': 'TWD'
         }
 
-        result = get_tw_stock_price("2884")
+        result = get_tw_stock_price("2884", "2d")
 
         assert result is not None
         assert result['symbol'] == "2884"

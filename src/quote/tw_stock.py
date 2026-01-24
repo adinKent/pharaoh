@@ -10,38 +10,46 @@ import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
+
 from quote.output import format_price_output
+from quote.fugle import quote_stock
 from utils.mongo_helper import get_mongo_client
+
 
 logger = logging.getLogger(__name__)
 
-def get_tw_stock_price(symbol: str, period: str = '2d') -> dict | None:
+def get_tw_stock_price(symbol: str, period: str | None = None) -> dict | None:
     """
     Get real-time stock price for a Taiwan stock symbol using yfinance library.
     Returns a dict with price info or None if not found.
     """
     try:
-        market_type = "TW"
-        yahoo_symbol = f"{symbol}.{market_type}"
-        ticker = yf.Ticker(yahoo_symbol)
+        stock_info = quote_stock(symbol)
+        if stock_info:
 
-        # Get current price info
-        info = ticker.info
+            current_price = stock_info.get('lastPrice', stock_info.get('previousClose'))
+            previous_close = stock_info.get('previousClose')
 
-        if not info or info.get('regularMarketPrice') is None :
-            # fallback to TWO market
-            market_type = "TWO"
-            yahoo_symbol = f"{symbol}.{market_type}"
-            ticker = yf.Ticker(yahoo_symbol)
-            info = ticker.info
+            yf_stock_info = {
+                "exchange": stock_info.get("exchange", "TWSE"),
+                # normalize fields to yahoo finance format
+                "symbol": symbol,
+                "shortName": stock_info.get("name", symbol),
+                "currentPrice": current_price,
+                "regularMarketPrice": current_price, 
+                "regularMarketPreviousClose": previous_close,
+                "currency": "TWD",
+            }
 
-        history = ticker.history(period=period)
+            history = dict()
+            if period:
+                exchange = stock_info.get("exchange", "TWSE")
+                market_type = "TW" if exchange == "TWSE" else "TWO"
+                yahoo_symbol = f"{symbol}.{market_type}"
+                ticker = yf.Ticker(yahoo_symbol)
+                history = ticker.history(period=period)
 
-        if not history.empty and info:
-            result = format_price_output(symbol, info, history)
-            result['name'] = get_tw_stock_name(symbol, market_type) or result['name']
-
-            return result
+            return format_price_output(symbol, yf_stock_info, history)
     except ImportError:
         # Fallback to simple web scraping if yfinance not available
         return _fallback_stock_price(symbol)

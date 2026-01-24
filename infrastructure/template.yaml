@@ -117,6 +117,7 @@ Resources:
           ENVIRONMENT: !Ref Environment
           LINE_CHANNEL_SECRET: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-secret}}'
           LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-access-token}}'
+          FUGLE_API_KEY: !Sub '{{resolve:ssm:/pharaoh/${Environment}/fugle/api-key}}'
       Tags:
         Environment: !Ref Environment
         Project: pharaoh

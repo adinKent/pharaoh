@@ -8,6 +8,8 @@
 #     ./scripts/init.sh --env dev --line-channel-secret <secret> --line-channel-access-token <token>
 #   Update both:
 #     ./scripts/init.sh --env dev --mongo-user <user> --mongo-password <password> --line-channel-secret <secret> --line-channel-access-token <token>
+#   Update FUGLE API key:
+#     ./scripts/init.sh --env dev --fugle-api-key <key>
 
 set -e
 
@@ -21,6 +23,7 @@ MONGODB_PASSWORD=""
 LINE_CHANNEL_SECRET=""
 LINE_CHANNEL_ACCESS_TOKEN=""
 GEMINI_API_KEY=""
+FUGLE_API_KEY=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -50,6 +53,10 @@ while [[ $# -gt 0 ]]; do
         GEMINI_API_KEY="$2"
         shift 2
         ;;
+        --fugle-api-key)
+        FUGLE_API_KEY="$2"
+        shift 2
+        ;;
         *)    # unknown option
         echo "Unknown option: $1"
         exit 1
@@ -57,7 +64,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ]; then
+if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ] && [ -z "$FUGLE_API_KEY" ]; then
     echo "Error: No credentials provided to update."
     echo "Usage: ./scripts/init.sh [--env <env>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
     exit 1
@@ -112,6 +119,17 @@ if [ -n "$GEMINI_API_KEY" ]; then
     fi
 
     aws ssm put-parameter --name "$PARAM_NAME" --description "GEMINI API key for Pharaoh in $ENVIRONMENT" --overwrite --value "$GEMINI_API_KEY" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
+fi
+
+if [ -n "$FUGLE_API_KEY" ]; then
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/fugle/api-key"
+    echo "Checking for existing FUGLE API key parameter: $PARAM_NAME"
+
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "FUGLE API key parameter already exists. Updating its value..."
+    fi
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "FUGLE API key for Pharaoh in $ENVIRONMENT" --overwrite --value "$FUGLE_API_KEY" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 echo ""
