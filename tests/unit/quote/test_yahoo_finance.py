@@ -1,19 +1,17 @@
-import sys
 from unittest.mock import Mock, patch
-import pytest
+
 import pandas as pd
+import pytest
 
-from quote.us_stock import get_us_stock_price
+from quote.yahoo_finance import quote_stock
 
-# Mock yfinance at module level
-sys.modules['yfinance'] = Mock()
 
-class TestGetUsStockPrice:
-    """Test cases for get_us_stock_price function"""
+class TestQuoteStock:
+    """Test cases for quote_stock function"""
 
-    @patch('quote.us_stock.yf.Ticker')
-    def test_successful_us_stock_fetch(self, mock_ticker_class):
-        """Test successful US stock price fetch using yfinance"""
+    @patch('quote.yahoo_finance.yf.Ticker')
+    def test_successful_stock_fetch(self, mock_ticker_class):
+        """Test successful stock price fetch using yfinance"""
         # Mock the ticker instance
         mock_ticker = Mock()
         mock_ticker_class.return_value = mock_ticker
@@ -32,7 +30,7 @@ class TestGetUsStockPrice:
         })
         mock_ticker.history.return_value = mock_history
 
-        result = get_us_stock_price("AAPL")
+        result = quote_stock("AAPL")
 
         assert result is not None
         assert result['symbol'] == "AAPL"
@@ -41,9 +39,9 @@ class TestGetUsStockPrice:
         assert result['currency'] == 'USD'
         assert result['upsOrDowns'] == -1
 
-    @patch('quote.us_stock.yf.Ticker')
-    def test_us_stock_not_found(self, mock_ticker_class):
-        """Test when US stock symbol is not found"""
+    @patch('quote.yahoo_finance.yf.Ticker')
+    def test_stock_not_found(self, mock_ticker_class):
+        """Test when stock symbol is not found"""
         mock_ticker = Mock()
         mock_ticker_class.return_value = mock_ticker
 
@@ -51,15 +49,15 @@ class TestGetUsStockPrice:
         mock_ticker.history.return_value = pd.DataFrame()
         mock_ticker.info = {}
 
-        result = get_us_stock_price("INVALID")
+        result = quote_stock("INVALID")
         assert result is None
 
-    @patch('quote.us_stock.yf.Ticker')
-    def test_us_stock_yfinance_error(self, mock_ticker_class):
-        """Test when yfinance fails for US stocks"""
+    @patch('quote.yahoo_finance.yf.Ticker')
+    def test_stock_yfinance_error(self, mock_ticker_class):
+        """Test when yfinance fails"""
         mock_ticker_class.side_effect = Exception("API error")
 
-        result = get_us_stock_price("AAPL")
+        result = quote_stock("AAPL")
         assert result is None
 
 

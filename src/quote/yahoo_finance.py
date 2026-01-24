@@ -5,9 +5,9 @@ from quote.output import format_price_output
 
 logger = logging.getLogger(__name__)
 
-def get_us_stock_price(symbol: str, period: str = '2d') -> dict | None:
+def quote_stock(symbol: str, period: str = '2d') -> dict | None:
     """
-    Get real-time stock price for a US stock symbol using yfinance library.
+    Get real-time stock or index price using yfinance library.
     Returns a dict with price info or None if not found.
     """
     try:

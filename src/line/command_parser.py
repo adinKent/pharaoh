@@ -2,9 +2,7 @@ import re
 import math
 
 from quote.tw_stock import get_tw_stock_price, get_tw_index_price, get_tw_stock_symbol_from_company_name, get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
-from quote.us_stock import get_us_stock_price
-from quote.index import get_index_price
-from quote.future import get_future_price
+from quote.yahoo_finance import quote_stock
 from line.command_mappings import get_all_commands
 from utils.gemini_helper import generate_gemini_technical_analysis_response
 
@@ -82,14 +80,8 @@ def handle_stock_price_quote(symbol_in_command) -> str:
                 stock_info = get_tw_stock_price(symbol)
             case 'TW_IND':
                 stock_info = get_tw_index_price(symbol)
-            case 'US':
-                stock_info = get_us_stock_price(symbol)
-            case 'IND':
-                stock_info = get_index_price(symbol)
-            case 'FUT':
-                stock_info = get_future_price(symbol)
             case _:
-                stock_info = get_us_stock_price(symbol)
+                stock_info = quote_stock(symbol)
 
         if stock_info:
             stock_info_list.append(stock_info)
@@ -126,14 +118,8 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
             stock_info = get_tw_stock_price(symbol, period='1y')
         case 'TW_IND':
             stock_info = get_tw_index_price(symbol, period='1y')
-        case 'US':
-            stock_info = get_us_stock_price(symbol, period='1y')
-        case 'IND':
-            stock_info = get_index_price(symbol, period='1y')
-        case 'FUT':
-            stock_info = get_future_price(symbol, period='1y')
         case _:
-            stock_info = get_us_stock_price(symbol, period='1y')
+            stock_info = quote_stock(symbol, period='1y')
 
     full_info = stock_info['fullInfo']
     history = stock_info['history']
@@ -224,7 +210,7 @@ def handle_buy_and_sell_quote(symbol_in_command) -> str:
         symbol_list = symbol_list[0]
 
     (symbol, market_type) = symbol_list
-    if symbol == "^TWII":
+    if symbol == "IX0001":
         return get_institues_buy_sell_today_result()
 
     data = get_symbol_buy_sell_today_result(symbol)

@@ -162,10 +162,10 @@ class TestParseLineCommand:
         assert 'Yuanta Financial' in result
         mock_get_tw_price.assert_called_once_with("2884")
 
-    @patch('line.command_parser.get_us_stock_price')
-    def test_us_stock_info(self, mock_get_us_price):
+    @patch('line.command_parser.quote_stock')
+    def test_us_stock_info(self, mock_quote_stock):
         """Test getting US stock info"""
-        mock_get_us_price.return_value = {
+        mock_quote_stock.return_value = {
             'symbol': 'AAPL',
             'name': 'Apple Inc.',
             'price': 150.0,
@@ -178,7 +178,7 @@ class TestParseLineCommand:
         assert result is not None
         assert 'AAPL' in result
         assert 'Apple Inc.' in result
-        mock_get_us_price.assert_called_once_with("AAPL")
+        mock_quote_stock.assert_called_once_with("AAPL")
 
     def test_non_stock_command(self):
         """Test non-stock commands return None"""
@@ -199,18 +199,18 @@ class TestParseLineCommand:
         assert parse_line_command("#9999") == ""
         mock_get_tw_price.assert_called_once_with("9999")
 
-    @patch('line.command_parser.get_us_stock_price')
-    def test_us_stock_not_found(self, mock_get_us_price):
+    @patch('line.command_parser.quote_stock')
+    def test_us_stock_not_found(self, mock_quote_stock):
         """Test when US stock is not found"""
-        mock_get_us_price.return_value = None
+        mock_quote_stock.return_value = None
 
         assert parse_line_command("#INVALID") == ""
-        mock_get_us_price.assert_called_once_with("INVALID")
+        mock_quote_stock.assert_called_once_with("INVALID")
 
-    @patch('line.command_parser.get_index_price')
-    def test_multiple_stocks(self, get_index_price):
+    @patch('line.command_parser.quote_stock')
+    def test_multiple_stocks(self, mock_quote_stock):
         """Test parsing multiple stocks (like #美股)"""
-        get_index_price.side_effect = [
+        mock_quote_stock.side_effect = [
             {'symbol': '^GSPC', 'name': 'S&P 500', 'price': 4000.0, 'previous_price': 3990.0, 'currency': 'USD'},
             {'symbol': '^DJI', 'name': 'Dow Jones', 'price': 35000.0, 'previous_price': 34900.0, 'currency': 'USD'},
             {'symbol': '^IXIC', 'name': 'NASDAQ', 'price': 12000.0, 'previous_price': 11900.0, 'currency': 'USD'},
@@ -221,7 +221,7 @@ class TestParseLineCommand:
 
         assert result is not None
         assert 'S&P 500' in result or '^GSPC' in result
-        assert get_index_price.call_count == 4
+        assert mock_quote_stock.call_count == 4
 
 
 if __name__ == "__main__":
