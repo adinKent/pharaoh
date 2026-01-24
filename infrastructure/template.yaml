@@ -129,6 +129,11 @@ Resources:
     Properties:
       Name: !Sub 'line-webhook-api-${Environment}'
       StageName: !Ref Environment
+      MethodSettings:
+        - ResourcePath: /webhook
+          HttpMethod: POST
+          ThrottlingRateLimit: 5
+          ThrottlingBurstLimit: 10
       EndpointConfiguration:
         Type: REGIONAL
       Cors:
@@ -139,6 +144,7 @@ Resources:
         Environment: !Ref Environment
         Project: pharaoh
         Service: line-webhook
+
 
   # CloudWatch Log Groups
   LineWebhookFunctionLogGroup:
