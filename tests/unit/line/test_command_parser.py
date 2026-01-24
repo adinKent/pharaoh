@@ -47,7 +47,7 @@ class TestGetStockSymbolAndMarketType:
         """Test fixed commands like #大盤, #美股, etc."""
         # These should be handled by get_stock_symbol_from_fixed_command internally
         result = get_stock_symbol_and_market_type("大盤")
-        assert result == ("^TWII", "IND")
+        assert result == ("IX0001", "TW_IND")
 
         # Test #美股 returns a list
         result = get_stock_symbol_and_market_type("美股")
@@ -61,7 +61,7 @@ class TestGetStockSymbolFromFixedCommand:
     def test_dapan_command(self):
         """Test #大盤 command"""
         result = get_stock_symbol_from_fixed_command("大盤")
-        assert result == ("^TWII", "IND")
+        assert result == ("IX0001", "TW_IND")
 
     def test_us_stocks_command(self):
         """Test #美股 command returns list of US indices"""

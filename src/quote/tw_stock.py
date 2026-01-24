@@ -18,16 +18,16 @@ from utils.mongo_helper import get_mongo_client
 
 logger = logging.getLogger(__name__)
 
-def get_tw_stock_price(symbol: str, period: str | None = None) -> dict | None:
+def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | None = None) -> dict | None:
     """
-    Get real-time stock price for a Taiwan stock symbol using yfinance library.
+    Get real-time stock price for a Taiwan stock symbol using fugle and yfinance library.
     Returns a dict with price info or None if not found.
     """
     try:
         stock_info = quote_stock(symbol)
         if stock_info:
 
-            current_price = stock_info.get('lastPrice', stock_info.get('previousClose'))
+            current_price = stock_info.get('lastPrice', stock_info.get('closePrice'))
             previous_close = stock_info.get('previousClose')
 
             yf_stock_info = {
@@ -44,8 +44,10 @@ def get_tw_stock_price(symbol: str, period: str | None = None) -> dict | None:
             history = dict()
             if period:
                 exchange = stock_info.get("exchange", "TWSE")
-                market_type = "TW" if exchange == "TWSE" else "TWO"
-                yahoo_symbol = f"{symbol}.{market_type}"
+                yahoo_symbol = yf_symbol
+                if not yahoo_symbol:
+                    market_type = "TW" if exchange == "TWSE" else "TWO"
+                    yahoo_symbol = f"{symbol}.{market_type}"
                 ticker = yf.Ticker(yahoo_symbol)
                 history = ticker.history(period=period)
 
@@ -59,6 +61,19 @@ def get_tw_stock_price(symbol: str, period: str | None = None) -> dict | None:
         return _fallback_stock_price(symbol)
 
     return None
+
+def get_tw_index_price(symbol: str, period: str | None = None) -> dict | None:
+    """
+    Get real-time index price for a Taiwan index symbol using fugle and yfinance library.
+    Returns a dict with price info or None if not found.
+    """
+    yahoo_symbol = None
+    if symbol == "IX0001":
+        yahoo_symbol = "^TWII"
+    elif symbol == "IX0043":
+        yahoo_symbol = "IX0043.TWO"
+
+    return get_tw_stock_price(symbol, period, yahoo_symbol)
 
 
 def _fallback_stock_price(symbol: str):

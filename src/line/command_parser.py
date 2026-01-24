@@ -1,7 +1,7 @@
 import re
 import math
 
-from quote.tw_stock import get_tw_stock_price, get_tw_stock_symbol_from_company_name, get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
+from quote.tw_stock import get_tw_stock_price, get_tw_index_price, get_tw_stock_symbol_from_company_name, get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
 from quote.us_stock import get_us_stock_price
 from quote.index import get_index_price
 from quote.future import get_future_price
@@ -80,6 +80,8 @@ def handle_stock_price_quote(symbol_in_command) -> str:
         match market_type:
             case 'TW':
                 stock_info = get_tw_stock_price(symbol)
+            case 'TW_IND':
+                stock_info = get_tw_index_price(symbol)
             case 'US':
                 stock_info = get_us_stock_price(symbol)
             case 'IND':
@@ -122,6 +124,8 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     match market_type:
         case 'TW':
             stock_info = get_tw_stock_price(symbol, period='1y')
+        case 'TW_IND':
+            stock_info = get_tw_index_price(symbol, period='1y')
         case 'US':
             stock_info = get_us_stock_price(symbol, period='1y')
         case 'IND':
