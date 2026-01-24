@@ -60,3 +60,32 @@ def format_analysis_output(symbol:str, stock_info:dict) -> dict:
         'time': None,
         'upsOrDowns': get_ups_or_downs(current_price, previous_close)
     }
+
+def format_stock_price_response(stock_info) -> str:
+    """Get icon representation for ups or downs status"""
+    price_diff = stock_info['price'] - stock_info['previous_price']
+    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
+    icon = "➖"  # Unchanged
+    price_diff_percent_format = "0"
+    if price_diff > 0:
+        icon = "📈"  # Up
+        price_diff_percent_format = f"+{price_diff_percent:.2f}"
+    elif price_diff < 0:
+        icon = "📉"  # Down
+        price_diff_percent_format = f"{price_diff_percent:.2f}"
+
+    return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
+
+def format_stock_price_response_for_picture(stock_info) -> str:
+    """Get icon representation for ups or downs status"""
+    price_diff = stock_info['price'] - stock_info['previous_price']
+    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
+    price_diff_percent_format = "0"
+    sign = ""  # Unchanged
+    if price_diff > 0:
+        sign = "+"
+        price_diff_percent_format = f"+{price_diff_percent:.2f}"
+    elif price_diff < 0:
+        price_diff_percent_format = f"{price_diff_percent:.2f}"
+
+    return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)"

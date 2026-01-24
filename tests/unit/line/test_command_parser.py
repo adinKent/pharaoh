@@ -6,9 +6,11 @@ from line.command_parser import (
     MAX_COMMAND_TEXT_LENGTH,
     parse_line_command,
     get_stock_symbol_from_fixed_command,
-    format_stock_price_response
 )
 
+from quote.output import (
+    format_stock_price_response
+)
 
 class TestGetStockSymbolAndMarketType:
     """Test cases for get_stock_symbol_and_marke_type function"""

@@ -1,7 +1,15 @@
 import re
 import math
 
-from quote.tw_stock import get_tw_stock_price, get_tw_index_price, get_tw_stock_symbol_from_company_name, get_institues_buy_sell_today_result, get_symbol_buy_sell_today_result
+from quote.output import format_stock_price_response
+from quote.tw_stock import (
+    get_tw_stock_price,
+    get_tw_index_price,
+    get_tw_stock_candles_png,
+    get_tw_stock_symbol_from_company_name,
+    get_institues_buy_sell_today_result,
+    get_symbol_buy_sell_today_result
+)
 from quote.yahoo_finance import quote_stock
 from line.command_mappings import get_all_commands
 from utils.gemini_helper import generate_gemini_technical_analysis_response
@@ -30,6 +38,10 @@ def parse_line_command(command_text: str) -> str | None:
     buy_and_sell_quote_match = re.match(r'^F(.+)', command_text.strip())
     if buy_and_sell_quote_match:
         return handle_buy_and_sell_quote(buy_and_sell_quote_match)
+
+    day_k_line_match = re.match(r'^P(.+)', command_text.strip())
+    if day_k_line_match:
+        return handle_day_k_line(day_k_line_match)
 
     return None
 
@@ -87,22 +99,6 @@ def handle_stock_price_quote(symbol_in_command) -> str:
             stock_info_list.append(stock_info)
 
     return "\n".join(map(lambda stock_info: format_stock_price_response(stock_info), stock_info_list))
-
-
-def format_stock_price_response(stock_info) -> str:
-    """Get icon representation for ups or downs status"""
-    price_diff = stock_info['price'] - stock_info['previous_price']
-    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
-    icon = "➖"  # Unchanged
-    price_diff_percent_format = "0"
-    if price_diff > 0:
-        icon = "📈"  # Up
-        price_diff_percent_format = f"+{price_diff_percent:.2f}"
-    elif price_diff < 0:
-        icon = "📉"  # Down
-        price_diff_percent_format = f"{price_diff_percent:.2f}"
-
-    return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
 
 
 def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
@@ -220,3 +216,13 @@ def handle_buy_and_sell_quote(symbol_in_command) -> str:
             real_time_price_quote, "",
             format_symbol_buy_sell_response(data)
         ])
+
+def handle_day_k_line(symbol_in_command) -> str:
+    symbol_name = symbol_in_command.group(1)
+    symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if isinstance(symbol_list, list):
+        (symbol, market_type) = symbol_list[0]
+    else:
+        (symbol, market_type) = symbol_list
+
+    return get_tw_stock_candles_png(symbol)

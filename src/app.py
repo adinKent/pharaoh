@@ -15,13 +15,16 @@ from linebot.v3.messaging import (
     MessagingApi,
     ReplyMessageRequest,
     MarkMessagesAsReadByTokenRequest,
-    TextMessage
+    TextMessage,
+    ImageMessage
 )
 from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent
 )
 from line.command_parser import parse_line_command
+from utils.aws_helper import is_s3_presigned_url
+
 
 # Configure logging
 logger = logging.getLogger()
@@ -51,7 +54,10 @@ def handle_text_message(event):
 
         response_text = parse_line_command(text)
         if response_text:
-            send_reply_message(line_bot_api, reply_token, response_text)
+            if is_s3_presigned_url(response_text):
+                send_reply_image(line_bot_api, reply_token, response_text)
+            else:
+                send_reply_message(line_bot_api, reply_token, response_text)
         else:
             logger.info("No quote command is detected, not to reply.")
     except Exception as e:
@@ -79,7 +85,11 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         return create_response(500, {'error': 'Internal server error'})
 
 
-def send_reply_message(message_api: MessagingApi, reply_token: str, text: str) -> None:
+def send_reply_message(
+    message_api: MessagingApi,
+    reply_token: str,
+    text: str,
+) -> None:
     """Uses the Line SDK to send a reply message."""
     try:
         message_api.reply_message(
@@ -91,6 +101,29 @@ def send_reply_message(message_api: MessagingApi, reply_token: str, text: str) -
         logger.info("Send reply message successfully.")
     except Exception as e:
         logger.error("Failed to reply message: %s", e)
+
+
+def send_reply_image(
+    message_api: MessagingApi,
+    reply_token: str,
+    image_url: str,
+) -> None:
+    """Uses the Line SDK to send a reply image."""
+    try:
+        message_api.reply_message(
+            ReplyMessageRequest(
+                reply_token=reply_token,
+                messages=[
+                    ImageMessage(
+                        original_content_url=image_url,
+                        preview_image_url=image_url,
+                    )
+                ]
+            )
+        )
+        logger.info("Send reply image successfully.")
+    except Exception as e:
+        logger.error("Failed to reply image: %s", e)
 
 
 def mark_message_as_read(message_api: MessagingApi, mark_as_read_token: str) -> None:

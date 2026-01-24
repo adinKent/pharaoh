@@ -15,7 +15,7 @@ MONGODB_CONNECTION_STR=${2}
 if [ -z "$MONGODB_CONNECTION_STR" ]; then
     echo "MongoDB connection string not provided via arguments. Attempting to read existing value from SSM Parameter Store..."
     MONGODB_CONNECTION_STR=$(aws --profile "$AWS_PROFILE" --region "$AWS_REGION" ssm get-parameter \
-        --name "/pharaoh/$ENVIRONMENT/mongodb/coonnect-str" \
+        --name "/pharaoh/$ENVIRONMENT/mongodb/credentials" \
         --query Parameter.Value \
         --output text 2>/dev/null || echo "")
 fi
@@ -34,7 +34,7 @@ echo "Deploying to environment: $ENVIRONMENT"
 
 # Package the SAM application
 echo "Packaging SAM application..."
-sam build --profile $AWS_PROFILE --template-file infrastructure/template.yaml
+sam build --debug --profile $AWS_PROFILE --template-file infrastructure/template.yaml
 
 # Deploy with parameters
 echo "Deploying to AWS..."
@@ -52,6 +52,7 @@ fi
 
 sam deploy --profile $AWS_PROFILE \
     --stack-name pharaoh-line-webhook-$ENVIRONMENT \
+    --resolve-image-repos \
     --resolve-s3 \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --no-confirm-changeset \

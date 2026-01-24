@@ -2,19 +2,35 @@ import urllib.parse
 import logging
 import csv
 import re
+import io
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from io import StringIO
+from pathlib import Path
+import time
 
 import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
+import pandas as pd
+import matplotlib.font_manager as fm
+import mplfinance as mpf
 
-from quote.output import format_price_output
-from quote.fugle import quote_stock
+from quote.output import (
+	format_price_output,
+    format_stock_price_response_for_picture
+)
+from quote.fugle import (
+    quote_stock,
+    quote_stock_ticker,
+    quote_stock_candles
+)
 from utils.mongo_helper import get_mongo_client
+from utils.aws_helper import put_image
 
+HERE = Path(__file__).resolve().parent.parent
+FONT_PATH = HERE / "assets" / "fonts" / "NotoSansTC-Regular.ttf"
 
 logger = logging.getLogger(__name__)
 
@@ -583,4 +599,136 @@ def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
     except Exception as e:
         logger.error("Error fetching buy/sell data for symbol %s: %s", symbol, e)
         logger.exception(e)
+        return None
+
+
+def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
+    try:
+        stock_info = get_tw_stock_price(symbol)
+        ticker = quote_stock_ticker(symbol)
+        resp = quote_stock_candles(symbol)
+        previous_close = ticker.get('previousClose')
+        limit_up_price = ticker.get("limitUpPrice", previous_close*1.1)
+        limit_down_price = ticker.get("limitDownPrice", previous_close*0.9)
+        title = format_stock_price_response_for_picture(stock_info)
+
+        candles = resp.get("data", [])
+        if not candles:
+            logger.warning("Fugle candles response missing data for %s: %s", symbol, resp)
+            return None
+
+        df = pd.DataFrame(candles)
+        df["time"] = pd.to_datetime(df["date"])
+        df = df.set_index("time")
+        df = df.rename(
+            columns={
+                "open": "Open",
+                "high": "High",
+                "low": "Low",
+                "close": "Close",
+                "volume": "Volume",
+            }
+        )
+
+        market_colors = mpf.make_marketcolors(
+            up="#8fb3ff",
+            down="#8fb3ff",
+            edge="#8fb3ff",
+            wick="#8fb3ff",
+            volume="#8fb3ff",
+        )
+
+        font_name = "Noto Sans TC"
+        if FONT_PATH.exists():
+            try:
+                fm.fontManager.addfont(str(FONT_PATH))
+                chinese_font_prop = fm.FontProperties(fname=FONT_PATH)
+                font_name = chinese_font_prop.get_name()
+            except Exception as exc:
+                logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
+
+        dark_blue_style = mpf.make_mpf_style(
+            base_mpf_style="nightclouds",
+            marketcolors=market_colors,
+            facecolor="#0b1b3b",
+            gridcolor="#1f2f57",
+            rc={ 'font.family': font_name }
+        )
+
+        addplots = None
+        if previous_close is not None:
+            close_series = df["Close"]
+            above = close_series.where(close_series >= previous_close)
+            below = close_series.where(close_series < previous_close)
+            addplots = [
+                mpf.make_addplot(above, type="line", color='red', width=1),
+                mpf.make_addplot(below, type="line", color='green', width=1),
+            ]
+
+        start = df.index[0] - pd.Timedelta(minutes=1)
+        end = df.index[-1] + pd.Timedelta(minutes=1)
+        xlim = (start, end)
+        ylim = (limit_down_price, limit_up_price)
+
+        hlines = dict(
+            hlines=[previous_close],
+            colors=["#8e8989"],
+            linestyle="-",
+            linewidths=0.5,
+        )
+
+        fig, _ = mpf.plot(
+            df,
+            type="line",
+            volume=True,
+            style=dark_blue_style,
+            xlim=xlim,
+            ylim=ylim,
+            hlines=hlines,
+            addplot=addplots,
+            returnfig=True
+        )
+
+        ax = fig.axes[0]
+        high_idx = df["High"].idxmax()
+        high_val = df.loc[high_idx, "High"]
+        low_idx = df["Low"].idxmin()
+        low_val = df.loc[low_idx, "Low"]
+        y_min_current, y_max_current = ax.get_ylim()
+        y_span = y_max_current - y_min_current
+        y_pad = max(y_span * 0.02, 0.01)
+
+        high_text_y = high_val + y_pad
+        low_text_y = low_val - y_pad*3
+
+        ax.text(df['High'].argmax(), high_text_y, f"{high_val:.2f}", fontsize=10, color='white', clip_on=False)
+        ax.text(df['High'].argmin(), low_text_y, f"{low_val:.2f}", fontsize=10, color='white', clip_on=False)
+
+        for axis in fig.axes:
+            axis.tick_params(axis="x", labelrotation=0)
+
+        if title:
+            fig.suptitle(
+                title,
+                x=0.5,
+                y=0.95
+            )
+        fig.patch.set_facecolor("#0b1b3b")
+
+        image_name = f"{symbol}_{round(time.time())}.jpg"
+        if save_to_local_file:
+            project_root = Path(__file__).resolve().parents[2]
+            output_path = project_root / f"{image_name}"
+            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), bbox_inches="tight", dpi=300)
+            return str(output_path)
+        else:
+            buffer = io.BytesIO()
+            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), bbox_inches="tight", dpi=300)
+            buffer.seek(0)
+            presign_url = put_image(image_name, buffer.getvalue())
+            print(f"Rely image url={presign_url}")
+            return presign_url
+    except Exception as exc:
+        logger.error("Fugle candle API error for %s: %s", symbol, exc)
+        logger.exception(exc)
         return None
