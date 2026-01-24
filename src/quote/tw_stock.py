@@ -239,6 +239,15 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
     return None
 
 
+def format_total_net_diff(field_name, amount):
+    result = amount
+    if "差額" in field_name:
+        amount_number = float(amount)
+        if amount_number > 0:
+            result = f'+{amount_number}'
+    
+    return result
+
 def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
     """
     Format TWSE fund result JSON to a pretty text.
@@ -271,13 +280,17 @@ def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
 
     foreign_row = converted_data[3]
     for i in range(1, len(foreign_row)):
-        lines.append(f"外資{fields[i]}:{foreign_row[i].rjust(8)}")
+        field_name = fields[i]
+        amount = format_total_net_diff(field_name, foreign_row[i])
+        lines.append(f"外資{fields[i]}:{amount.rjust(8)}")
 
     lines.append("")  # separator
 
     for row in [converted_data[2], converted_data[0], converted_data[1], converted_data[5]]:  # 投信、自營商(自行買賣)、自營商(避險)、合計
         for i in range(1, len(row)):
-            lines.append(f"{row[0]}{fields[i]}:{row[i].rjust(8)}")
+            field_name = fields[i]
+            amount = format_total_net_diff(field_name, row[i])
+            lines.append(f"{row[0]}{field_name}:{amount.rjust(8)}")
         lines.append("")
 
     lines.append('單位：億元')
