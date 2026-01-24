@@ -179,32 +179,37 @@ def format_symbol_buy_sell_response(data: dict) -> str:
         return "找不到該股票的買賣超資料。"
 
     # Helper to format numbers. Assumes values are strings with commas.
-    def format_net(value_str: str) -> str:
+    def format_net(value_str: str, always_show_sign: bool = False) -> str:
         num = int(value_str.replace(',', ''))
-        return f"{math.trunc(num/1000)} 張"
+
+        sign = ''
+        if always_show_sign and num > 0:
+            sign = '+'
+
+        return f"{sign}{math.trunc(num/1000)} 張"
 
     return "\n".join([
         f"{data.get('date')} 三大法人買賣超:",
         "",
         f"外資買進: {format_net(data.get('foreignBuy', '0'))}",
         f"外資賣出: {format_net(data.get('foreignSell', '0'))}",
-        f"外資買賣差額: {format_net(data.get('foreignNet', '0'))}",
+        f"外資買賣差額: {format_net(data.get('foreignNet', '0'), always_show_sign = True)}",
         "",
         f"投信買進: {format_net(data.get('investTrustBuy', '0'))}",
         f"投信賣出: {format_net(data.get('investTrustSell', '0'))}",
-        f"投信買賣差額: {format_net(data.get('investTrustNet', '0'))}",
+        f"投信買賣差額: {format_net(data.get('investTrustNet', '0'), always_show_sign = True)}",
         "",
         f"自營商(自行買賣)買進: {format_net(data.get('dealerBuy', '0'))}",
         f"自營商(自行買賣)賣出: {format_net(data.get('dealerSell', '0'))}",
-        f"自營商(自行買賣)買賣差額: {format_net(data.get('dealerNet', '0'))}",
+        f"自營商(自行買賣)買賣差額: {format_net(data.get('dealerNet', '0'), always_show_sign = True)}",
         "",
         f"自營商(避險)買進: {format_net(data.get('dealerHedgeBuy', '0'))}",
         f"自營商(避險)賣出: {format_net(data.get('dealerHedgeSell', '0'))}",
-        f"自營商(避險)買賣差額: {format_net(data.get('dealerHedgeNet', '0'))}",
+        f"自營商(避險)買賣差額: {format_net(data.get('dealerHedgeNet', '0'), always_show_sign = True)}",
         "",
-        f"自營商合計買賣差額: {format_net(data.get('dealerTotalNet', '0'))}",
+        f"自營商合計買賣差額: {format_net(data.get('dealerTotalNet', '0'), always_show_sign = True)}",
         "",
-        f"三大法人合計買賣差額: {format_net(data.get('totalNet', '0'))}"
+        f"三大法人合計買賣差額: {format_net(data.get('totalNet', '0'), always_show_sign = True)}"
     ])
 
 
