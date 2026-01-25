@@ -16,14 +16,10 @@ from pymongo import UpdateOne
 import pandas as pd
 import matplotlib.font_manager as fm
 import mplfinance as mpf
-import numbers
-from matplotlib.collections import LineCollection
-from matplotlib.dates import date2num
-import numpy as np
 
 from quote.output import (
 	format_price_output,
-    format_stock_price_response_for_picture
+    get_info_for_day_candle_picture
 )
 from quote.fugle import (
     quote_stock,
@@ -622,7 +618,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             limit_up_price = ticker.get("limitUpPrice", previous_close*1.1)
             limit_down_price = ticker.get("limitDownPrice", previous_close*0.9)
 
-        title = format_stock_price_response_for_picture(stock_info)
+        title_info = get_info_for_day_candle_picture(stock_info)
         candles = resp.get("data", [])
 
         if not candles:
@@ -681,32 +677,30 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             if not below.isna().all():
                 addplots.append(mpf.make_addplot(below, type="line", color='green', width=1))
 
-        start = df.index[0] - pd.Timedelta(minutes=1)
-        end = df.index[-1] + pd.Timedelta(minutes=1)
+        start = min(df.index[0] - pd.Timedelta(minutes=1), df.index[0].replace(hour=9, minute=0, second=0, microsecond=0))
+        end = max(df.index[-1] + pd.Timedelta(minutes=1), df.index[-1].replace(hour=13, minute=30, second=0, microsecond=0))
         xlim = (start, end)
         ylim = (limit_down_price, limit_up_price)
 
-        hlines = dict(
-            hlines=[previous_close],
-            colors=["#8e8989"],
-            linestyle="-",
-            linewidths=0.5,
-        )
-
-        fig, _ = mpf.plot(
+        fig, axes = mpf.plot(
             df,
             type="line",
             volume=True,
             xlim=xlim,
             ylim=ylim,
-            hlines=hlines,
             addplot=addplots,
             style=dark_blue_style,
-            returnfig=True
+            returnfig=True,
+            tight_layout=True,
+            scale_padding={'left': 0.6, 'top': 4, 'right': 1, 'bottom': 0.6}
         )
 
         ax = fig.axes[0]
-        high_idx = df["High"].idxmax()
+
+        ax.axhline(previous_close, color="#8e8989", linestyle="-", linewidth=0.5) # previous close price line
+
+        # draw labels of highest and lowest price
+        high_idx = df["High"].idxmax() 
         high_val = df.loc[high_idx, "High"]
         low_idx = df["Low"].idxmin()
         low_val = df.loc[low_idx, "Low"]
@@ -720,11 +714,16 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         ax.text(df['High'].argmax(), high_text_y, f"{high_val:.2f}", fontsize=10, color='white', clip_on=False)
         ax.text(df['High'].argmin(), low_text_y, f"{low_val:.2f}", fontsize=10, color='white', clip_on=False)
 
+        # hide y and volume's label
+        ax.yaxis.label.set_visible(False)
+        axes[2].set_ylabel("")
+
         for axis in fig.axes:
             axis.tick_params(axis="x", labelrotation=0)
 
-        if title:
-            fig.suptitle(title, x=0.5, y=0.95)
+        if title_info:
+            fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha='left', y=0.97)
+            fig.text(0.065, 0.90, title_info['price'], color=title_info['color'], fontsize=12)
 
         fig.patch.set_facecolor("#0b1b3b")
 
@@ -732,11 +731,11 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         if save_to_local_file:
             project_root = Path(__file__).resolve().parents[2]
             output_path = project_root / f"{image_name}"
-            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), bbox_inches="tight", dpi=300)
+            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), dpi=300)
             return str(output_path)
         else:
             buffer = io.BytesIO()
-            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), bbox_inches="tight", dpi=300)
+            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), dpi=300)
             buffer.seek(0)
             presign_url = put_image(image_name, buffer.getvalue())
             print(f"Rely image url={presign_url}")

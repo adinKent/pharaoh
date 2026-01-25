@@ -76,16 +76,24 @@ def format_stock_price_response(stock_info) -> str:
 
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
 
-def format_stock_price_response_for_picture(stock_info) -> str:
+def get_info_for_day_candle_picture(stock_info) -> str:
     """Get icon representation for ups or downs status"""
     price_diff = stock_info['price'] - stock_info['previous_price']
     price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
     price_diff_percent_format = "0"
     sign = ""  # Unchanged
+    color = ""
     if price_diff > 0:
-        sign = "+"
+        color = "red"
+        sign = "▲"
         price_diff_percent_format = f"+{price_diff_percent:.2f}"
     elif price_diff < 0:
+        color = "green"
+        sign = "▼"
         price_diff_percent_format = f"{price_diff_percent:.2f}"
 
-    return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)"
+    return {
+        "title": f"{stock_info['name']} ({stock_info['symbol']})",
+        "price": f"{stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)",
+        "color": color
+    }
