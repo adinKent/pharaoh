@@ -16,6 +16,10 @@ from pymongo import UpdateOne
 import pandas as pd
 import matplotlib.font_manager as fm
 import mplfinance as mpf
+import numbers
+from matplotlib.collections import LineCollection
+from matplotlib.dates import date2num
+import numpy as np
 
 from quote.output import (
 	format_price_output,
@@ -605,14 +609,22 @@ def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
 def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
     try:
         stock_info = get_tw_stock_price(symbol)
+        if not stock_info:
+            return None
+
         ticker = quote_stock_ticker(symbol)
         resp = quote_stock_candles(symbol)
         previous_close = ticker.get('previousClose')
-        limit_up_price = ticker.get("limitUpPrice", previous_close*1.1)
-        limit_down_price = ticker.get("limitDownPrice", previous_close*0.9)
-        title = format_stock_price_response_for_picture(stock_info)
+        if ticker['exchange'] == "TPEx" or ticker.get('industry', None) == '00':
+            limit_up_price = previous_close*1.1
+            limit_down_price = previous_close*0.9
+        else:
+            limit_up_price = ticker.get("limitUpPrice", previous_close*1.1)
+            limit_down_price = ticker.get("limitDownPrice", previous_close*0.9)
 
+        title = format_stock_price_response_for_picture(stock_info)
         candles = resp.get("data", [])
+
         if not candles:
             logger.warning("Fugle candles response missing data for %s: %s", symbol, resp)
             return None
@@ -655,15 +667,19 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             rc={ 'font.family': font_name }
         )
 
-        addplots = None
+        addplots = []
         if previous_close is not None:
             close_series = df["Close"]
-            above = close_series.where(close_series >= previous_close)
+            above = close_series.where(close_series > previous_close)
+            equal = close_series.where(close_series == previous_close)
             below = close_series.where(close_series < previous_close)
-            addplots = [
-                mpf.make_addplot(above, type="line", color='red', width=1),
-                mpf.make_addplot(below, type="line", color='green', width=1),
-            ]
+
+            if not above.isna().all():
+                addplots.append(mpf.make_addplot(above, type="line", color='red', width=1))
+            if not equal.isna().all():
+                addplots.append(mpf.make_addplot(equal, type="line", color='#8e8989', width=1))
+            if not below.isna().all():
+                addplots.append(mpf.make_addplot(below, type="line", color='green', width=1))
 
         start = df.index[0] - pd.Timedelta(minutes=1)
         end = df.index[-1] + pd.Timedelta(minutes=1)
@@ -681,11 +697,11 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             df,
             type="line",
             volume=True,
-            style=dark_blue_style,
             xlim=xlim,
             ylim=ylim,
             hlines=hlines,
             addplot=addplots,
+            style=dark_blue_style,
             returnfig=True
         )
 
@@ -708,11 +724,8 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             axis.tick_params(axis="x", labelrotation=0)
 
         if title:
-            fig.suptitle(
-                title,
-                x=0.5,
-                y=0.95
-            )
+            fig.suptitle(title, x=0.5, y=0.95)
+
         fig.patch.set_facecolor("#0b1b3b")
 
         image_name = f"{symbol}_{round(time.time())}.jpg"

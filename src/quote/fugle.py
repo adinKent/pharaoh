@@ -6,8 +6,11 @@ from pathlib import Path
 import boto3
 import matplotlib as mpl
 import mplfinance as mpf
+import numpy as np
 import pandas as pd
 from fugle_marketdata import RestClient
+from matplotlib.collections import LineCollection
+from matplotlib.dates import date2num
 
 from utils.aws_helper import get_ssm_parameter
 
@@ -91,6 +94,7 @@ def _build_candles_figure(
     ytick_rotation: float = 0,
     annotate_high_low: bool = True,
     high_low_color: str = "#ffd166",
+    use_line_collection: bool = True,
 ) -> mpl.figure.Figure | None:
     if FONT_PATH.exists():
         try:
@@ -197,6 +201,30 @@ def _build_candles_figure(
     for axis in fig.axes:
         axis.tick_params(axis="y", labelrotation=ytick_rotation)
     fig.patch.set_facecolor("#0b1b3b")
+
+    if use_line_collection and not df.empty:
+        ax = fig.axes[0]
+        x_values = date2num(df.index.to_pydatetime())
+        y_values = df["Close"].astype(float).to_numpy()
+        segments = []
+        colors = []
+        for i in range(len(x_values) - 1):
+            y0 = y_values[i]
+            y1 = y_values[i + 1]
+            if np.isnan(y0) or np.isnan(y1):
+                continue
+            segments.append([(x_values[i], y0), (x_values[i + 1], y1)])
+            if previous_close is not None:
+                colors.append(line_above_color if y1 >= previous_close else line_below_color)
+            else:
+                colors.append(line_above_color)
+        if segments:
+            line_collection = LineCollection(segments, colors=colors, linewidths=1.2, zorder=3)
+            ax.add_collection(line_collection)
+            ax.autoscale_view()
+            ax.xaxis_date()
+        else:
+            logger.warning("LineCollection skipped for %s: no valid segments", symbol)
 
     if annotate_high_low and not df.empty:
         ax = fig.axes[0]
