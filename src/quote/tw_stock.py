@@ -611,13 +611,6 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         ticker = quote_stock_ticker(symbol)
         resp = quote_stock_candles(symbol)
         previous_close = ticker.get('previousClose')
-        if ticker['exchange'] == "TPEx" or ticker.get('industry', None) == '00':
-            limit_up_price = previous_close*1.1
-            limit_down_price = previous_close*0.9
-        else:
-            limit_up_price = ticker.get("limitUpPrice", previous_close*1.1)
-            limit_down_price = ticker.get("limitDownPrice", previous_close*0.9)
-
         title_info = get_info_for_day_candle_picture(stock_info)
         candles = resp.get("data", [])
 
@@ -677,6 +670,24 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             if not below.isna().all():
                 addplots.append(mpf.make_addplot(below, type="line", color='green', width=1))
 
+        high_idx = df["High"].idxmax() 
+        high_val = df.loc[high_idx, "High"]
+        low_idx = df["Low"].idxmin()
+        low_val = df.loc[low_idx, "Low"]
+        limit_up_price = previous_close*1.1
+        limit_down_price = previous_close*0.9
+
+        if ticker['exchange'] == "TPEx" or ticker['type'] == "INDEX":
+            high_val_diff = high_val - previous_close
+            low_val_diff = previous_close - low_val
+            bound = max(high_val_diff, low_val_diff)*1.5
+            if bound > 0:
+                limit_up_price = previous_close + bound
+                limit_down_price = previous_close - bound
+        elif 'limitUpPrice' in ticker and 'limitDownPrice' in ticker:
+            limit_up_price = ticker.get("limitUpPrice")
+            limit_down_price = ticker.get("limitDownPrice")
+
         start = min(df.index[0] - pd.Timedelta(minutes=1), df.index[0].replace(hour=9, minute=0, second=0, microsecond=0))
         end = max(df.index[-1] + pd.Timedelta(minutes=1), df.index[-1].replace(hour=13, minute=30, second=0, microsecond=0))
         xlim = (start, end)
@@ -700,19 +711,15 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         ax.axhline(previous_close, color="#8e8989", linestyle="-", linewidth=0.5) # previous close price line
 
         # draw labels of highest and lowest price
-        high_idx = df["High"].idxmax() 
-        high_val = df.loc[high_idx, "High"]
-        low_idx = df["Low"].idxmin()
-        low_val = df.loc[low_idx, "Low"]
         y_min_current, y_max_current = ax.get_ylim()
         y_span = y_max_current - y_min_current
         y_pad = max(y_span * 0.02, 0.01)
 
         high_text_y = high_val + y_pad
-        low_text_y = low_val - y_pad*3
+        low_text_y = low_val - y_pad*2
 
         ax.text(df['High'].argmax(), high_text_y, f"{high_val:.2f}", fontsize=10, color='white', clip_on=False)
-        ax.text(df['High'].argmin(), low_text_y, f"{low_val:.2f}", fontsize=10, color='white', clip_on=False)
+        ax.text(df['Low'].argmin(), low_text_y, f"{low_val:.2f}", fontsize=10, color='white', clip_on=False)
 
         # hide y and volume's label
         ax.yaxis.label.set_visible(False)
