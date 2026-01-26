@@ -30,14 +30,14 @@ def get_secret(name: str) -> dict:
     return secret_string
 
 
-def put_image(key: str, png_bytes) -> str:
+def put_image(key: str, png_bytes, expire_time: int = 432000) -> str:
     s3 = boto3.client("s3", config=boto3.session.Config(s3={'addressing_style': 'virtual'}, signature_version='s3v4'))
     bucket_name = os.environ.get('IMAGE_BUCKET_NAME', 'pharaoh-dev-test')
     s3.put_object(Bucket=bucket_name, Key=key, Body=png_bytes, ContentType="image/png")
     presigned_url = s3.generate_presigned_url(
         ClientMethod="get_object",
         Params={"Bucket": bucket_name, "Key": key},
-        ExpiresIn=3600,  # 1 小時
+        ExpiresIn=expire_time,  # default 5 days
     )
     return presigned_url
 
