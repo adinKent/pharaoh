@@ -4,7 +4,7 @@ INDEX_COMMANDS = {
     "日股": ("^N225", "IND"),
     "韓股": ("^KS11", "IND"),
     "亞股": [
-        ("^TWII", "IND"),
+        ("IX0001", "TW_IND"),
         ("^N225", "IND"),
         ("^KS11", "IND")
     ],
@@ -26,9 +26,17 @@ INDEX_FUTURE_COMMANDS = {
 }
 
 CURRENCY_COMMANDS = {
+    "外匯": [
+        ("TWD=X", "FUT"),
+        ("JPYTWD=X", "FUT"),
+        ("AUDTWD=X", "FUT")
+    ],
     "美元": ("TWD=X", "FUT"),
     "美金": ("TWD=X", "FUT"),
-    "日元": ("JPYTWD=X", "FUT")
+    "日元": ("JPYTWD=X", "FUT"),
+    "日幣": ("JPYTWD=X", "FUT"),
+    "澳元": ("AUDTWD=X", "FUT"),
+    "澳幣": ("AUDTWD=X", "FUT")
 }
 
 COMEX_COMMANDS = {
@@ -48,6 +56,7 @@ BONDS_COMMANDS = {
         ("^TYX", "FUT")
     ]
 }
+BONDS_COMMANDS["美債"] = BONDS_COMMANDS["債券"]
 
 COIN_COMMANDS = {
     "比特幣": ("BTC-USD", "FUT"),
