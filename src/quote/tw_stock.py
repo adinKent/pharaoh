@@ -602,14 +602,12 @@ def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
         return None
 
 def get_x_label_align(x, x_max_current):
-    if x > x_max_current*0.95:
-        return 'right'
-    elif x > x_max_current*0.9:
-        return 'center'
+    if x > x_max_current*0.9:
+        return (x_max_current*0.99, 'right')
     else:
-        return 'left'
+        return (max(x, x_max_current*0.01), 'left')
 
-def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
+def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = True) -> str | None:
     try:
         stock_info = get_tw_stock_price(symbol)
         if not stock_info:
@@ -726,15 +724,19 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         high_text_y = min(high_val + y_pad, y_max_current - y_pad)
         low_text_y = max(low_val - y_pad, y_min_current + y_pad)
 
-        high_low_value_label_bbox = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
+        high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
         if high_val == low_val:
             if high_val > previous_close:
-                ax.text(df['High'].argmax(), high_text_y, f"最高價: {high_val:.2f}", ha=get_x_label_align(df['High'].argmax(), x_max_current), fontsize=10, bbox=high_low_value_label_bbox, color='white', clip_on=False)
+                (high_x, high_ha) = get_x_label_align(df['High'].argmax(), x_max_current)
+                ax.text(high_x, high_text_y, f"最高價: {high_val:.2f}", ha=high_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
             else:
-                ax.text(df['Low'].argmin(), low_text_y, f"最低價: {low_val:.2f}", ha=get_x_label_align(df['Low'].argmin(), x_max_current), fontsize=10, bbox=high_low_value_label_bbox, color='white', clip_on=False)
+                (low_x, low_ha) = get_x_label_align(df['Low'].argmin(), x_max_current)
+                ax.text(low_x, low_text_y, f"最低價: {low_val:.2f}", ha=low_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
         else:
-            ax.text(df['High'].argmax(), high_text_y, f"最高價: {high_val:.2f}", ha=get_x_label_align(df['High'].argmax(), x_max_current), fontsize=10, bbox=high_low_value_label_bbox, color='white', clip_on=False)
-            ax.text(df['Low'].argmin(), low_text_y, f"最低價: {low_val:.2f}", ha=get_x_label_align(df['Low'].argmin(), x_max_current), fontsize=10, bbox=high_low_value_label_bbox, color='white', clip_on=False)
+            (high_x, high_ha) = get_x_label_align(df['High'].argmax(), x_max_current)
+            (low_x, low_ha) = get_x_label_align(df['Low'].argmin(), x_max_current)
+            ax.text(high_x, high_text_y, f"最高價: {high_val:.2f}", ha=high_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
+            ax.text(low_x, low_text_y, f"最低價: {low_val:.2f}", ha=low_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
 
         # hide y and volume's label
         ax.yaxis.label.set_visible(False)
