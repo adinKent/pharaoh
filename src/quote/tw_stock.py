@@ -607,7 +607,7 @@ def get_x_label_align(x, x_max_current):
     else:
         return (max(x, x_max_current*0.01), 'left')
 
-def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = True) -> str | None:
+def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
     try:
         stock_info = get_tw_stock_price(symbol)
         if not stock_info:
