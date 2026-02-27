@@ -1,38 +1,32 @@
-import urllib.parse
-import logging
 import csv
-import re
 import io
+import logging
+import re
+import time
+import urllib.parse
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 from io import StringIO
 from pathlib import Path
-import time
+from zoneinfo import ZoneInfo
 
+import matplotlib.font_manager as fm
+import mplfinance as mpf
+import pandas as pd
 import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
-import pandas as pd
-import matplotlib.font_manager as fm
-import mplfinance as mpf
 
-from quote.output import (
-	format_price_output,
-    get_info_for_day_candle_picture
-)
-from quote.fugle import (
-    quote_stock,
-    quote_stock_ticker,
-    quote_stock_candles
-)
-from utils.mongo_helper import get_mongo_client
+from quote.fugle import quote_stock, quote_stock_candles, quote_stock_ticker
+from quote.output import format_price_output, get_info_for_day_candle_picture
 from utils.aws_helper import put_image
+from utils.mongo_helper import get_mongo_client
 
 HERE = Path(__file__).resolve().parent.parent
 FONT_PATH = HERE / "assets" / "fonts" / "NotoSansTC-Regular.ttf"
 
 logger = logging.getLogger(__name__)
+
 
 def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | None = None) -> dict | None:
     """
@@ -42,9 +36,8 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
     try:
         stock_info = quote_stock(symbol)
         if stock_info:
-
-            current_price = stock_info.get('lastPrice', stock_info.get('closePrice'))
-            previous_close = stock_info.get('previousClose')
+            current_price = stock_info.get("lastPrice", stock_info.get("closePrice"))
+            previous_close = stock_info.get("previousClose")
 
             yf_stock_info = {
                 "exchange": stock_info.get("exchange", "TWSE"),
@@ -52,7 +45,7 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
                 "symbol": symbol,
                 "shortName": stock_info.get("name", symbol),
                 "currentPrice": current_price,
-                "regularMarketPrice": current_price, 
+                "regularMarketPrice": current_price,
                 "regularMarketPreviousClose": previous_close,
                 "currency": "TWD",
             }
@@ -78,6 +71,7 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
 
     return None
 
+
 def get_tw_index_price(symbol: str, period: str | None = None) -> dict | None:
     """
     Get real-time index price for a Taiwan index symbol using fugle and yfinance library.
@@ -99,24 +93,22 @@ def _fallback_stock_price(symbol: str):
     try:
         # Try Taiwan Stock Exchange API
         url = f"https://www.twse.com.tw/exchangeReport/STOCK_DAY_AVG?response=json&stockNo={symbol}"
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
         resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            if data.get('stat') == 'OK' and data.get('data'):
+            if data.get("stat") == "OK" and data.get("data"):
                 # Get the most recent data
-                latest_data = data['data'][-1]
+                latest_data = data["data"][-1]
                 price = float(latest_data[1])  # Close price
 
                 return {
-                    'symbol': symbol,
-                    'name': f'Stock {symbol}',
-                    'price': price,
-                    'currency': 'TWD',
-                    'time': None
+                    "symbol": symbol,
+                    "name": f"Stock {symbol}",
+                    "price": price,
+                    "currency": "TWD",
+                    "time": None,
                 }
     except Exception as e:
         logger.error("Error with fallback method: %s", e)
@@ -144,22 +136,20 @@ def get_tw_stock_name_from_twse(symbol: str):
         # TWSE API endpoint for stock basic information
         url = "https://www.twse.com.tw/exchangeReport/STOCK_DAY"
         params = {
-            'response': 'json',
-            'date': '',  # Current month
-            'stockNo': symbol
+            "response": "json",
+            "date": "",  # Current month
+            "stockNo": symbol,
         }
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
         resp = requests.get(url, params=params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
 
             # Check if the response contains stock data
-            if data.get('stat') == 'OK':
+            if data.get("stat") == "OK":
                 # The stock name is usually in the title field
-                title = data.get('title', '')
+                title = data.get("title", "")
                 if title:
                     # Extract stock name from title, Format: "114年10月 2884 玉山金           各日成交資訊"
 
@@ -170,32 +160,28 @@ def get_tw_stock_name_from_twse(symbol: str):
 
         # Alternative API endpoint for company basic info
         alt_url = "https://www.twse.com.tw/rwd/zh/company/codeQuery"
-        alt_params = {
-            'STK_NO': symbol
-        }
+        alt_params = {"STK_NO": symbol}
 
         resp = requests.get(alt_url, params=alt_params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
 
             # Extract company name from response
-            if 'data' in data and data['data']:
-                for item in data['data']:
+            if "data" in data and data["data"]:
+                for item in data["data"]:
                     if len(item) >= 2 and item[0] == symbol:
                         return item[1]  # Company name is usually in the second column
 
         # Try another endpoint for listed companies
         list_url = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL"
-        list_params = {
-            'response': 'json'
-        }
+        list_params = {"response": "json"}
 
         resp = requests.get(list_url, params=list_params, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
 
-            if data.get('stat') == 'OK' and 'data' in data:
-                for stock_data in data['data']:
+            if data.get("stat") == "OK" and "data" in data:
+                for stock_data in data["data"]:
                     if len(stock_data) >= 2 and stock_data[0] == symbol:
                         return stock_data[1]  # Stock name
 
@@ -216,10 +202,10 @@ def get_tw_stock_name_from_tpex(symbol: str):
         resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            if 'info' in data:
-                return data['info'].get('shortName', None)  # for stock
+            if "info" in data:
+                return data["info"].get("shortName", None)  # for stock
 
-            return data.get('shortName', None)  # for ETF
+            return data.get("shortName", None)  # for ETF
     except Exception as e:
         logger.error(f"Error fetching Taiwan stock name for {symbol} from tpex: {e}")
         logger.exception(e)
@@ -230,7 +216,10 @@ def get_tw_stock_name_from_tpex(symbol: str):
 def get_tw_stock_symbol_from_company_name(company_name: str):
     url = "https://mopsov.twse.com.tw/mops/web/ajax_autoComplete"
     encoded_company_name = urllib.parse.quote(company_name)
-    payload = f"encodeURIComponent=1&step=1&firstin=ture&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&co_id={encoded_company_name}&sstep=1"
+    payload = (
+        f"encodeURIComponent=1&step=1&firstin=ture&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&"
+        f"inpuType=co_id&TYPEK=all&co_id={encoded_company_name}&sstep=1"
+    )
 
     try:
         resp = requests.post(url, data=payload, timeout=10)
@@ -249,7 +238,11 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
                 return None
 
     except Exception as e:
-        logger.error("Error fetching Taiwan stock symbol for name %s from twse: %s", company_name, e)
+        logger.error(
+            "Error fetching Taiwan stock symbol for name %s from twse: %s",
+            company_name,
+            e,
+        )
         logger.exception(e)
 
     return None
@@ -260,22 +253,23 @@ def format_total_net_diff(field_name, amount):
     if "差額" in field_name:
         amount_number = float(amount)
         if amount_number > 0:
-            result = f'+{amount_number}'
-    
+            result = f"+{amount_number}"
+
     return result
+
 
 def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
     """
     Format TWSE fund result JSON to a pretty text.
     """
-    if not bug_sell_data or bug_sell_data.get('stat') != 'OK':
+    if not bug_sell_data or bug_sell_data.get("stat") != "OK":
         return None
 
-    fields = bug_sell_data.get('fields', [])
-    data = bug_sell_data.get('data', [])
-    title = bug_sell_data.get('title', '')
-    notes = bug_sell_data.get('notes', [])
-    hints = bug_sell_data.get('hints', '')
+    fields = bug_sell_data.get("fields", [])
+    data = bug_sell_data.get("data", [])
+    title = bug_sell_data.get("title", "")
+    notes = bug_sell_data.get("notes", [])
+    hints = bug_sell_data.get("hints", "")
 
     # Convert numeric columns (except the first column) to units of 100 million
     converted_data = []
@@ -283,7 +277,7 @@ def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
         new_row = [row[0]]
         for cell in row[1:]:
             try:
-                num = float(cell.replace(',', ''))
+                num = float(cell.replace(",", ""))
                 new_cell = f"{num / 100_000_000:.2f}"
             except Exception:
                 new_cell = cell
@@ -292,7 +286,7 @@ def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
 
     lines = []
     if title:
-        lines += [title, '']
+        lines += [title, ""]
 
     foreign_row = converted_data[3]
     for i in range(1, len(foreign_row)):
@@ -302,16 +296,21 @@ def format_twse_buy_and_sell_result(bug_sell_data: dict) -> str | None:
 
     lines.append("")  # separator
 
-    for row in [converted_data[2], converted_data[0], converted_data[1], converted_data[5]]:  # 投信、自營商(自行買賣)、自營商(避險)、合計
+    for row in [
+        converted_data[2],
+        converted_data[0],
+        converted_data[1],
+        converted_data[5],
+    ]:  # 投信、自營商(自行買賣)、自營商(避險)、合計
         for i in range(1, len(row)):
             field_name = fields[i]
             amount = format_total_net_diff(field_name, row[i])
             lines.append(f"{row[0]}{field_name}:{amount.rjust(8)}")
         lines.append("")
 
-    lines.append('單位：億元')
+    lines.append("單位：億元")
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def previous_working_day(date):
@@ -341,7 +340,7 @@ def get_institues_buy_sell_today_result() -> str | None:
     Fetch today's buy sell result from TWSE using the provided URL format.
     Format the JSON response to a table like str, or None on failure.
     """
-    today = get_effective_date().strftime('%Y%m%d')
+    today = get_effective_date().strftime("%Y%m%d")
     url = (
         f"https://www.twse.com.tw/rwd/zh/fund/BFI82U?"
         f"type=day&dayDate={today}&weekDate={today}&monthDate={today}&response=json&_={int(datetime.now().timestamp() * 1000)}"
@@ -367,7 +366,7 @@ def get_twse_buy_sell_today_result() -> list[dict] | None:
         A list of dictionaries, where each dictionary represents a stock's
         trade data, or None if fetching or parsing fails.
     """
-    today = get_effective_date().strftime('%Y%m%d')
+    today = get_effective_date().strftime("%Y%m%d")
     url = f"https://www.twse.com.tw/rwd/zh/fund/T86?date={today}&selectType=ALL&response=csv"
 
     try:
@@ -380,15 +379,15 @@ def get_twse_buy_sell_today_result() -> list[dict] | None:
         csv_content = []
         data_started = False
         for line in lines:
-            if '證券代號' in line:
+            if "證券代號" in line:
                 data_started = True
             if data_started and line.strip():
-                if '說明' in line:  # data end
+                if "說明" in line:  # data end
                     break
                 else:
                     csv_content.append(line)
 
-        reader = csv.DictReader(StringIO('\n'.join(csv_content)))
+        reader = csv.DictReader(StringIO("\n".join(csv_content)))
         return [row for row in reader]
     except Exception as e:
         logger.error("Error fetching or parsing TWSE bug and sell CSV for date %s: %s", url, e)
@@ -407,7 +406,7 @@ def get_tpex_buy_sell_today_result() -> list[dict] | None:
         A list of dictionaries, where each dictionary represents a stock's
         trade data, or None if fetching or parsing fails.
     """
-    today = urllib.parse.quote(get_effective_date().strftime('%Y-%m-%d'))
+    today = urllib.parse.quote(get_effective_date().strftime("%Y-%m-%d"))
     url = f"https://www.tpex.org.tw/www/zh-tw/insti/dailyTrade?type=Daily&sect=AL&date={today}id=&response=csv"
 
     try:
@@ -419,7 +418,7 @@ def get_tpex_buy_sell_today_result() -> list[dict] | None:
         csv_content = []
         data_started = False
         for line in lines:
-            if '代號' in line and '名稱' in line:
+            if "代號" in line and "名稱" in line:
                 data_started = True
             if data_started and line.strip():
                 if re.search(r"共\d+筆", line):  # data end
@@ -427,7 +426,7 @@ def get_tpex_buy_sell_today_result() -> list[dict] | None:
                 else:
                     csv_content.append(line)
 
-        reader = csv.DictReader(StringIO('\n'.join(csv_content)))
+        reader = csv.DictReader(StringIO("\n".join(csv_content)))
         return [row for row in reader]
     except Exception as e:
         logger.error("Error fetching or parsing TWSE bug and sell CSV for date %s: %s", url, e)
@@ -442,45 +441,40 @@ def sync_all_buy_sell_today_result_to_db():
     try:
         with get_mongo_client() as client:
             try:
-                db = client['TaiwanMarket']
-                collection = db['buyAndSell']
+                db = client["TaiwanMarket"]
+                collection = db["buyAndSell"]
             except Exception as e:
                 logger.error("Failed to connect to MongoDB: %s", e)
                 logger.exception(e)
                 return (0, 0)
 
-            trade_date = get_effective_date().strftime('%Y-%m-%d')
+            trade_date = get_effective_date().strftime("%Y-%m-%d")
             db_bulk_operations = []
             twse_result = get_twse_buy_sell_today_result()
             if twse_result:
                 for row in twse_result:
                     doc = normalize_twse_stock_buy_sell_to_db_format(row)
-                    doc['date'] = trade_date
-                    doc['market'] = 'TWSE'
-                    db_bulk_operations.append(UpdateOne(
-                        {'_id': doc['symbol']},
-                        {'$set': doc},
-                        upsert=True
-                    ))
+                    doc["date"] = trade_date
+                    doc["market"] = "TWSE"
+                    db_bulk_operations.append(UpdateOne({"_id": doc["symbol"]}, {"$set": doc}, upsert=True))
 
             tpex_result = get_tpex_buy_sell_today_result()
             if tpex_result:
                 for row in tpex_result:
                     doc = normalize_tpex_stock_buy_sell_to_db_format(row)
-                    doc['date'] = trade_date
-                    doc['market'] = 'TPEX'
-                    db_bulk_operations.append(UpdateOne(
-                        {'_id': doc['symbol']},
-                        {'$set': doc},
-                        upsert=True
-                    ))
-
+                    doc["date"] = trade_date
+                    doc["market"] = "TPEX"
+                    db_bulk_operations.append(UpdateOne({"_id": doc["symbol"]}, {"$set": doc}, upsert=True))
 
             if len(db_bulk_operations) > 0:
                 result = collection.bulk_write(db_bulk_operations)
                 matched_count = result.matched_count
                 upserted_count = result.upserted_count
-                logger.info("Synced to DB. Matched: %s, Upserted: %s", result.matched_count, result.upserted_count)
+                logger.info(
+                    "Synced to DB. Matched: %s, Upserted: %s",
+                    result.matched_count,
+                    result.upserted_count,
+                )
     except Exception as e:
         logger.error("Failed to connect to MongoDB: %s", e)
         logger.exception(e)
@@ -488,8 +482,8 @@ def sync_all_buy_sell_today_result_to_db():
     return (matched_count, upserted_count)
 
 
-def normalize_twse_stock_buy_sell_to_db_format(row:dict) -> dict:
-    '''
+def normalize_twse_stock_buy_sell_to_db_format(row: dict) -> dict:
+    """
     0: 證券代號
     1: 證券名稱
     2: 外陸資買進股數(不含外資自營商)
@@ -509,33 +503,33 @@ def normalize_twse_stock_buy_sell_to_db_format(row:dict) -> dict:
     16:自營商賣出股數(避險)
     17:自營商買賣超股數(避險)
     18:三大法人買賣超股數
-    '''
+    """
 
     return {
-        'symbol': re.sub(r'[="\s]', '', row['證券代號']),
-        'name': re.sub(r'[="\s]', '', row['證券名稱']),
-        'foreignBuy': row['外陸資買進股數(不含外資自營商)'],
-        'foreignSell': row['外陸資賣出股數(不含外資自營商)'],
-        'foreignNet': row['外陸資買賣超股數(不含外資自營商)'],
-        'foreignDealerBuy': row['外資自營商買進股數'],
-        'foreignDealerSell': row['外資自營商賣出股數'],
-        'foreignDealerNet': row['外資自營商買賣超股數'],
-        'investTrustBuy': row['投信買進股數'],
-        'investTrustSell': row['投信賣出股數'],
-        'investTrustNet': row['投信買賣超股數'],
-        'dealerTotalNet': row['自營商買賣超股數'],
-        'dealerBuy': row['自營商買進股數(自行買賣)'],
-        'dealerSell': row['自營商賣出股數(自行買賣)'],
-        'dealerNet': row['自營商買賣超股數(自行買賣)'],
-        'dealerHedgeBuy': row['自營商買進股數(避險)'],
-        'dealerHedgeSell': row['自營商賣出股數(避險)'],
-        'dealerHedgeNet': row['自營商買賣超股數(避險)'],
-        'totalNet': row['三大法人買賣超股數']
+        "symbol": re.sub(r'[="\s]', "", row["證券代號"]),
+        "name": re.sub(r'[="\s]', "", row["證券名稱"]),
+        "foreignBuy": row["外陸資買進股數(不含外資自營商)"],
+        "foreignSell": row["外陸資賣出股數(不含外資自營商)"],
+        "foreignNet": row["外陸資買賣超股數(不含外資自營商)"],
+        "foreignDealerBuy": row["外資自營商買進股數"],
+        "foreignDealerSell": row["外資自營商賣出股數"],
+        "foreignDealerNet": row["外資自營商買賣超股數"],
+        "investTrustBuy": row["投信買進股數"],
+        "investTrustSell": row["投信賣出股數"],
+        "investTrustNet": row["投信買賣超股數"],
+        "dealerTotalNet": row["自營商買賣超股數"],
+        "dealerBuy": row["自營商買進股數(自行買賣)"],
+        "dealerSell": row["自營商賣出股數(自行買賣)"],
+        "dealerNet": row["自營商買賣超股數(自行買賣)"],
+        "dealerHedgeBuy": row["自營商買進股數(避險)"],
+        "dealerHedgeSell": row["自營商賣出股數(避險)"],
+        "dealerHedgeNet": row["自營商買賣超股數(避險)"],
+        "totalNet": row["三大法人買賣超股數"],
     }
 
 
-def normalize_tpex_stock_buy_sell_to_db_format(row:dict) -> dict:
-    '''
+def normalize_tpex_stock_buy_sell_to_db_format(row: dict) -> dict:
+    """
     0: 代號
     1: 名稱
     2: 外資及陸資(不含外資自營商)-買進股數
@@ -560,52 +554,54 @@ def normalize_tpex_stock_buy_sell_to_db_format(row:dict) -> dict:
     21: 自營商-賣出股數
     22: 自營商-買賣超股數
     23: 三大法人買賣超股數合計
-    '''
+    """
 
     return {
-        'symbol': re.sub(r'[="\s]', '', row['代號']),
-        'name': re.sub(r'[="\s]', '', row['名稱']),
-        'foreignBuy': row['外資及陸資(不含外資自營商)-買進股數'],
-        'foreignSell': row['外資及陸資(不含外資自營商)-賣出股數'],
-        'foreignNet': row['外資及陸資(不含外資自營商)-買賣超股數'],
-        'foreignDealerBuy': row['外資自營商-買進股數'],
-        'foreignDealerSell': row['外資自營商-賣出股數'],
-        'foreignDealerNet': row['外資自營商-買賣超股數'],
-        'foreignTotalBuy': row['外資及陸資-買進股數'],
-        'foreignTotalSell': row['外資及陸資-賣出股數'],
-        'foreignTotalNet': row['外資及陸資-買賣超股數'],
-        'investTrustBuy': row['投信-買進股數'],
-        'investTrustSell': row['投信-賣出股數'],
-        'investTrustNet': row['投信-買賣超股數'],
-        'dealerBuy': row['自營商(自行買賣)-買進股數'],
-        'dealerSell': row['自營商(自行買賣)-賣出股數'],
-        'dealerNet': row['自營商(自行買賣)-買賣超股數'],
-        'dealerHedgeBuy': row['自營商(避險)-買進股數'],
-        'dealerHedgeSell': row['自營商(避險)-賣出股數'],
-        'dealerHedgeNet': row['自營商(避險)-買賣超股數'],
-        'dealerTotalBuy': row['自營商-買進股數'],
-        'dealerTotalSell': row['自營商-賣出股數'],
-        'dealerTotalNet': row['自營商-買賣超股數'],
-        'totalNet': row['三大法人買賣超股數合計']
+        "symbol": re.sub(r'[="\s]', "", row["代號"]),
+        "name": re.sub(r'[="\s]', "", row["名稱"]),
+        "foreignBuy": row["外資及陸資(不含外資自營商)-買進股數"],
+        "foreignSell": row["外資及陸資(不含外資自營商)-賣出股數"],
+        "foreignNet": row["外資及陸資(不含外資自營商)-買賣超股數"],
+        "foreignDealerBuy": row["外資自營商-買進股數"],
+        "foreignDealerSell": row["外資自營商-賣出股數"],
+        "foreignDealerNet": row["外資自營商-買賣超股數"],
+        "foreignTotalBuy": row["外資及陸資-買進股數"],
+        "foreignTotalSell": row["外資及陸資-賣出股數"],
+        "foreignTotalNet": row["外資及陸資-買賣超股數"],
+        "investTrustBuy": row["投信-買進股數"],
+        "investTrustSell": row["投信-賣出股數"],
+        "investTrustNet": row["投信-買賣超股數"],
+        "dealerBuy": row["自營商(自行買賣)-買進股數"],
+        "dealerSell": row["自營商(自行買賣)-賣出股數"],
+        "dealerNet": row["自營商(自行買賣)-買賣超股數"],
+        "dealerHedgeBuy": row["自營商(避險)-買進股數"],
+        "dealerHedgeSell": row["自營商(避險)-賣出股數"],
+        "dealerHedgeNet": row["自營商(避險)-買賣超股數"],
+        "dealerTotalBuy": row["自營商-買進股數"],
+        "dealerTotalSell": row["自營商-賣出股數"],
+        "dealerTotalNet": row["自營商-買賣超股數"],
+        "totalNet": row["三大法人買賣超股數合計"],
     }
 
 
-def get_symbol_buy_sell_today_result(symbol:str) -> dict | None:
+def get_symbol_buy_sell_today_result(symbol: str) -> dict | None:
     try:
         with get_mongo_client() as client:
-            db = client['TaiwanMarket']
-            collection = db['buyAndSell']
-            return collection.find_one({'_id': symbol})
+            db = client["TaiwanMarket"]
+            collection = db["buyAndSell"]
+            return collection.find_one({"_id": symbol})
     except Exception as e:
         logger.error("Error fetching buy/sell data for symbol %s: %s", symbol, e)
         logger.exception(e)
         return None
 
+
 def get_x_label_align(x, x_max_current):
-    if x > x_max_current*0.9:
-        return (x_max_current*0.99, 'right')
+    if x > x_max_current * 0.9:
+        return (x_max_current * 0.99, "right")
     else:
-        return (max(x, x_max_current*0.01), 'left')
+        return (max(x, x_max_current * 0.01), "left")
+
 
 def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
     try:
@@ -615,7 +611,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
 
         ticker = quote_stock_ticker(symbol)
         resp = quote_stock_candles(symbol)
-        previous_close = ticker.get('previousClose')
+        previous_close = ticker.get("previousClose")
         title_info = get_info_for_day_candle_picture(stock_info)
         candles = resp.get("data", [])
 
@@ -658,7 +654,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             marketcolors=market_colors,
             facecolor="#0b1b3b",
             gridcolor="#1f2f57",
-            rc={ 'font.family': font_name }
+            rc={"font.family": font_name},
         )
 
         addplots = []
@@ -669,32 +665,38 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             below = close_series.where(close_series < previous_close)
 
             if not above.isna().all():
-                addplots.append(mpf.make_addplot(above, type="line", color='red', width=1))
+                addplots.append(mpf.make_addplot(above, type="line", color="red", width=1))
             if not equal.isna().all():
-                addplots.append(mpf.make_addplot(equal, type="line", color='#8e8989', width=1))
+                addplots.append(mpf.make_addplot(equal, type="line", color="#8e8989", width=1))
             if not below.isna().all():
-                addplots.append(mpf.make_addplot(below, type="line", color='green', width=1))
+                addplots.append(mpf.make_addplot(below, type="line", color="green", width=1))
 
-        high_idx = df["High"].idxmax() 
+        high_idx = df["High"].idxmax()
         high_val = df.loc[high_idx, "High"]
         low_idx = df["Low"].idxmin()
         low_val = df.loc[low_idx, "Low"]
-        limit_up_price = previous_close*1.1
-        limit_down_price = previous_close*0.9
+        limit_up_price = previous_close * 1.1
+        limit_down_price = previous_close * 0.9
 
-        if ticker['exchange'] == "TPEx" or ticker['type'] == "INDEX":
+        if ticker["exchange"] == "TPEx" or ticker["type"] == "INDEX":
             high_val_diff = high_val - previous_close
             low_val_diff = previous_close - low_val
-            bound = max(high_val_diff, low_val_diff)*1.5
+            bound = max(high_val_diff, low_val_diff) * 1.5
             if bound > 0:
                 limit_up_price = previous_close + bound
                 limit_down_price = previous_close - bound
-        elif 'limitUpPrice' in ticker and 'limitDownPrice' in ticker:
+        elif "limitUpPrice" in ticker and "limitDownPrice" in ticker:
             limit_up_price = ticker.get("limitUpPrice")
             limit_down_price = ticker.get("limitDownPrice")
 
-        start = min(df.index[0] - pd.Timedelta(minutes=1), df.index[0].replace(hour=9, minute=0, second=0, microsecond=0))
-        end = max(df.index[-1] + pd.Timedelta(minutes=1), df.index[-1].replace(hour=13, minute=30, second=0, microsecond=0))
+        start = min(
+            df.index[0] - pd.Timedelta(minutes=1),
+            df.index[0].replace(hour=9, minute=0, second=0, microsecond=0),
+        )
+        end = max(
+            df.index[-1] + pd.Timedelta(minutes=1),
+            df.index[-1].replace(hour=13, minute=30, second=0, microsecond=0),
+        )
         xlim = (start, end)
         y_pad = (limit_up_price - limit_down_price) * 0.003
         ylim = (limit_down_price - y_pad, limit_up_price + y_pad)
@@ -709,11 +711,11 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             style=dark_blue_style,
             returnfig=True,
             tight_layout=True,
-            scale_padding={'left': 0.6, 'top': 4, 'right': 1, 'bottom': 0.6}
+            scale_padding={"left": 0.6, "top": 4, "right": 1, "bottom": 0.6},
         )
 
         ax = fig.axes[0]
-        ax.axhline(previous_close, color="#8e8989", linestyle="-", linewidth=0.5) # previous close price line
+        ax.axhline(previous_close, color="#8e8989", linestyle="-", linewidth=0.5)  # previous close price line
 
         # draw labels of highest and lowest price
         x_min_current, x_max_current = ax.get_xlim()
@@ -727,16 +729,56 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
         if high_val == low_val:
             if high_val > previous_close:
-                (high_x, high_ha) = get_x_label_align(df['High'].argmax(), x_max_current)
-                ax.text(high_x, high_text_y, f"最高價: {high_val:.2f}", ha=high_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
+                (high_x, high_ha) = get_x_label_align(df["High"].argmax(), x_max_current)
+                ax.text(
+                    high_x,
+                    high_text_y,
+                    f"最高價: {high_val:.2f}",
+                    ha=high_ha,
+                    va="center",
+                    fontsize=10,
+                    bbox=high_low_value_bbox_style,
+                    color="white",
+                    clip_on=False,
+                )
             else:
-                (low_x, low_ha) = get_x_label_align(df['Low'].argmin(), x_max_current)
-                ax.text(low_x, low_text_y, f"最低價: {low_val:.2f}", ha=low_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
+                (low_x, low_ha) = get_x_label_align(df["Low"].argmin(), x_max_current)
+                ax.text(
+                    low_x,
+                    low_text_y,
+                    f"最低價: {low_val:.2f}",
+                    ha=low_ha,
+                    va="center",
+                    fontsize=10,
+                    bbox=high_low_value_bbox_style,
+                    color="white",
+                    clip_on=False,
+                )
         else:
-            (high_x, high_ha) = get_x_label_align(df['High'].argmax(), x_max_current)
-            (low_x, low_ha) = get_x_label_align(df['Low'].argmin(), x_max_current)
-            ax.text(high_x, high_text_y, f"最高價: {high_val:.2f}", ha=high_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
-            ax.text(low_x, low_text_y, f"最低價: {low_val:.2f}", ha=low_ha, va='center', fontsize=10, bbox=high_low_value_bbox_style, color='white', clip_on=False)
+            (high_x, high_ha) = get_x_label_align(df["High"].argmax(), x_max_current)
+            (low_x, low_ha) = get_x_label_align(df["Low"].argmin(), x_max_current)
+            ax.text(
+                high_x,
+                high_text_y,
+                f"最高價: {high_val:.2f}",
+                ha=high_ha,
+                va="center",
+                fontsize=10,
+                bbox=high_low_value_bbox_style,
+                color="white",
+                clip_on=False,
+            )
+            ax.text(
+                low_x,
+                low_text_y,
+                f"最低價: {low_val:.2f}",
+                ha=low_ha,
+                va="center",
+                fontsize=10,
+                bbox=high_low_value_bbox_style,
+                color="white",
+                clip_on=False,
+            )
 
         # hide y and volume's label
         ax.yaxis.label.set_visible(False)
@@ -746,8 +788,8 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             axis.tick_params(axis="x", labelrotation=0)
 
         if title_info:
-            fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha='left', y=0.97)
-            fig.text(0.065, 0.90, title_info['price'], color=title_info['color'], fontsize=12)
+            fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha="left", y=0.97)
+            fig.text(0.065, 0.90, title_info["price"], color=title_info["color"], fontsize=12)
 
         fig.patch.set_facecolor("#0b1b3b")
 

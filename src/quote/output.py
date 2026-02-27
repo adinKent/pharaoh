@@ -7,7 +7,7 @@ FIXED_SYMBOL_NAME_MAPPINGS = {
     "SI=F": "白銀",
     "CL=F": "原油",
     "TWD=X": "USD/TWD",
-    "JPYTWD=X": "JPY/TWD"
+    "JPYTWD=X": "JPY/TWD",
 }
 
 
@@ -24,47 +24,48 @@ def get_ups_or_downs(current_price, previous_close):
         return 0
 
 
-def format_price_output(symbol:str, stock_info:dict, history:dict) -> dict:
-    current_price = stock_info.get('regularMarketPrice', stock_info.get('currentPrice'))
-    previous_close = stock_info.get('regularMarketPreviousClose')
+def format_price_output(symbol: str, stock_info: dict, history: dict) -> dict:
+    current_price = stock_info.get("regularMarketPrice", stock_info.get("currentPrice"))
+    previous_close = stock_info.get("regularMarketPreviousClose")
     name = FIXED_SYMBOL_NAME_MAPPINGS.get(symbol)
     if not name:
-        name = stock_info.get('shortName', stock_info.get('longName', f'Stock {symbol}'))
+        name = stock_info.get("shortName", stock_info.get("longName", f"Stock {symbol}"))
 
     return {
-        'symbol': symbol,
-        'name': name,
-        'price': round(current_price, 2),
-        'previous_price': round(previous_close, 2),
-        'currency': stock_info.get('currency', 'USD'),
-        'time': None,
-        'upsOrDowns': get_ups_or_downs(current_price, previous_close),
-        'fullInfo': stock_info,
-        'history': history
+        "symbol": symbol,
+        "name": name,
+        "price": round(current_price, 2),
+        "previous_price": round(previous_close, 2),
+        "currency": stock_info.get("currency", "USD"),
+        "time": None,
+        "upsOrDowns": get_ups_or_downs(current_price, previous_close),
+        "fullInfo": stock_info,
+        "history": history,
     }
 
 
-def format_analysis_output(symbol:str, stock_info:dict) -> dict:
-    current_price = stock_info.get('regularMarketPrice', stock_info.get('currentPrice'))
-    previous_close = stock_info.get('regularMarketPreviousClose')
+def format_analysis_output(symbol: str, stock_info: dict) -> dict:
+    current_price = stock_info.get("regularMarketPrice", stock_info.get("currentPrice"))
+    previous_close = stock_info.get("regularMarketPreviousClose")
     name = FIXED_SYMBOL_NAME_MAPPINGS.get(symbol)
     if not name:
-        name = stock_info.get('shortName', stock_info.get('longName', f'Stock {symbol}'))
+        name = stock_info.get("shortName", stock_info.get("longName", f"Stock {symbol}"))
 
     return {
-        'symbol': symbol,
-        'name': name,
-        'price': round(current_price, 2),
-        'previous_price': round(previous_close, 2),
-        'currency': stock_info.get('currency', 'USD'),
-        'time': None,
-        'upsOrDowns': get_ups_or_downs(current_price, previous_close)
+        "symbol": symbol,
+        "name": name,
+        "price": round(current_price, 2),
+        "previous_price": round(previous_close, 2),
+        "currency": stock_info.get("currency", "USD"),
+        "time": None,
+        "upsOrDowns": get_ups_or_downs(current_price, previous_close),
     }
+
 
 def format_stock_price_response(stock_info) -> str:
     """Get icon representation for ups or downs status"""
-    price_diff = stock_info['price'] - stock_info['previous_price']
-    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
+    price_diff = stock_info["price"] - stock_info["previous_price"]
+    price_diff_percent = (price_diff / stock_info["previous_price"] * 100) if stock_info["previous_price"] != 0 else 0
     icon = "➖"  # Unchanged
     price_diff_percent_format = "0"
     if price_diff > 0:
@@ -76,10 +77,11 @@ def format_stock_price_response(stock_info) -> str:
 
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
 
+
 def get_info_for_day_candle_picture(stock_info) -> str:
     """Get icon representation for ups or downs status"""
-    price_diff = stock_info['price'] - stock_info['previous_price']
-    price_diff_percent = (price_diff / stock_info['previous_price'] * 100) if stock_info['previous_price'] != 0 else 0
+    price_diff = stock_info["price"] - stock_info["previous_price"]
+    price_diff_percent = (price_diff / stock_info["previous_price"] * 100) if stock_info["previous_price"] != 0 else 0
     price_diff_percent_format = "0"
     sign = ""  # Unchanged
     color = ""
@@ -95,5 +97,5 @@ def get_info_for_day_candle_picture(stock_info) -> str:
     return {
         "title": f"{stock_info['name']} ({stock_info['symbol']})",
         "price": f"{stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)",
-        "color": color
+        "color": color,
     }

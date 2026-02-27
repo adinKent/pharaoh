@@ -1,11 +1,13 @@
 import logging
+
 import yfinance as yf
 
 from quote.output import format_price_output
 
 logger = logging.getLogger(__name__)
 
-def quote_stock(symbol: str, period: str = '2d') -> dict | None:
+
+def quote_stock(symbol: str, period: str = "2d") -> dict | None:
     """
     Get real-time stock or index price using yfinance library.
     Returns a dict with price info or None if not found.

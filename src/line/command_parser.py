@@ -1,21 +1,21 @@
-import re
 import math
+import re
 
+from line.command_mappings import get_all_commands
 from quote.output import format_stock_price_response
 from quote.tw_stock import (
-    get_tw_stock_price,
+    get_institues_buy_sell_today_result,
+    get_symbol_buy_sell_today_result,
     get_tw_index_price,
     get_tw_stock_candles_png,
+    get_tw_stock_price,
     get_tw_stock_symbol_from_company_name,
-    get_institues_buy_sell_today_result,
-    get_symbol_buy_sell_today_result
 )
 from quote.yahoo_finance import quote_stock
-from line.command_mappings import get_all_commands
 from utils.gemini_helper import generate_gemini_technical_analysis_response
 
-
 MAX_COMMAND_TEXT_LENGTH = 20
+
 
 def parse_line_command(command_text: str) -> str | None:
     """
@@ -27,43 +27,45 @@ def parse_line_command(command_text: str) -> str | None:
     if len(command_text) > MAX_COMMAND_TEXT_LENGTH:
         return None
 
-    price_qutoe_command_match = re.match(r'^#(.+)', command_text.strip())
+    price_qutoe_command_match = re.match(r"^#(.+)", command_text.strip())
     if price_qutoe_command_match:
         return handle_stock_price_quote(price_qutoe_command_match)
 
-    basic_analysis_command_match = re.match(r'^A(.+)', command_text.strip())
+    basic_analysis_command_match = re.match(r"^A(.+)", command_text.strip())
     if basic_analysis_command_match:
         return handle_stock_basic_analysis_quote(basic_analysis_command_match)
 
-    buy_and_sell_quote_match = re.match(r'^F(.+)', command_text.strip())
+    buy_and_sell_quote_match = re.match(r"^F(.+)", command_text.strip())
     if buy_and_sell_quote_match:
         return handle_buy_and_sell_quote(buy_and_sell_quote_match)
 
-    day_k_line_match = re.match(r'^P(.+)', command_text.strip())
+    day_k_line_match = re.match(r"^P(.+)", command_text.strip())
     if day_k_line_match:
         return handle_day_k_line(day_k_line_match)
 
     return None
 
 
-def get_stock_symbol_and_market_type(symbol:str):
-    symbol = re.sub(r"\s+", "", symbol)   # remove all whitespace via regex
+def get_stock_symbol_and_market_type(symbol: str):
+    symbol = re.sub(r"\s+", "", symbol)  # remove all whitespace via regex
 
     # Check if it's a Taiwan stock or US stock
     # Taiwan stocks: start with digits (may contain letters at the end)
     # US stocks: start with letters
     if len(symbol) > 0:
         if symbol[0].isdigit():
-            return (symbol, 'TW')
-        elif bool(re.search(r'[\u4e00-\u9fff]', symbol)):
+            return (symbol, "TW")
+        elif bool(re.search(r"[\u4e00-\u9fff]", symbol)):
             return get_stock_symbol_from_fixed_command(symbol)
-        elif bool(re.search(r'^[A-Za-z0-9]+', symbol)):
-            return (symbol.upper(), 'US')
+        elif bool(re.search(r"^[A-Za-z0-9]+", symbol)):
+            return (symbol.upper(), "US")
 
     return None
 
 
-def get_stock_symbol_from_fixed_command(symbol: str) -> str | tuple[str, str] | list[tuple[str, str]] | None:
+def get_stock_symbol_from_fixed_command(
+    symbol: str,
+) -> str | tuple[str, str] | list[tuple[str, str]] | None:
     command_mappings = get_all_commands()
     result = command_mappings.get(symbol, None)
 
@@ -85,12 +87,12 @@ def handle_stock_price_quote(symbol_in_command) -> str:
         symbol_list = [symbol_list]
 
     stock_info_list = []
-    for (symbol, market_type) in symbol_list:
+    for symbol, market_type in symbol_list:
         stock_info = None
         match market_type:
-            case 'TW':
+            case "TW":
                 stock_info = get_tw_stock_price(symbol)
-            case 'TW_IND':
+            case "TW_IND":
                 stock_info = get_tw_index_price(symbol)
             case _:
                 stock_info = quote_stock(symbol)
@@ -110,30 +112,30 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     (symbol, market_type) = symbol_list
     stock_info = None
     match market_type:
-        case 'TW':
-            stock_info = get_tw_stock_price(symbol, period='1y')
-        case 'TW_IND':
-            stock_info = get_tw_index_price(symbol, period='1y')
+        case "TW":
+            stock_info = get_tw_stock_price(symbol, period="1y")
+        case "TW_IND":
+            stock_info = get_tw_index_price(symbol, period="1y")
         case _:
-            stock_info = quote_stock(symbol, period='1y')
+            stock_info = quote_stock(symbol, period="1y")
 
-    full_info = stock_info['fullInfo']
-    history = stock_info['history']
+    full_info = stock_info["fullInfo"]
+    history = stock_info["history"]
 
-    ma5 = history['Close'].rolling(window=5).mean().iloc[-1]
-    ma20 = history['Close'].rolling(window=20).mean().iloc[-1]
-    ma60 = history['Close'].rolling(window=60).mean().iloc[-1]
-    ma120 = history['Close'].rolling(window=120).mean().iloc[-1]
-    ma240 = history['Close'].rolling(window=240).mean().iloc[-1]
+    ma5 = history["Close"].rolling(window=5).mean().iloc[-1]
+    ma20 = history["Close"].rolling(window=20).mean().iloc[-1]
+    ma60 = history["Close"].rolling(window=60).mean().iloc[-1]
+    ma120 = history["Close"].rolling(window=120).mean().iloc[-1]
+    ma240 = history["Close"].rolling(window=240).mean().iloc[-1]
 
     stock_only_info = []
-    if full_info.get('dividendYield', None):
-        dividend_yield = round(full_info.get('dividendYield', 0), 1)
-        stock_only_info.append(f'殖利率: {dividend_yield}%')
+    if full_info.get("dividendYield", None):
+        dividend_yield = round(full_info.get("dividendYield", 0), 1)
+        stock_only_info.append(f"殖利率: {dividend_yield}%")
 
-    if full_info.get('trailingPE', None):
-        trailing_pe = round(full_info.get('trailingPE', 0), 1)
-        stock_only_info.append(f'PE: {trailing_pe}')
+    if full_info.get("trailingPE", None):
+        trailing_pe = round(full_info.get("trailingPE", 0), 1)
+        stock_only_info.append(f"PE: {trailing_pe}")
 
     # if full_info.get('forwardPE', None): forwardPE is not correct by yFinance's query
     #     forward_pe = round(full_info.get('forwardPE', 0), 1)
@@ -142,21 +144,18 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     if len(stock_only_info) > 0:
         stock_only_info = ["  ".join(stock_only_info), ""]
 
-    technical_analysis_content = "\n".join([
-        f'{format_stock_price_response(stock_info)}', '',
-        *stock_only_info,
-        f'5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}',
-        f'季線: {round(ma60, 2)}  半年線: {round(ma120, 2)}  年線: {round(ma240, 2)}'
-    ])
+    technical_analysis_content = "\n".join(
+        [
+            f"{format_stock_price_response(stock_info)}",
+            "",
+            *stock_only_info,
+            f"5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}",
+            f"季線: {round(ma60, 2)}  半年線: {round(ma120, 2)}  年線: {round(ma240, 2)}",
+        ]
+    )
 
     ai_analysis_content = generate_gemini_technical_analysis_response(technical_analysis_content)
-    return "\n".join([
-        technical_analysis_content,
-        "",
-        "AI分析:",
-        "",
-        ai_analysis_content
-    ])
+    return "\n".join([technical_analysis_content, "", "AI分析:", "", ai_analysis_content])
 
 
 def format_symbol_buy_sell_response(data: dict) -> str:
@@ -166,37 +165,39 @@ def format_symbol_buy_sell_response(data: dict) -> str:
 
     # Helper to format numbers. Assumes values are strings with commas.
     def format_net(value_str: str, always_show_sign: bool = False) -> str:
-        num = int(value_str.replace(',', ''))
+        num = int(value_str.replace(",", ""))
 
-        sign = ''
+        sign = ""
         if always_show_sign and num > 0:
-            sign = '+'
+            sign = "+"
 
-        return f"{sign}{math.trunc(num/1000)} 張"
+        return f"{sign}{math.trunc(num / 1000)} 張"
 
-    return "\n".join([
-        f"{data.get('date')} 三大法人買賣超:",
-        "",
-        f"外資買進: {format_net(data.get('foreignBuy', '0'))}",
-        f"外資賣出: {format_net(data.get('foreignSell', '0'))}",
-        f"外資買賣差額: {format_net(data.get('foreignNet', '0'), always_show_sign = True)}",
-        "",
-        f"投信買進: {format_net(data.get('investTrustBuy', '0'))}",
-        f"投信賣出: {format_net(data.get('investTrustSell', '0'))}",
-        f"投信買賣差額: {format_net(data.get('investTrustNet', '0'), always_show_sign = True)}",
-        "",
-        f"自營商(自行買賣)買進: {format_net(data.get('dealerBuy', '0'))}",
-        f"自營商(自行買賣)賣出: {format_net(data.get('dealerSell', '0'))}",
-        f"自營商(自行買賣)買賣差額: {format_net(data.get('dealerNet', '0'), always_show_sign = True)}",
-        "",
-        f"自營商(避險)買進: {format_net(data.get('dealerHedgeBuy', '0'))}",
-        f"自營商(避險)賣出: {format_net(data.get('dealerHedgeSell', '0'))}",
-        f"自營商(避險)買賣差額: {format_net(data.get('dealerHedgeNet', '0'), always_show_sign = True)}",
-        "",
-        f"自營商合計買賣差額: {format_net(data.get('dealerTotalNet', '0'), always_show_sign = True)}",
-        "",
-        f"三大法人合計買賣差額: {format_net(data.get('totalNet', '0'), always_show_sign = True)}"
-    ])
+    return "\n".join(
+        [
+            f"{data.get('date')} 三大法人買賣超:",
+            "",
+            f"外資買進: {format_net(data.get('foreignBuy', '0'))}",
+            f"外資賣出: {format_net(data.get('foreignSell', '0'))}",
+            f"外資買賣差額: {format_net(data.get('foreignNet', '0'), always_show_sign=True)}",
+            "",
+            f"投信買進: {format_net(data.get('investTrustBuy', '0'))}",
+            f"投信賣出: {format_net(data.get('investTrustSell', '0'))}",
+            f"投信買賣差額: {format_net(data.get('investTrustNet', '0'), always_show_sign=True)}",
+            "",
+            f"自營商(自行買賣)買進: {format_net(data.get('dealerBuy', '0'))}",
+            f"自營商(自行買賣)賣出: {format_net(data.get('dealerSell', '0'))}",
+            f"自營商(自行買賣)買賣差額: {format_net(data.get('dealerNet', '0'), always_show_sign=True)}",
+            "",
+            f"自營商(避險)買進: {format_net(data.get('dealerHedgeBuy', '0'))}",
+            f"自營商(避險)賣出: {format_net(data.get('dealerHedgeSell', '0'))}",
+            f"自營商(避險)買賣差額: {format_net(data.get('dealerHedgeNet', '0'), always_show_sign=True)}",
+            "",
+            f"自營商合計買賣差額: {format_net(data.get('dealerTotalNet', '0'), always_show_sign=True)}",
+            "",
+            f"三大法人合計買賣差額: {format_net(data.get('totalNet', '0'), always_show_sign=True)}",
+        ]
+    )
 
 
 def handle_buy_and_sell_quote(symbol_in_command) -> str:
@@ -212,10 +213,8 @@ def handle_buy_and_sell_quote(symbol_in_command) -> str:
     data = get_symbol_buy_sell_today_result(symbol)
     if data:
         real_time_price_quote = handle_stock_price_quote(symbol_in_command)
-        return "\n".join([
-            real_time_price_quote, "",
-            format_symbol_buy_sell_response(data)
-        ])
+        return "\n".join([real_time_price_quote, "", format_symbol_buy_sell_response(data)])
+
 
 def handle_day_k_line(symbol_in_command) -> str:
     symbol_name = symbol_in_command.group(1)

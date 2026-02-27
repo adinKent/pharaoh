@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 FONT_PATH = Path(__file__).resolve().parents[1] / "assets" / "fonts" / "NotoSansTC-Regular.ttf"
 
+
 def _get_api_key() -> str | None:
     api_key = os.environ.get("FUGLE_API_KEY")
     if api_key:
@@ -31,6 +32,7 @@ def _get_api_key() -> str | None:
 
 
 client = RestClient(api_key=_get_api_key())
+
 
 def quote_stock(symbol: str) -> dict | None:
     try:
@@ -47,6 +49,7 @@ def quote_stock(symbol: str) -> dict | None:
         logger.exception(exc)
         return None
 
+
 def quote_stock_ticker(symbol: str) -> dict | None:
     try:
         stock = client.stock
@@ -61,6 +64,7 @@ def quote_stock_ticker(symbol: str) -> dict | None:
         logger.error("Fugle API error for %s: %s", symbol, exc)
         logger.exception(exc)
         return None
+
 
 def quote_stock_candles(symbol: str) -> dict | None:
     try:

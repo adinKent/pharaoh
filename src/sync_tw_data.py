@@ -28,7 +28,10 @@ def handler(event, context):
             if event.get("retry") == "scheduled" and event.get("retry_for_date") == effective_date:
                 return {
                     "statusCode": 422,
-                    "body": f"Synchronization data is incomplete: updated_count<{MIN_SYNC_COUNT} (matched_count: {matched_count}, upserted_count: {upserted_count}). Retry already executed for {effective_date}.",
+                    "body": (
+                        f"Synchronization data is incomplete: updated_count<{MIN_SYNC_COUNT} (matched_count: {matched_count},"
+                        f" upserted_count: {upserted_count}). Retry already executed for {effective_date}."
+                    ),
                 }
             reason = f"matched_count<{MIN_SYNC_COUNT} ({matched_count})"
             retry_event = {
@@ -77,5 +80,9 @@ def _schedule_retry(context, retry_event):
             "Input": json.dumps(retry_event),
         },
     )
-    logger.info("Scheduled retry via EventBridge Scheduler: %s at %s", schedule_name, schedule_expression)
+    logger.info(
+        "Scheduled retry via EventBridge Scheduler: %s at %s",
+        schedule_name,
+        schedule_expression,
+    )
     return True
