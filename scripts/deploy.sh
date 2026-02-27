@@ -28,7 +28,7 @@ fi
 # Build the project
 echo "Building the project..."
 python -m pip install -r requirements-dev.txt
-npm run build
+make build
 
 echo "Deploying to environment: $ENVIRONMENT"
 
