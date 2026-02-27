@@ -41,7 +41,6 @@ pharaoh/
 │   └── local.sh            # Local development script
 ├── .env.example            # Environment variables template
 ├── .pylintrc               # pylint configuration
-├── package.json            # Project metadata and scripts
 ├── requirements-dev.txt    # Development dependencies
 ├── samconfig.toml          # SAM deployment configuration
 ├── pytest.ini              # Pytest configuration
@@ -60,8 +59,8 @@ pharaoh/
 git clone https://github.com/your-username/pharaoh-line-webhook.git
 cd pharaoh-line-webhook
 
-# Install Python dependencies
-python -m pip install -r requirements-dev.txt
+# Install Python dependencies and setup the environment
+make setup
 ```
 
 ### 2. Configure Line Messaging API
@@ -130,7 +129,7 @@ The deployment scripts will store the provided Line channel credentials as `Secu
 
 ```bash
 # Build and test
-npm run build
+make build
 
 # Package the SAM application
 sam build --template-file infrastructure/template.yaml
@@ -161,14 +160,13 @@ sam deploy --config-env dev \
 
 ```bash
 # Development
-python -m pip install -r requirements-dev.txt
-npm run deploy:dev
+make deploy-dev
 
 # Staging
-npm run deploy:staging
+make deploy-staging
 
 # Production
-npm run deploy:prod
+make deploy-prod
 ```
 
 ## 🧪 Local Development
@@ -177,8 +175,7 @@ npm run deploy:prod
 
 ```bash
 # Start local development server
-chmod +x scripts/local.sh
-./scripts/local.sh
+make local-start
 ```
 
 The webhook will be available at: `http://localhost:3000/webhook`
@@ -205,12 +202,9 @@ python -m pytest tests/ --cov=src --cov-report=html --cov-report=term
 # Run specific test file
 python -m pytest tests/test_app.py -v
 
-# Lint code
-pylint src/ tests/
-
-# Format code
-black src/ tests/
-isort src/ tests/
+# Lint and format code
+make lint
+make fmt
 ```
 
 ## 🔧 Configuration
@@ -411,7 +405,7 @@ The deployment includes CloudWatch monitoring:
 
 ```bash
 # View Lambda logs
-npm run logs
+make logs
 
 # Or use AWS CLI
 aws logs tail /aws/lambda/line-webhook-dev --follow
