@@ -10,6 +10,7 @@ from quote.tw_stock import (
     get_tw_stock_candles_png,
     get_tw_stock_price,
     get_tw_stock_symbol_from_company_name,
+    get_tw_stock_year_candles_png,
 )
 from quote.yahoo_finance import quote_stock
 from utils.gemini_helper import generate_gemini_technical_analysis_response
@@ -42,6 +43,10 @@ def parse_line_command(command_text: str) -> str | None:
     day_k_line_match = re.match(r"^P(.+)", command_text.strip())
     if day_k_line_match:
         return handle_day_k_line(day_k_line_match)
+
+    year_k_line_match = re.match(r"^K(.+)", command_text.strip())
+    if year_k_line_match:
+        return handle_year_k_line(year_k_line_match)
 
     return None
 
@@ -234,3 +239,14 @@ def handle_day_k_line(symbol_in_command) -> str:
         (symbol, market_type) = symbol_list
 
     return get_tw_stock_candles_png(symbol)
+
+
+def handle_year_k_line(symbol_in_command) -> str:
+    symbol_name = symbol_in_command.group(1)
+    symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if isinstance(symbol_list, list):
+        (symbol, market_type) = symbol_list[0]
+    else:
+        (symbol, market_type) = symbol_list
+
+    return get_tw_stock_year_candles_png(symbol)

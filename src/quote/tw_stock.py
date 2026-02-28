@@ -17,7 +17,13 @@ import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
 
-from quote.fugle import quote_stock, quote_stock_candles, quote_stock_ticker
+from quote.fugle import (
+    quote_stock as fugle_quote_stock,
+)
+from quote.fugle import (
+    quote_stock_candles,
+    quote_stock_ticker,
+)
 from quote.output import format_price_output, get_info_for_day_candle_picture
 from utils.aws_helper import put_image
 from utils.mongo_helper import get_mongo_client
@@ -34,7 +40,7 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
     Returns a dict with price info or None if not found.
     """
     try:
-        stock_info = quote_stock(symbol)
+        stock_info = fugle_quote_stock(symbol)
         if stock_info:
             current_price = stock_info.get("lastPrice", stock_info.get("closePrice"))
             previous_close = stock_info.get("previousClose")
@@ -808,5 +814,175 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             return presign_url
     except Exception as exc:
         logger.error("Fugle candle API error for %s: %s", symbol, exc)
+        logger.exception(exc)
+        return None
+
+
+def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
+    try:
+        stock_info = get_tw_stock_price(symbol)
+        if not stock_info:
+            return None
+
+        ticker = fugle_quote_stock(symbol)
+        title_info = get_info_for_day_candle_picture(stock_info)
+
+        yahoo_symbol = f"{symbol}.TW"
+        if ticker and ticker["exchange"] == "TPEx":
+            yahoo_symbol = f"{symbol}.TWO"
+        elif ticker and ticker["type"] == "INDEX":
+            if symbol == "IX0001":
+                yahoo_symbol = "^TWII"
+            elif symbol == "IX0043":
+                yahoo_symbol = "IX0043.TWO"
+
+        df = yf.Ticker(yahoo_symbol).history(period="6mo")
+        if df.empty:
+            logger.warning("No 1-year history found for %s", yahoo_symbol)
+            return None
+
+        # season/month/day lines in TW charts usually map to MA60/20/5.
+        ma_windows = {
+            "日線(5MA)": 5,
+            "月線(20MA)": 20,
+            "季線(60MA)": 60,
+        }
+        ma_colors = {
+            "日線(5MA)": "#fbe08a",
+            "月線(20MA)": "#9dddf8",
+            "季線(60MA)": "#dcc3f3",
+        }
+        ma_series: dict[str, pd.Series] = {name: df["Close"].rolling(window=window, min_periods=window).mean() for name, window in ma_windows.items()}
+        ma_addplots = [mpf.make_addplot(ma_series[name], type="line", color=ma_colors[name], width=1.1, panel=0) for name in ma_windows]
+
+        market_colors = mpf.make_marketcolors(
+            up="red",
+            down="green",
+            wick={"up": "red", "down": "green"},
+            edge="inherit",
+            volume="inherit",
+        )
+
+        font_name = "Noto Sans TC"
+        if FONT_PATH.exists():
+            try:
+                fm.fontManager.addfont(str(FONT_PATH))
+                chinese_font_prop = fm.FontProperties(fname=FONT_PATH)
+                font_name = chinese_font_prop.get_name()
+            except Exception as exc:
+                logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
+
+        dark_blue_style = mpf.make_mpf_style(
+            base_mpf_style="nightclouds",
+            marketcolors=market_colors,
+            facecolor="#0b1b3b",
+            gridcolor="#1f2f57",
+            rc={"font.family": font_name},
+        )
+
+        fig, axes = mpf.plot(
+            df,
+            type="candle",
+            volume=True,
+            addplot=ma_addplots,
+            datetime_format="%Y-%m-%d",
+            style=dark_blue_style,
+            returnfig=True,
+            tight_layout=True,
+            scale_padding={"left": 0.6, "top": 4, "right": 1, "bottom": 0.6},
+        )
+
+        ax = fig.axes[0]
+        # Keep MA lines below candlesticks.
+        for line in ax.lines:
+            line.set_zorder(1)
+        for collection in ax.collections:
+            collection.set_zorder(2)
+
+        high_idx = df["High"].idxmax()
+        high_val = df.loc[high_idx, "High"]
+        low_idx = df["Low"].idxmin()
+        low_val = df.loc[low_idx, "Low"]
+
+        # draw labels of highest and lowest price
+        x_min_current, x_max_current = ax.get_xlim()
+        y_min_current, y_max_current = ax.get_ylim()
+        y_span = y_max_current - y_min_current
+        y_pad = max(y_span * 0.05, 0.01)
+
+        high_text_y = min(high_val + y_pad, y_max_current - y_pad)
+        low_text_y = max(low_val - y_pad, y_min_current + y_pad)
+
+        high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
+
+        (high_x, high_ha) = get_x_label_align(df["High"].argmax(), x_max_current)
+        (low_x, low_ha) = get_x_label_align(df["Low"].argmin(), x_max_current)
+        ax.text(
+            high_x,
+            high_text_y,
+            f"最高價: {high_val:.2f}",
+            ha=high_ha,
+            va="center",
+            fontsize=10,
+            bbox=high_low_value_bbox_style,
+            color="white",
+            clip_on=False,
+        )
+        ax.text(
+            low_x,
+            low_text_y,
+            f"最低價: {low_val:.2f}",
+            ha=low_ha,
+            va="center",
+            fontsize=10,
+            bbox=high_low_value_bbox_style,
+            color="white",
+            clip_on=False,
+        )
+
+        legend_handles = [
+            ax.plot([], [], color=ma_colors[name], linewidth=1.2, label=f"{name}: {ma_series[name].dropna().iloc[-1]:.2f}")[0]
+            for name in ma_windows
+            if not ma_series[name].dropna().empty
+        ]
+        if legend_handles:
+            ax.legend(
+                handles=legend_handles,
+                loc="upper left",
+                fontsize=9,
+                frameon=True,
+                facecolor="#0b1b3b",
+                edgecolor="#1f2f57",
+                labelcolor="white",
+            )
+
+        # hide y and volume's label
+        ax.yaxis.label.set_visible(False)
+        axes[2].set_ylabel("")
+
+        for axis in fig.axes:
+            axis.tick_params(axis="x", labelrotation=0)
+
+        if title_info:
+            fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha="left", y=0.97)
+            fig.text(0.065, 0.90, title_info["price"], color=title_info["color"], fontsize=12)
+
+        fig.patch.set_facecolor("#0b1b3b")
+
+        image_name = f"{symbol}_1y_{round(time.time())}.jpg"
+        if save_to_local_file:
+            project_root = Path(__file__).resolve().parents[2]
+            output_path = project_root / f"{image_name}"
+            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), dpi=300)
+            return str(output_path)
+        else:
+            buffer = io.BytesIO()
+            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), dpi=300)
+            buffer.seek(0)
+            presign_url = put_image(image_name, buffer.getvalue())
+            print(f"Rely image url={presign_url}")
+            return presign_url
+    except Exception as exc:
+        logger.error("Error generating 1y candle chart for %s: %s", symbol, exc)
         logger.exception(exc)
         return None
