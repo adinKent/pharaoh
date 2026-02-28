@@ -14,7 +14,7 @@ class TestGetTwStockPrice:
     """Test cases for get_tw_stock_price function"""
 
     @patch("quote.tw_stock.yf.Ticker")
-    @patch("quote.tw_stock.quote_stock")
+    @patch("quote.tw_stock.fugle_quote_stock")
     def test_successful_stock_fetch_with_yfinance(self, mock_fugle_quote_stock, mock_ticker_class):
         """Test successful stock price fetch using fugle and yfinance"""
         # Mock quote result from fugle
@@ -64,7 +64,7 @@ class TestGetTwStockPrice:
         result = get_tw_stock_price("9999")
         assert result is None
 
-    @patch("quote.tw_stock.quote_stock")
+    @patch("quote.tw_stock.fugle_quote_stock")
     @patch("quote.tw_stock._fallback_stock_price")
     def test_fallback_when_fugle_fails(self, mock_fallback, mock_fugle_quote_stock):
         """Test fallback method when fugleyfinance fails"""
