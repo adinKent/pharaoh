@@ -44,7 +44,7 @@ fi
 # Build the project
 echo "Building the project..."
 python -m pytest tests/ -v
-pylint src/ tests/
+ruff check .
 
 # Start local API Gateway
 echo "Starting local API Gateway on port 3000..."

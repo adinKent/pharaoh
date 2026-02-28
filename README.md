@@ -40,7 +40,6 @@ pharaoh/
 │   ├── deploy.bat          # Windows deployment script
 │   └── local.sh            # Local development script
 ├── .env.example            # Environment variables template
-├── .pylintrc               # pylint configuration
 ├── requirements-dev.txt    # Development dependencies
 ├── samconfig.toml          # SAM deployment configuration
 ├── pytest.ini              # Pytest configuration
