@@ -1,0 +1,39 @@
+.git
+.gitignore
+.DS_Store
+
+# Local/editor metadata
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Python caches and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Build/test artifacts
+.aws-sam/
+htmlcov/
+.coverage
+coverage/
+dist/
+build/
+test-results/
+junit.xml
+
+# Local environment files
+.env
+.env.*
+
+# Project files not required for image build context
+tests/
+scripts/
+README.md
+requirements-dev.txt

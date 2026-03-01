@@ -110,6 +110,7 @@ Resources:
     Metadata:
       Dockerfile: infrastructure/Dockerfile
       DockerContext: ../
+      DockerBuildTarget: sync-tw-data
       DockerTag: sync-tw-data
 
   # Lambda Function
@@ -149,6 +150,7 @@ Resources:
     Metadata:
       Dockerfile: infrastructure/Dockerfile
       DockerContext: ../
+      DockerBuildTarget: line-webhook
       DockerTag: line-webhook
 
 
