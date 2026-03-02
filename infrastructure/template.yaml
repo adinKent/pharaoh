@@ -163,8 +163,8 @@ Resources:
       MethodSettings:
         - ResourcePath: /webhook
           HttpMethod: POST
-          ThrottlingRateLimit: 5
-          ThrottlingBurstLimit: 10
+          ThrottlingRateLimit: 10
+          ThrottlingBurstLimit: 20
       EndpointConfiguration:
         Type: REGIONAL
       Cors:

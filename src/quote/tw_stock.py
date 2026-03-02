@@ -880,10 +880,17 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             rc={"font.family": font_name},
         )
 
+        y_min_current = df.get("Low").min()
+        y_max_current = df.get("High").max()
+        y_span = y_max_current - y_min_current
+        y_pad = max(y_span * 0.1, 0.01)
+        new_y_lim = (y_min_current - y_pad, y_max_current + y_pad)
+
         fig, axes = mpf.plot(
             df,
             type="candle",
             volume=True,
+            ylim=new_y_lim,
             addplot=ma_addplots,
             datetime_format="%Y-%m-%d",
             style=dark_blue_style,
@@ -906,12 +913,12 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
 
         # draw labels of highest and lowest price
         x_min_current, x_max_current = ax.get_xlim()
-        y_min_current, y_max_current = ax.get_ylim()
-        y_span = y_max_current - y_min_current
-        y_pad = max(y_span * 0.05, 0.01)
+        # y_min_current, y_max_current = ax.get_ylim()
+        # y_span = y_max_current - y_min_current
+        # y_pad = max(y_span * 0.05, 0.01)
 
-        high_text_y = min(high_val + y_pad, y_max_current - y_pad)
-        low_text_y = max(low_val - y_pad, y_min_current + y_pad)
+        low_text_y = low_val - y_pad * 0.7
+        high_text_y = high_val + y_pad * 0.7
 
         high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
 
@@ -922,7 +929,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             high_text_y,
             f"最高價: {high_val:.2f}",
             ha=high_ha,
-            va="center",
+            va="top",
             fontsize=10,
             bbox=high_low_value_bbox_style,
             color="white",
@@ -933,7 +940,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             low_text_y,
             f"最低價: {low_val:.2f}",
             ha=low_ha,
-            va="center",
+            va="bottom",
             fontsize=10,
             bbox=high_low_value_bbox_style,
             color="white",
