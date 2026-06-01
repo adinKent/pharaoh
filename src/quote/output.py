@@ -83,8 +83,8 @@ def get_info_for_day_candle_picture(stock_info) -> str:
     price_diff = stock_info["price"] - stock_info["previous_price"]
     price_diff_percent = (price_diff / stock_info["previous_price"] * 100) if stock_info["previous_price"] != 0 else 0
     price_diff_percent_format = "0"
-    sign = ""  # Unchanged
-    color = ""
+    sign = " "  # Unchanged
+    color = "gray"
     if price_diff > 0:
         color = "red"
         sign = "▲"
