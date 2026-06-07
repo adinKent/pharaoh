@@ -263,6 +263,28 @@ class TestParseLineCommand:
         assert "S&P 500" in result or "^GSPC" in result
         assert mock_quote_stock.call_count == 4
 
+    @patch("line.command_parser.get_today_ex_dividend_stocks")
+    def test_ex_dividend_command(self, mock_get_today_ex_dividend_stocks):
+        """Test D除息 returns today's ex-dividend stocks."""
+        mock_get_today_ex_dividend_stocks.return_value = (
+            [
+                {
+                    "market": "上市",
+                    "symbol": "2330",
+                    "name": "台積電",
+                    "cashDividend": "4.0",
+                }
+            ],
+            "2026-06-17",
+        )
+
+        result = parse_line_command("D除息")
+
+        assert result is not None
+        assert "2026-06-17 今日除息股票 (1 檔):" in result
+        assert "台積電 (2330) 現金股利: 4.0" in result
+        mock_get_today_ex_dividend_stocks.assert_called_once_with()
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

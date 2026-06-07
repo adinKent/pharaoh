@@ -49,6 +49,7 @@ HELP_COMMANDS = {
             "半年K線圖: K股票代號 (ex: K2330), K公司名稱 (ex: K台積電)",
             "技術分析: A大盤 A股票代號 (ex: A2330), A公司名稱 (ex: A台積電)",
             "三大法人買賣超: F大盤 F股票代號 (ex: F2330), F公司名稱 (ex: F台積電)",
+            "今日除權息 (台股): D除息",
             f"美股期: {format_command_help(INDEX_FUTURE_COMMANDS)}",
             f"外匯: {format_command_help(CURRENCY_COMMANDS)}",
             f"原物料: {format_command_help(COMEX_COMMANDS)}",

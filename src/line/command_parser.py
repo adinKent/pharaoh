@@ -2,10 +2,11 @@ import math
 import re
 
 from line.command_mappings import get_all_commands
-from quote.output import format_stock_price_response
+from quote.output import format_ex_dividend_response, format_stock_price_response
 from quote.tw_stock import (
     get_institues_buy_sell_today_result,
     get_symbol_buy_sell_today_result,
+    get_today_ex_dividend_stocks,
     get_tw_index_price,
     get_tw_stock_candles_png,
     get_tw_stock_price,
@@ -31,6 +32,10 @@ def parse_line_command(command_text: str) -> str | None:
     price_qutoe_command_match = re.match(r"^#(.+)", command_text.strip())
     if price_qutoe_command_match:
         return handle_stock_price_quote(price_qutoe_command_match)
+
+    ex_dividend_command_match = re.match(r"^D除息$", command_text.strip())
+    if ex_dividend_command_match:
+        return handle_ex_dividend_quote()
 
     basic_analysis_command_match = re.match(r"^A(.+)", command_text.strip())
     if basic_analysis_command_match:
@@ -106,6 +111,11 @@ def handle_stock_price_quote(symbol_in_command) -> str:
             stock_info_list.append(stock_info)
 
     return "\n".join(map(lambda stock_info: format_stock_price_response(stock_info), stock_info_list))
+
+
+def handle_ex_dividend_quote() -> str:
+    ex_dividend_stocks, query_date = get_today_ex_dividend_stocks()
+    return format_ex_dividend_response(ex_dividend_stocks, query_date)
 
 
 def handle_stock_basic_analysis_quote(symbol_in_command) -> str:

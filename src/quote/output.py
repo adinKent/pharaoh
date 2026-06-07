@@ -10,6 +10,8 @@ FIXED_SYMBOL_NAME_MAPPINGS = {
     "JPYTWD=X": "JPY/TWD",
 }
 
+MAX_LINE_REPLY_TEXT_LENGTH = 4900
+
 
 def get_ups_or_downs(current_price, previous_close):
     """
@@ -99,3 +101,31 @@ def get_info_for_day_candle_picture(stock_info) -> str:
         "price": f"{stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)",
         "color": color,
     }
+
+
+def format_ex_dividend_response(ex_dividend_stocks: list[dict], query_date: str) -> str:
+    if not ex_dividend_stocks:
+        return f"{query_date} 今日沒有除息股票。"
+
+    lines = [f"{query_date} 今日除息股票 ({len(ex_dividend_stocks)} 檔):", ""]
+    omitted_count = 0
+
+    for stock in ex_dividend_stocks:
+        cash_dividend = stock.get("cashDividend") or "-"
+        line = f"{stock.get('name', '')} ({stock.get('symbol', '')}) 現金股利: {cash_dividend}"
+        projected_lines = [*lines, line]
+        projected_text = "\n".join(projected_lines)
+        if len(projected_text) <= MAX_LINE_REPLY_TEXT_LENGTH:
+            lines.append(line)
+        else:
+            omitted_count += 1
+
+    if omitted_count:
+        suffix = f"... 還有 {omitted_count} 檔未顯示"
+        while len("\n".join([*lines, suffix])) > MAX_LINE_REPLY_TEXT_LENGTH and len(lines) > 2:
+            lines.pop()
+            omitted_count += 1
+            suffix = f"... 還有 {omitted_count} 檔未顯示"
+        lines.append(suffix)
+
+    return "\n".join(lines)

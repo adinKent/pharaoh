@@ -33,6 +33,9 @@ FONT_PATH = HERE / "assets" / "fonts" / "NotoSansTC-Regular.ttf"
 
 logger = logging.getLogger(__name__)
 
+TWSE_EX_DIVIDEND_URL = "https://openapi.twse.com.tw/v1/exchangeReport/TWT48U_ALL"
+TPEX_EX_DIVIDEND_URL = "https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost"
+
 
 def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | None = None) -> dict | None:
     """
@@ -90,6 +93,79 @@ def get_tw_index_price(symbol: str, period: str | None = None) -> dict | None:
         yahoo_symbol = "IX0043.TWO"
 
     return get_tw_stock_price(symbol, period, yahoo_symbol)
+
+
+def get_today_ex_dividend_stocks() -> tuple[list[dict], str]:
+    query_date = datetime.now(ZoneInfo("Asia/Taipei")).date()
+    roc_date = _to_roc_date(query_date)
+    display_date = query_date.strftime("%Y-%m-%d")
+
+    stocks = []
+    stocks.extend(get_twse_ex_dividend_stocks(roc_date) or [])
+    stocks.extend(get_tpex_ex_dividend_stocks(roc_date) or [])
+    stocks.sort(key=lambda stock: (stock.get("market", ""), stock.get("symbol", "")))
+
+    return stocks, display_date
+
+
+def _to_roc_date(date) -> str:
+    return f"{date.year - 1911:03d}{date.month:02d}{date.day:02d}"
+
+
+def get_twse_ex_dividend_stocks(roc_date: str) -> list[dict] | None:
+    try:
+        resp = requests.get(TWSE_EX_DIVIDEND_URL, timeout=10)
+        resp.raise_for_status()
+        return [
+            _normalize_twse_ex_dividend_row(row)
+            for row in resp.json()
+            if row.get("Date") == roc_date and _is_ex_dividend_type(row.get("Exdividend", ""))
+        ]
+    except Exception as e:
+        logger.error("Error fetching TWSE ex-dividend data: %s", e)
+        logger.exception(e)
+        return None
+
+
+def get_tpex_ex_dividend_stocks(roc_date: str) -> list[dict] | None:
+    try:
+        resp = requests.get(TPEX_EX_DIVIDEND_URL, timeout=10)
+        resp.raise_for_status()
+        return [
+            _normalize_tpex_ex_dividend_row(row)
+            for row in resp.json()
+            if row.get("ExRrightsExDividendDate") == roc_date and _is_ex_dividend_type(row.get("ExRrightsExDividend", ""))
+        ]
+    except Exception as e:
+        logger.error("Error fetching TPEx ex-dividend data: %s", e)
+        logger.exception(e)
+        return None
+
+
+def _is_ex_dividend_type(value: str) -> bool:
+    return "息" in value
+
+
+def _normalize_twse_ex_dividend_row(row: dict) -> dict:
+    return {
+        "date": row.get("Date", ""),
+        "market": "上市",
+        "symbol": row.get("Code", ""),
+        "name": row.get("Name", ""),
+        "type": row.get("Exdividend", ""),
+        "cashDividend": row.get("CashDividend", ""),
+    }
+
+
+def _normalize_tpex_ex_dividend_row(row: dict) -> dict:
+    return {
+        "date": row.get("ExRrightsExDividendDate", ""),
+        "market": "上櫃",
+        "symbol": row.get("SecuritiesCompanyCode", ""),
+        "name": row.get("CompanyName", ""),
+        "type": row.get("ExRrightsExDividend", ""),
+        "cashDividend": row.get("CashDividend", ""),
+    }
 
 
 def _fallback_stock_price(symbol: str):

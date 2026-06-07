@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 import pandas as pd
 import pytest
 
-from quote.tw_stock import _fallback_stock_price, get_tw_stock_price
+from quote.tw_stock import _fallback_stock_price, get_tpex_ex_dividend_stocks, get_tw_stock_price, get_twse_ex_dividend_stocks
 
 # Mock yfinance at module level
 sys.modules["yfinance"] = Mock()
@@ -85,10 +85,19 @@ class TestGetTwStockPrice:
         assert result["symbol"] == "2884"
         mock_fallback.assert_called_once_with("2884")
 
+    @patch("quote.tw_stock.fugle_quote_stock")
     @patch("quote.tw_stock.yf")
     @patch("quote.tw_stock._fallback_stock_price")
-    def test_fallback_when_yfinance_fails(self, mock_fallback, mock_yf):
+    def test_fallback_when_yfinance_fails(self, mock_fallback, mock_yf, mock_fugle_quote_stock):
         """Test fallback method when fugleyfinance fails"""
+        mock_fugle_quote_stock.return_value = {
+            "exchange": "TWSE",
+            "symbol": "2884",
+            "name": "玉山金",
+            "lastPrice": 25.5,
+            "previousClose": 25.0,
+        }
+
         # Make yfinance raise an exception
         mock_yf.Ticker.side_effect = Exception("yfinance error")
 
@@ -122,6 +131,100 @@ class TestGetTwStockPrice:
         assert result is not None
         assert result["symbol"] == "2884"
         assert result["price"] == 25.50
+
+
+class TestGetExDividendStocks:
+    @patch("quote.tw_stock.requests.get")
+    def test_get_twse_ex_dividend_stocks(self, mock_get):
+        mock_response = Mock()
+        mock_response.json.return_value = [
+            {
+                "Date": "1150617",
+                "Code": "2330",
+                "Name": "台積電",
+                "Exdividend": "息",
+                "CashDividend": "4.0",
+            },
+            {
+                "Date": "1150617",
+                "Code": "8926",
+                "Name": "台汽電",
+                "Exdividend": "權",
+                "CashDividend": "0",
+            },
+            {
+                "Date": "1150618",
+                "Code": "2317",
+                "Name": "鴻海",
+                "Exdividend": "息",
+                "CashDividend": "5.8",
+            },
+        ]
+        mock_get.return_value = mock_response
+
+        result = get_twse_ex_dividend_stocks("1150617")
+
+        assert result == [
+            {
+                "date": "1150617",
+                "market": "上市",
+                "symbol": "2330",
+                "name": "台積電",
+                "type": "息",
+                "cashDividend": "4.0",
+            }
+        ]
+        mock_response.raise_for_status.assert_called_once_with()
+
+    @patch("quote.tw_stock.requests.get")
+    def test_get_tpex_ex_dividend_stocks(self, mock_get):
+        mock_response = Mock()
+        mock_response.json.return_value = [
+            {
+                "ExRrightsExDividendDate": "1150617",
+                "SecuritiesCompanyCode": "3680",
+                "CompanyName": "家登",
+                "ExRrightsExDividend": "除息",
+                "CashDividend": "4.99733964",
+            },
+            {
+                "ExRrightsExDividendDate": "1150617",
+                "SecuritiesCompanyCode": "8930",
+                "CompanyName": "青鋼",
+                "ExRrightsExDividend": "除權息",
+                "CashDividend": "2.2",
+            },
+            {
+                "ExRrightsExDividendDate": "1150618",
+                "SecuritiesCompanyCode": "2916",
+                "CompanyName": "滿心",
+                "ExRrightsExDividend": "除息",
+                "CashDividend": "3",
+            },
+        ]
+        mock_get.return_value = mock_response
+
+        result = get_tpex_ex_dividend_stocks("1150617")
+
+        assert result == [
+            {
+                "date": "1150617",
+                "market": "上櫃",
+                "symbol": "3680",
+                "name": "家登",
+                "type": "除息",
+                "cashDividend": "4.99733964",
+            },
+            {
+                "date": "1150617",
+                "market": "上櫃",
+                "symbol": "8930",
+                "name": "青鋼",
+                "type": "除權息",
+                "cashDividend": "2.2",
+            },
+        ]
+        mock_response.raise_for_status.assert_called_once_with()
 
 
 if __name__ == "__main__":
