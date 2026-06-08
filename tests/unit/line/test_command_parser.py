@@ -282,7 +282,7 @@ class TestParseLineCommand:
 
         assert result is not None
         assert "2026-06-17 今日除息股票 (1 檔):" in result
-        assert "台積電 (2330) 現金股利: 4.0" in result
+        assert "台積電 (2330) 現金股利: 4" in result
         mock_get_today_ex_dividend_stocks.assert_called_once_with()
 
 

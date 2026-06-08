@@ -13,6 +13,17 @@ FIXED_SYMBOL_NAME_MAPPINGS = {
 MAX_LINE_REPLY_TEXT_LENGTH = 4900
 
 
+def format_cash_dividend(cash_dividend) -> str:
+    if cash_dividend in (None, ""):
+        return "-"
+
+    cash_dividend_text = str(cash_dividend)
+    if "." not in cash_dividend_text:
+        return cash_dividend_text
+
+    return cash_dividend_text.rstrip("0").rstrip(".")
+
+
 def get_ups_or_downs(current_price, previous_close):
     """
     Determine if the stock price is up, down, or unchanged.
@@ -111,7 +122,7 @@ def format_ex_dividend_response(ex_dividend_stocks: list[dict], query_date: str)
     omitted_count = 0
 
     for stock in ex_dividend_stocks:
-        cash_dividend = stock.get("cashDividend") or "-"
+        cash_dividend = format_cash_dividend(stock.get("cashDividend"))
         line = f"{stock.get('name', '')} ({stock.get('symbol', '')}) 現金股利: {cash_dividend}"
         projected_lines = [*lines, line]
         projected_text = "\n".join(projected_lines)

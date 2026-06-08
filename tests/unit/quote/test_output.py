@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from quote.output import format_ex_dividend_response, get_ups_or_downs
+from quote.output import format_cash_dividend, format_ex_dividend_response, get_ups_or_downs
 
 # Add project root to path so we can import from src
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../src"))
@@ -55,11 +55,29 @@ class TestFormatExDividendResponse:
         )
 
         assert "2026-06-17 今日除息股票 (2 檔):" in result
-        assert "台積電 (2330) 現金股利: 4.0" in result
+        assert "台積電 (2330) 現金股利: 4" in result
         assert "家登 (3680) 現金股利: 4.99733964" in result
 
     def test_format_no_ex_dividend_stocks(self):
         assert format_ex_dividend_response([], "2026-06-07") == "2026-06-07 今日沒有除息股票。"
+
+
+class TestFormatCashDividend:
+    @pytest.mark.parametrize(
+        ("cash_dividend", "expected"),
+        [
+            ("4.0", "4"),
+            ("4.00000000", "4"),
+            ("4.9973396400", "4.99733964"),
+            ("0.0000", "0"),
+            ("2.2", "2.2"),
+            ("-", "-"),
+            ("", "-"),
+            (None, "-"),
+        ],
+    )
+    def test_removes_trailing_zeroes(self, cash_dividend, expected):
+        assert format_cash_dividend(cash_dividend) == expected
 
 
 if __name__ == "__main__":
