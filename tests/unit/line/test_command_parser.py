@@ -70,6 +70,15 @@ class TestGetStockSymbolAndMarketType:
         assert isinstance(result, list)
         assert len(result) == 4
 
+    def test_tw_company_name(self):
+        """Test tw company commands like #台積電, #長榮, etc."""
+        # These should be handled by get_tw_stock_symbol_from_company_name internally
+        result = get_stock_symbol_and_market_type("台積電")
+        assert result == ("2330", "TW")
+
+        result = get_stock_symbol_and_market_type("長榮")
+        assert result == ("2603", "TW")
+
 
 class TestGetStockSymbolFromFixedCommand:
     """Test cases for get_stock_symbol_from_fixed_command function"""
@@ -99,13 +108,10 @@ class TestGetStockSymbolFromFixedCommand:
         result = get_stock_symbol_from_fixed_command("日元")
         assert result == ("JPYTWD=X", "FUT")
 
-    @patch("line.command_parser.get_tw_stock_symbol_from_company_name")
-    def test_unknown_command_fallback(self, mock_get_symbol):
-        """Test unknown command falls back to company name lookup"""
-        mock_get_symbol.return_value = "2330"
+    def test_unknown_command_fallback(self):
+        """Test unknown command should return None"""
         result = get_stock_symbol_from_fixed_command("台積電")
-        assert result == ("2330", "TW")
-        mock_get_symbol.assert_called_once_with("台積電")
+        assert result is None
 
 
 class TestFormatStockPriceResponse:
