@@ -309,15 +309,25 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
             # Parse HTML
             soup = BeautifulSoup(resp.content, "html.parser")
 
-            # Find the element by id
-            element = soup.find(id="autoDiv-1")
-
-            # Extract its value
-            if element and element.has_attr("value"):
-                return element["value"]
-            else:
+            elements = soup.find_all(id=re.compile(r"^autoDiv-\d+$"))
+            if not elements:
                 logger.warning("Taiwan stock symbol for name %s not found from twse", company_name)
                 return None
+
+            exact_match = next(
+                (
+                    element
+                    for element in elements
+                    if _normalize_company_name(_extract_autocomplete_company_name(element)) == _normalize_company_name(company_name)
+                ),
+                None,
+            )
+            element = exact_match or elements[0]
+            if element.has_attr("value"):
+                return element["value"]
+
+            logger.warning("Taiwan stock symbol for name %s not found from twse", company_name)
+            return None
 
     except Exception as e:
         logger.error(
@@ -328,6 +338,22 @@ def get_tw_stock_symbol_from_company_name(company_name: str):
         logger.exception(e)
 
     return None
+
+
+def _normalize_company_name(company_name: str) -> str:
+    return re.sub(r"\s+", "", company_name)
+
+
+def _extract_autocomplete_company_name(element) -> str:
+    text = element.get_text(" ", strip=True)
+    if not text and element.parent:
+        text = element.parent.get_text(" ", strip=True)
+
+    stock_symbol = str(element.get("value", "")).strip()
+    if stock_symbol and text.startswith(stock_symbol):
+        return text[len(stock_symbol) :].strip()
+
+    return re.sub(r"^\s*\d+[A-Za-z]*\s*", "", text).strip()
 
 
 def format_total_net_diff(field_name, amount):

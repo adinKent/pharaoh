@@ -4,7 +4,13 @@ from unittest.mock import Mock, patch
 import pandas as pd
 import pytest
 
-from quote.tw_stock import _fallback_stock_price, get_tpex_ex_dividend_stocks, get_tw_stock_price, get_twse_ex_dividend_stocks
+from quote.tw_stock import (
+    _fallback_stock_price,
+    get_tpex_ex_dividend_stocks,
+    get_tw_stock_price,
+    get_tw_stock_symbol_from_company_name,
+    get_twse_ex_dividend_stocks,
+)
 
 # Mock yfinance at module level
 sys.modules["yfinance"] = Mock()
@@ -225,6 +231,32 @@ class TestGetExDividendStocks:
             },
         ]
         mock_response.raise_for_status.assert_called_once_with()
+
+
+class TestGetTwStockSymbolFromCompanyName:
+    @patch("quote.tw_stock.requests.post")
+    def test_prefers_exact_company_name_match(self, mock_post):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.content = """
+            <div id="autoCompilete-dbody1">2211 <span>長榮</span>鋼<input id="autoDiv-1" value="2211"></div>
+            <div id="autoCompilete-dbody2">2603 <span>長榮</span><input id="autoDiv-2" value="2603"></div>
+        """
+        mock_post.return_value = mock_response
+
+        assert get_tw_stock_symbol_from_company_name("長榮") == "2603"
+
+    @patch("quote.tw_stock.requests.post")
+    def test_falls_back_to_first_match_when_no_exact_company_name(self, mock_post):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.content = """
+            <div id="autoCompilete-dbody1">2211 <span>長榮</span>鋼<input id="autoDiv-1" value="2211"></div>
+            <div id="autoCompilete-dbody2">2603 <span>長榮</span><input id="autoDiv-2" value="2603"></div>
+        """
+        mock_post.return_value = mock_response
+
+        assert get_tw_stock_symbol_from_company_name("長") == "2211"
 
 
 if __name__ == "__main__":

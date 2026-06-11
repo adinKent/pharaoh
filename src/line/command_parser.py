@@ -66,7 +66,13 @@ def get_stock_symbol_and_market_type(symbol: str):
         if symbol[0].isdigit():
             return (symbol, "TW")
         elif bool(re.search(r"[\u4e00-\u9fff]", symbol)):
-            return get_stock_symbol_from_fixed_command(symbol)
+            stock_symbol_list = get_stock_symbol_from_fixed_command(symbol)
+            if stock_symbol_list:
+                return stock_symbol_list
+
+            stock_symbol = get_tw_stock_symbol_from_company_name(symbol)
+            if stock_symbol:
+                return (stock_symbol, "TW")
         elif bool(re.search(r"^[A-Za-z0-9]+", symbol)):
             return (symbol.upper(), "US")
 
@@ -77,14 +83,7 @@ def get_stock_symbol_from_fixed_command(
     symbol: str,
 ) -> str | tuple[str, str] | list[tuple[str, str]] | None:
     command_mappings = get_all_commands()
-    result = command_mappings.get(symbol, None)
-
-    if not result:
-        result = get_tw_stock_symbol_from_company_name(symbol)
-        if result:
-            result = (result, "TW")
-
-    return result
+    return command_mappings.get(symbol, None)
 
 
 def handle_stock_price_quote(symbol_in_command) -> str:
