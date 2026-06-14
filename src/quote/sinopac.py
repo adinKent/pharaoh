@@ -48,6 +48,10 @@ def get_futopt_snapshot(symbol: str) -> dict | None:
         logger.error("SinoPac API credentials are not configured")
         return None
 
+    # shioaji writes its token pool to $HOME/.shioaji; Lambda has no writable $HOME
+    if not os.path.isdir(os.environ.get("HOME", "")):
+        os.environ["HOME"] = "/tmp"
+
     api = None
     try:
         api = sj.Shioaji()
