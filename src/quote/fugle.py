@@ -163,7 +163,7 @@ def _build_candles_figure(
         previous_close = result.get("data", {}).get("priceReference")
     try:
         previous_close = float(previous_close)
-    except TypeError, ValueError:
+    except (TypeError, ValueError):
         previous_close = None
 
     dark_blue_style = mpf.make_mpf_style(
