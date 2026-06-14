@@ -10,3 +10,4 @@ isort==5.12.0
 mplfinance==0.12.10b0
 google-genai==1.52.0
 fugle-marketdata==2.4.1
+shioaji==1.5.3

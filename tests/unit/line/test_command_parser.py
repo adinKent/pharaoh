@@ -6,6 +6,7 @@ from line.command_parser import (
     MAX_COMMAND_TEXT_LENGTH,
     get_stock_symbol_and_market_type,
     get_stock_symbol_from_fixed_command,
+    get_tw_futopt_price,
     parse_line_command,
 )
 from quote.output import format_stock_price_response
@@ -107,6 +108,16 @@ class TestGetStockSymbolFromFixedCommand:
         """Test #日元 command"""
         result = get_stock_symbol_from_fixed_command("日元")
         assert result == ("JPYTWD=X", "FUT")
+
+    def test_tw_futures_command(self):
+        """Test #台指期 command maps to TXFR1 with TW_FUT market type"""
+        result = get_stock_symbol_from_fixed_command("台指期")
+        assert result == ("TXFR1", "TW_FUT")
+
+    def test_tsmc_futures_command(self):
+        """Test #台積期 command maps to CDFR1 with TW_FUT market type"""
+        result = get_stock_symbol_from_fixed_command("台積期")
+        assert result == ("CDFR1", "TW_FUT")
 
     def test_unknown_command_fallback(self):
         """Test unknown command should return None"""
@@ -268,6 +279,87 @@ class TestParseLineCommand:
         assert result is not None
         assert "S&P 500" in result or "^GSPC" in result
         assert mock_quote_stock.call_count == 4
+
+    @patch("line.command_parser.get_futopt_snapshot")
+    def test_tw_futures_index(self, mock_get_futopt_snapshot):
+        """Test #台指期 returns Taiwan futures index price."""
+        mock_get_futopt_snapshot.return_value = {
+            "close": 22000.0,
+            "change_price": 200.0,
+            "change_rate": 0.92,
+            "reference_price": 21800.0,
+        }
+
+        result = parse_line_command("#台指期")
+
+        assert result is not None
+        assert "台指期" in result
+        assert "22000" in result
+        assert "📈" in result
+        mock_get_futopt_snapshot.assert_called_once_with("TXFR1")
+
+    @patch("line.command_parser.get_futopt_snapshot")
+    def test_get_tw_futopt_price_success(self, mock_get_futopt_snapshot):
+        """Test get_tw_futopt_price returns formatted dict."""
+        mock_get_futopt_snapshot.return_value = {
+            "close": 22000.0,
+            "change_price": 200.0,
+            "change_rate": 0.92,
+            "reference_price": 21800.0,
+        }
+
+        result = get_tw_futopt_price("TXFR1")
+
+        assert result is not None
+        assert result["symbol"] == "TXFR1"
+        assert result["name"] == "台指期"
+        assert result["price"] == 22000.0
+        assert result["previous_price"] == 21800.0
+
+    @patch("line.command_parser.get_futopt_snapshot")
+    def test_get_tw_futopt_price_missing_data(self, mock_get_futopt_snapshot):
+        """Test get_tw_futopt_price returns None when snapshot fails."""
+        mock_get_futopt_snapshot.return_value = None
+
+        result = get_tw_futopt_price("TXFR1")
+
+        assert result is None
+
+    @patch("line.command_parser.get_futopt_snapshot")
+    def test_tsmc_futures_price(self, mock_get_futopt_snapshot):
+        """Test #台積期 returns TSMC futures price."""
+        mock_get_futopt_snapshot.return_value = {
+            "close": 850.0,
+            "change_price": 5.0,
+            "change_rate": 0.59,
+            "reference_price": 845.0,
+        }
+
+        result = parse_line_command("#台積期")
+
+        assert result is not None
+        assert "台積期" in result
+        assert "850" in result
+        assert "📈" in result
+        mock_get_futopt_snapshot.assert_called_once_with("CDFR1")
+
+    @patch("line.command_parser.get_futopt_snapshot")
+    def test_get_tw_futopt_price_tsmc(self, mock_get_futopt_snapshot):
+        """Test get_tw_futopt_price returns formatted dict for TSMC futures."""
+        mock_get_futopt_snapshot.return_value = {
+            "close": 850.0,
+            "change_price": -10.0,
+            "change_rate": -1.17,
+            "reference_price": 860.0,
+        }
+
+        result = get_tw_futopt_price("CDFR1")
+
+        assert result is not None
+        assert result["symbol"] == "CDFR1"
+        assert result["name"] == "台積期"
+        assert result["price"] == 850.0
+        assert result["previous_price"] == 860.0
 
     @patch("line.command_parser.get_today_ex_dividend_stocks")
     def test_ex_dividend_command(self, mock_get_today_ex_dividend_stocks):

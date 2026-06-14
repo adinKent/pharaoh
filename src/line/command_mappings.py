@@ -7,7 +7,7 @@ INDEX_COMMANDS = {
     "美股": [("^GSPC", "IND"), ("^DJI", "IND"), ("^IXIC", "IND"), ("^SOX", "IND")],
 }
 
-INDEX_FUTURE_COMMANDS = {"美股期": [("ES=F", "IND"), ("YM=F", "IND"), ("NQ=F", "IND"), ("SOX=F", "IND")]}
+INDEX_FUTURE_COMMANDS = {"美股期": [("ES=F", "IND"), ("YM=F", "IND"), ("NQ=F", "IND"), ("SOX=F", "IND")], "台指期": ("TXFR1", "TW_FUT")}
 
 CURRENCY_COMMANDS = {
     "外匯": [("TWD=X", "FUT"), ("JPYTWD=X", "FUT"), ("AUDTWD=X", "FUT")],
@@ -35,6 +35,10 @@ COIN_COMMANDS = {
     "虛擬幣": [("BTC-USD", "FUT"), ("ETH-USD", "FUT")],
 }
 
+TW_STOCK_FUTURE_COMMANDS = {
+    "台積期": ("CDFR1", "TW_FUT"),
+}
+
 
 def format_command_help(commands: dict):
     return ", ".join(map(lambda key: f"#{key}", commands.keys()))
@@ -50,7 +54,8 @@ HELP_COMMANDS = {
             "技術分析: A大盤 A股票代號 (ex: A2330), A公司名稱 (ex: A台積電)",
             "三大法人買賣超: F大盤 F股票代號 (ex: F2330), F公司名稱 (ex: F台積電)",
             "今日除權息 (台股): D除息",
-            f"美股期: {format_command_help(INDEX_FUTURE_COMMANDS)}",
+            f"指數期貨: {format_command_help(INDEX_FUTURE_COMMANDS)}",
+            f"台股期貨: {format_command_help(TW_STOCK_FUTURE_COMMANDS)}",
             f"外匯: {format_command_help(CURRENCY_COMMANDS)}",
             f"原物料: {format_command_help(COMEX_COMMANDS)}",
             f"債券: {format_command_help(BONDS_COMMANDS)}",
@@ -66,6 +71,7 @@ ALL_COMMANDS = {
     **COMEX_COMMANDS,
     **BONDS_COMMANDS,
     **COIN_COMMANDS,
+    **TW_STOCK_FUTURE_COMMANDS,
     **HELP_COMMANDS,
 }
 

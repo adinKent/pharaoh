@@ -8,6 +8,8 @@ FIXED_SYMBOL_NAME_MAPPINGS = {
     "CL=F": "原油",
     "TWD=X": "USD/TWD",
     "JPYTWD=X": "JPY/TWD",
+    "TXFR1": "台指期",
+    "CDFR1": "台積期",
 }
 
 MAX_LINE_REPLY_TEXT_LENGTH = 4900

@@ -2,7 +2,8 @@ import math
 import re
 
 from line.command_mappings import get_all_commands
-from quote.output import format_ex_dividend_response, format_stock_price_response
+from quote.output import FIXED_SYMBOL_NAME_MAPPINGS, format_ex_dividend_response, format_stock_price_response
+from quote.sinopac import get_futopt_snapshot
 from quote.tw_stock import (
     get_institues_buy_sell_today_result,
     get_symbol_buy_sell_today_result,
@@ -17,6 +18,19 @@ from quote.yahoo_finance import quote_stock
 from utils.gemini_helper import generate_gemini_technical_analysis_response
 
 MAX_COMMAND_TEXT_LENGTH = 20
+
+
+def get_tw_futopt_price(symbol: str) -> dict | None:
+    result = get_futopt_snapshot(symbol)
+    if not result:
+        return None
+
+    return {
+        "symbol": symbol,
+        "name": FIXED_SYMBOL_NAME_MAPPINGS.get(symbol, symbol),
+        "price": round(result["close"], 2),
+        "previous_price": result["reference_price"],
+    }
 
 
 def parse_line_command(command_text: str) -> str | None:
@@ -103,6 +117,8 @@ def handle_stock_price_quote(symbol_in_command) -> str:
                 stock_info = get_tw_stock_price(symbol)
             case "TW_IND":
                 stock_info = get_tw_index_price(symbol)
+            case "TW_FUT":
+                stock_info = get_tw_futopt_price(symbol)
             case _:
                 stock_info = quote_stock(symbol)
 

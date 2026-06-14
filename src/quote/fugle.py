@@ -66,6 +66,22 @@ def quote_stock_ticker(symbol: str) -> dict | None:
         return None
 
 
+def quote_futopt(symbol: str) -> dict | None:
+    try:
+        futopt = client.futopt
+        result = futopt.intraday.quote(symbol=symbol)
+
+        if not result:
+            logger.warning("Fugle futopt responses missing quote data for %s", symbol)
+            return None
+
+        return result
+    except Exception as exc:
+        logger.error("Fugle futopt API error for %s: %s", symbol, exc)
+        logger.exception(exc)
+        return None
+
+
 def quote_stock_candles(symbol: str) -> dict | None:
     try:
         stock = client.stock
@@ -147,7 +163,7 @@ def _build_candles_figure(
         previous_close = result.get("data", {}).get("priceReference")
     try:
         previous_close = float(previous_close)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         previous_close = None
 
     dark_blue_style = mpf.make_mpf_style(
