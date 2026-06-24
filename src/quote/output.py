@@ -120,10 +120,15 @@ def format_ex_dividend_response(ex_dividend_stocks: list[dict], query_date: str)
     if not ex_dividend_stocks:
         return f"{query_date} 今日沒有除息股票。"
 
+    sorted_stocks = sorted(
+        [s for s in ex_dividend_stocks],
+        key=lambda s: s.get("symbol", ""),
+    )
+
     lines = [f"{query_date} 今日除息股票 ({len(ex_dividend_stocks)} 檔):", ""]
     omitted_count = 0
 
-    for stock in ex_dividend_stocks:
+    for stock in sorted_stocks:
         cash_dividend = format_cash_dividend(stock.get("cashDividend"))
         line = f"{stock.get('name', '')} ({stock.get('symbol', '')}) 現金股利: {cash_dividend}"
         projected_lines = [*lines, line]

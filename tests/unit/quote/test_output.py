@@ -58,6 +58,24 @@ class TestFormatExDividendResponse:
         assert "台積電 (2330) 現金股利: 4" in result
         assert "家登 (3680) 現金股利: 4.99733964" in result
 
+    def test_format_ex_dividend_stocks_sorting(self):
+        result = format_ex_dividend_response(
+            [
+                {"market": "上市", "symbol": "3680", "name": "家登", "cashDividend": "4.99"},
+                {"market": "上市", "symbol": "00907", "name": "永豐優息存股", "cashDividend": "0.205"},
+                {"market": "上市", "symbol": "2330", "name": "台積電", "cashDividend": "4.0"},
+                {"market": "上市", "symbol": "00836B", "name": "永豐10年A公司債", "cashDividend": "0.382"},
+            ],
+            "2026-06-17",
+        )
+
+        lines = result.splitlines()
+        stock_lines = [line for line in lines if "現金股利" in line]
+        assert stock_lines[0].startswith("永豐10年A公司債 (00836B)")
+        assert stock_lines[1].startswith("永豐優息存股 (00907)")
+        assert stock_lines[2].startswith("台積電 (2330)")
+        assert stock_lines[3].startswith("家登 (3680)")
+
     def test_format_no_ex_dividend_stocks(self):
         assert format_ex_dividend_response([], "2026-06-07") == "2026-06-07 今日沒有除息股票。"
 
