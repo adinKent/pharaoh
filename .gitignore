@@ -121,3 +121,7 @@ tmp/
 # Python cache files
 __pycache__/
 .pytest_cache/
+
+# graphify-out
+graphify-out/cost.json
+graphify-out/cache/ 
