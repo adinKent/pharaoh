@@ -1,24 +1,20 @@
 import csv
-import io
 import logging
 import re
 import time
 import urllib.parse
 from datetime import datetime, timedelta
 from io import StringIO
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import matplotlib.font_manager as fm
 import mplfinance as mpf
 import pandas as pd
 import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
-from matplotlib.offsetbox import AnchoredOffsetbox, HPacker, TextArea, VPacker
-from matplotlib.transforms import blended_transform_factory
 from pymongo import UpdateOne
 
+from quote.chart_common import draw_turnover_header, get_x_label_align, load_chart_font_name, save_or_upload_fig
 from quote.chart_theme import get_chart_theme
 from quote.fugle import (
     quote_stock as fugle_quote_stock,
@@ -28,11 +24,8 @@ from quote.fugle import (
     quote_stock_ticker,
 )
 from quote.output import format_price_output, get_info_for_day_candle_picture
-from utils.aws_helper import is_running_on_lambda, put_image
+from utils.aws_helper import is_running_on_lambda
 from utils.mongo_helper import get_mongo_client
-
-HERE = Path(__file__).resolve().parent.parent
-FONT_PATH = HERE / "assets" / "fonts" / "NotoSansTC-Regular.ttf"
 
 logger = logging.getLogger(__name__)
 
@@ -707,13 +700,6 @@ def get_symbol_buy_sell_today_result(symbol: str) -> dict | None:
         return None
 
 
-def get_x_label_align(x, x_max_current):
-    if x > x_max_current * 0.9:
-        return (x_max_current * 0.99, "right")
-    else:
-        return (max(x, x_max_current * 0.01), "left")
-
-
 def _format_trade_value(trade_value: float) -> str:
     """Format a TWD trade value with a Chinese unit: 億 (1e8) once it reaches 億, else 萬 (1e4).
 
@@ -768,14 +754,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool | None = None
             volume=theme.intraday_mark,
         )
 
-        font_name = "Noto Sans TC"
-        if FONT_PATH.exists():
-            try:
-                fm.fontManager.addfont(str(FONT_PATH))
-                chinese_font_prop = fm.FontProperties(fname=FONT_PATH)
-                font_name = chinese_font_prop.get_name()
-            except Exception as exc:
-                logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
+        font_name = load_chart_font_name()
 
         chart_style = mpf.make_mpf_style(
             base_mpf_style=theme.base_mpf_style,
@@ -935,64 +914,10 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool | None = None
                 turnover_rows.append(("成交", f"{trade_volume:,}", "張", theme.stat_accent))
             if trade_value is not None:
                 turnover_rows.append(("總量", *_format_trade_value(trade_value).rsplit(" ", 1), None))
-        # Hierarchy by lightness, not hue: muted label + bright value, so the header stays
-        # quiet and price/change keep priority. Three right-aligned columns (label / number /
-        # unit) keep 成交/總量 aligned, the numbers right-aligned, and 張/億 aligned.
-        if turnover_rows:
-            top_ax = fig.axes[0]
-
-            def _turnover_column(cells, default_color):
-                return VPacker(
-                    children=[
-                        TextArea(text, textprops=dict(color=color or default_color, fontsize=12, fontfamily=font_name)) for text, color in cells
-                    ],
-                    sep=6,
-                    pad=0,
-                    align="right",
-                )
-
-            block = HPacker(
-                children=[
-                    _turnover_column([(r[0], r[3]) for r in turnover_rows], theme.stat_label),
-                    _turnover_column([(r[1], r[3]) for r in turnover_rows], theme.stat_value),
-                    # Unit defaults to stat_label (matches its row's label, e.g. 億 = 總量's
-                    # gray) — rows with an explicit accent (成交/張) override this regardless.
-                    _turnover_column([(r[2], r[3]) for r in turnover_rows], theme.stat_label),
-                ],
-                sep=6,
-                pad=0,
-                align="top",
-            )
-            # Anchor x to the price panel's actual right spine (resolved at draw time, so it
-            # reflects tight_layout), y=0.97 so the block top aligns with the symbol-name suptitle.
-            turnover_transform = blended_transform_factory(top_ax.transAxes, fig.transFigure)
-            top_ax.add_artist(
-                AnchoredOffsetbox(
-                    loc="upper right",
-                    child=block,
-                    pad=0,
-                    borderpad=0,
-                    frameon=False,
-                    bbox_to_anchor=(1.0, 0.97),
-                    bbox_transform=turnover_transform,
-                )
-            )
+        draw_turnover_header(fig, turnover_rows, theme, font_name)
 
         fig.patch.set_facecolor(theme.surface)
-
-        image_name = f"{symbol}_{round(time.time())}.jpg"
-        if save_to_local_file:
-            project_root = Path(__file__).resolve().parents[2]
-            output_path = project_root / f"{image_name}"
-            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), dpi=300)
-            return str(output_path)
-        else:
-            buffer = io.BytesIO()
-            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), dpi=300)
-            buffer.seek(0)
-            presign_url = put_image(image_name, buffer.getvalue())
-            print(f"Rely image url={presign_url}")
-            return presign_url
+        return save_or_upload_fig(fig, f"{symbol}_{round(time.time())}.jpg", save_to_local_file)
     except Exception as exc:
         logger.error("Fugle candle API error for %s: %s", symbol, exc)
         logger.exception(exc)
@@ -1048,14 +973,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool | None =
             volume="inherit",
         )
 
-        font_name = "Noto Sans TC"
-        if FONT_PATH.exists():
-            try:
-                fm.fontManager.addfont(str(FONT_PATH))
-                chinese_font_prop = fm.FontProperties(fname=FONT_PATH)
-                font_name = chinese_font_prop.get_name()
-            except Exception as exc:
-                logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
+        font_name = load_chart_font_name()
 
         chart_style = mpf.make_mpf_style(
             base_mpf_style=theme.base_mpf_style,
@@ -1160,20 +1078,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool | None =
             fig.text(0.065, 0.90, title_info["price"], color=title_info["color"], fontsize=12)
 
         fig.patch.set_facecolor(theme.surface)
-
-        image_name = f"{symbol}_1y_{round(time.time())}.jpg"
-        if save_to_local_file:
-            project_root = Path(__file__).resolve().parents[2]
-            output_path = project_root / f"{image_name}"
-            fig.savefig(str(output_path), format="jpg", facecolor=fig.get_facecolor(), dpi=300)
-            return str(output_path)
-        else:
-            buffer = io.BytesIO()
-            fig.savefig(buffer, format="jpg", facecolor=fig.get_facecolor(), dpi=300)
-            buffer.seek(0)
-            presign_url = put_image(image_name, buffer.getvalue())
-            print(f"Rely image url={presign_url}")
-            return presign_url
+        return save_or_upload_fig(fig, f"{symbol}_1y_{round(time.time())}.jpg", save_to_local_file)
     except Exception as exc:
         logger.error("Error generating 1y candle chart for %s: %s", symbol, exc)
         logger.exception(exc)

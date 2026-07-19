@@ -14,7 +14,11 @@ from quote.tw_stock import (
     get_tw_stock_symbol_from_company_name,
     get_tw_stock_year_candles_png,
 )
-from quote.yahoo_finance import quote_stock
+from quote.yahoo_finance import (
+    get_us_stock_candles_png,
+    get_us_stock_year_candles_png,
+    quote_stock,
+)
 from utils.gemini_helper import generate_gemini_technical_analysis_response
 
 MAX_COMMAND_TEXT_LENGTH = 20
@@ -263,7 +267,9 @@ def handle_day_k_line(symbol_in_command) -> str:
     else:
         (symbol, market_type) = symbol_list
 
-    return get_tw_stock_candles_png(symbol)
+    if market_type in ("TW", "TW_IND"):
+        return get_tw_stock_candles_png(symbol)
+    return get_us_stock_candles_png(symbol)
 
 
 def handle_year_k_line(symbol_in_command) -> str:
@@ -274,4 +280,6 @@ def handle_year_k_line(symbol_in_command) -> str:
     else:
         (symbol, market_type) = symbol_list
 
-    return get_tw_stock_year_candles_png(symbol)
+    if market_type in ("TW", "TW_IND"):
+        return get_tw_stock_year_candles_png(symbol)
+    return get_us_stock_year_candles_png(symbol)

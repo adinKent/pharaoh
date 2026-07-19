@@ -33,6 +33,8 @@ Pre-commit runs ruff check+format. If the hook auto-fixes files, the commit fail
 
 - `#<symbol>` — price quote; `D除息` — today's ex-dividend stocks; `A<symbol>` — technical analysis (moving averages + Gemini AI commentary); `F<symbol>` — institutional buy/sell (from MongoDB); `P<symbol>` — intraday chart PNG; `K<symbol>` — half-year candlestick PNG.
 
+`P`/`K` route by market type: `TW`/`TW_IND` → Fugle-based `get_tw_stock_candles_png` / `get_tw_stock_year_candles_png`; everything else (US stocks, US/foreign indices, FX, commodities, crypto) → yfinance-based `get_us_stock_candles_png` / `get_us_stock_year_candles_png`. The US intraday chart uses data-driven bounds (no TW ±10% price limit or fixed 09:00–13:30 session) so it works across US/Tokyo/24h-crypto sessions.
+
 Symbol resolution (`get_stock_symbol_and_market_type`): leading digit → Taiwan stock (`TW`); Chinese characters → fixed command mappings in `src/line/command_mappings.py` (indices, futures, FX, `#指令` help text...), then TWSE company-name lookup; letters → US ticker. Market types route to different quote sources: `TW`/`TW_IND` → Fugle, `TW_FUT` → shioaji, everything else → yfinance. Fixed commands can map to a *list* of symbols (e.g. `美股` → four indices) — handlers must cope with str | tuple | list returns.
 
 Handlers return a plain string; if it's an S3 presigned URL (`is_s3_presigned_url`), `app.py` sends an image reply instead of text. Chart PNGs are uploaded to the image S3 bucket via `utils/aws_helper.py::put_image`. When creating or restyling chart images, follow the `image-response-design` skill (`.claude/skills/image-response-design/SKILL.md`).
@@ -41,7 +43,7 @@ Handlers return a plain string; if it's an S3 presigned URL (`is_s3_presigned_ur
 
 - **Fugle** (`src/quote/fugle.py`) — TW stock/index intraday quotes, tickers, candle charts. Field names differ from Yahoo (`lastPrice`, `referencePrice`, ...); `get_tw_stock_price` normalizes them into a yfinance-shaped dict before `format_price_output`. Fugle may return keys with `None` values — use `x.get("a") or x.get("b")` fallbacks, not `x.get("a", x.get("b"))`.
 - **shioaji / SinoPac** (`src/quote/sinopac.py`) — TW futures snapshots (e.g. `TXFR1`). Imported lazily; sets `HOME=/tmp` on Lambda because shioaji writes a token pool under `$HOME/.shioaji`.
-- **yfinance** (`src/quote/yahoo_finance.py`, also history in `tw_stock.py`) — US/international quotes and price history. TW history symbols are `{symbol}.TW` (TWSE) or `{symbol}.TWO` (TPEX).
+- **yfinance** (`src/quote/yahoo_finance.py`) — US/international quotes, price history, and the US/foreign chart functions (`get_us_stock_candles_png` / `get_us_stock_year_candles_png`). TW history symbols are `{symbol}.TW` (TWSE) or `{symbol}.TWO` (TPEX). Chart rendering shared by both TW and US functions (font loading, turnover header, save/upload, x-label align) lives in `src/quote/chart_common.py`; color tokens in `src/quote/chart_theme.py`.
 - **TWSE/TPEX open APIs** (scraped/fetched in `src/quote/tw_stock.py`) — ex-dividend calendar, institutional buy/sell; the latter is synced to MongoDB by `sync_tw_data.py` and read back for `F` commands.
 - **Gemini** (`src/utils/gemini_helper.py`) — AI commentary for `A` commands.
 
