@@ -25,6 +25,12 @@ class ChartTheme:
     ink: str  # default text color; text never wears a series color
     label_box: str  # translucent bbox behind direct labels (最高價/最低價)
 
+    # Header stat hierarchy by lightness (not hue): muted label + bright value, so the
+    # top-right turnover stays quiet and the price/change keeps visual priority.
+    stat_label: str  # secondary/muted (成交, 總量)
+    stat_value: str  # primary/bright (the numbers)
+    stat_accent: str  # the 成交 row (label+number+unit) — a distinct accent, not the hierarchy pair
+
     # Polarity — Taiwan market convention: red = up (漲), green = down (跌).
     # This pair is CVD-marginal; only legal with secondary encoding (reference
     # line / sign / label). Never encode a *new* distinction with up/down alone.
@@ -49,6 +55,9 @@ DARK_THEME = ChartTheme(
     base_mpf_style="nightclouds",
     ink="white",
     label_box="#01050A54",
+    stat_label="#8B95A9",
+    stat_value="#E6EAF2",
+    stat_accent="#6FA8E8",  # contrast 6.84:1 on #0b1b3b
     up="red",
     down="green",
     flat="#8e8989",
@@ -67,6 +76,10 @@ LIGHT_THEME = ChartTheme(
     base_mpf_style="default",
     ink="#1c2333",
     label_box="#FFFFFFC0",
+    # Light surface inverts the hierarchy: muted gray label, near-black value.
+    stat_label="#6B7280",
+    stat_value="#1C2333",
+    stat_accent="#3a6fd8",  # same hue family as #6FA8E8, darkened for contrast 4.72:1 on white
     # Validated on #ffffff: CVD ΔE 15.5, contrast >= 3:1
     up="#d32f2f",
     down="#1a7f37",
@@ -88,6 +101,9 @@ TRADINGVIEW_THEME = ChartTheme(
     base_mpf_style="default",
     ink="#131722",
     label_box="#FFFFFFC0",
+    stat_label="#6B7280",
+    stat_value="#131722",
+    stat_accent="#2962ff",  # same hue family as #6FA8E8, darkened for contrast 4.9:1 on white
     # TradingView brand hues mapped to TW polarity (red = up, teal = down).
     # Validated on #ffffff: red↔teal CVD ΔE 26.0; teal contrast 3.0:1 (WARN) —
     # relieved by the always-present direct labels and signed headline.
@@ -108,6 +124,9 @@ TRADINGVIEW_DARK_THEME = ChartTheme(
     base_mpf_style="nightclouds",
     ink="#d1d4dc",
     label_box="#00000059",
+    stat_label="#8B95A9",
+    stat_value="#E6EAF2",
+    stat_accent="#6FA8E8",  # contrast 7.19:1 on #131722
     # Validated on #131722: red↔teal CVD ΔE 26.0, contrast >= 3:1
     up="#ef5350",
     down="#26a69a",
