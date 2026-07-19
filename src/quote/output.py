@@ -1,3 +1,5 @@
+from quote.chart_theme import get_chart_theme
+
 FIXED_SYMBOL_NAME_MAPPINGS = {
     "IX0001": "台灣加權指數",
     "IX0043": "櫃買指數",
@@ -97,15 +99,16 @@ def get_info_for_day_candle_picture(stock_info) -> str:
     """Get icon representation for ups or downs status"""
     price_diff = stock_info["price"] - stock_info["previous_price"]
     price_diff_percent = (price_diff / stock_info["previous_price"] * 100) if stock_info["previous_price"] != 0 else 0
+    theme = get_chart_theme()
     price_diff_percent_format = "0"
     sign = " "  # Unchanged
-    color = "gray"
+    color = theme.flat
     if price_diff > 0:
-        color = "red"
+        color = theme.up
         sign = "▲"
         price_diff_percent_format = f"+{price_diff_percent:.2f}"
     elif price_diff < 0:
-        color = "green"
+        color = theme.down
         sign = "▼"
         price_diff_percent_format = f"{price_diff_percent:.2f}"
 

@@ -17,6 +17,7 @@ import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
 
+from quote.chart_theme import get_chart_theme
 from quote.fugle import (
     quote_stock as fugle_quote_stock,
 )
@@ -25,7 +26,7 @@ from quote.fugle import (
     quote_stock_ticker,
 )
 from quote.output import format_price_output, get_info_for_day_candle_picture
-from utils.aws_helper import put_image
+from utils.aws_helper import is_running_on_lambda, put_image
 from utils.mongo_helper import get_mongo_client
 
 HERE = Path(__file__).resolve().parent.parent
@@ -49,7 +50,7 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
             previous_close = stock_info.get("referencePrice") or stock_info.get("previousClose")
 
             yf_format_stock_info = {
-                "exchange": stock_info.get("exchange", "TWSE"),
+                "exchange": stock_info.get("exchange") or "TWSE",
                 # normalize fields to yahoo finance format
                 "symbol": symbol,
                 "shortName": stock_info.get("name", symbol),
@@ -711,7 +712,10 @@ def get_x_label_align(x, x_max_current):
         return (max(x, x_max_current * 0.01), "left")
 
 
-def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
+def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool | None = None) -> str | None:
+    if save_to_local_file is None:
+        # On Lambda, upload to S3 (LINE needs a public URL); locally, save a file to inspect.
+        save_to_local_file = not is_running_on_lambda()
     try:
         stock_info = get_tw_stock_price(symbol)
         if not stock_info:
@@ -740,12 +744,13 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             }
         )
 
+        theme = get_chart_theme()
         market_colors = mpf.make_marketcolors(
-            up="#8fb3ff",
-            down="#8fb3ff",
-            edge="#8fb3ff",
-            wick="#8fb3ff",
-            volume="#8fb3ff",
+            up=theme.intraday_mark,
+            down=theme.intraday_mark,
+            edge=theme.intraday_mark,
+            wick=theme.intraday_mark,
+            volume=theme.intraday_mark,
         )
 
         font_name = "Noto Sans TC"
@@ -757,11 +762,11 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             except Exception as exc:
                 logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
 
-        dark_blue_style = mpf.make_mpf_style(
-            base_mpf_style="nightclouds",
+        chart_style = mpf.make_mpf_style(
+            base_mpf_style=theme.base_mpf_style,
             marketcolors=market_colors,
-            facecolor="#0b1b3b",
-            gridcolor="#1f2f57",
+            facecolor=theme.surface,
+            gridcolor=theme.grid,
             rc={"font.family": font_name},
         )
 
@@ -773,11 +778,11 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             below = close_series.where(close_series < previous_close)
 
             if not above.isna().all():
-                addplots.append(mpf.make_addplot(above, type="line", color="red", width=1))
+                addplots.append(mpf.make_addplot(above, type="line", color=theme.up, width=1))
             if not equal.isna().all():
-                addplots.append(mpf.make_addplot(equal, type="line", color="#8e8989", width=1))
+                addplots.append(mpf.make_addplot(equal, type="line", color=theme.flat, width=1))
             if not below.isna().all():
-                addplots.append(mpf.make_addplot(below, type="line", color="green", width=1))
+                addplots.append(mpf.make_addplot(below, type="line", color=theme.down, width=1))
 
         high_idx = df["High"].idxmax()
         high_val = df.loc[high_idx, "High"]
@@ -816,14 +821,14 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             xlim=xlim,
             ylim=ylim,
             addplot=addplots,
-            style=dark_blue_style,
+            style=chart_style,
             returnfig=True,
             tight_layout=True,
             scale_padding={"left": 0.6, "top": 4, "right": 1, "bottom": 0.6},
         )
 
         ax = fig.axes[0]
-        ax.axhline(previous_close, color="#8e8989", linestyle="-", linewidth=0.5)  # previous close price line
+        ax.axhline(previous_close, color=theme.flat, linestyle="-", linewidth=0.5)  # previous close price line
 
         # draw labels of highest and lowest price
         x_min_current, x_max_current = ax.get_xlim()
@@ -834,7 +839,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         high_text_y = min(high_val + y_pad, y_max_current - y_pad)
         low_text_y = max(low_val - y_pad, y_min_current + y_pad)
 
-        high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
+        high_low_value_bbox_style = dict(facecolor=theme.label_box, edgecolor="none", boxstyle="square,pad=0.4")
         if high_val == low_val:
             if high_val > previous_close:
                 (high_x, high_ha) = get_x_label_align(df["High"].argmax(), x_max_current)
@@ -846,7 +851,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
                     va="center",
                     fontsize=10,
                     bbox=high_low_value_bbox_style,
-                    color="white",
+                    color=theme.ink,
                     clip_on=False,
                 )
             else:
@@ -859,7 +864,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
                     va="center",
                     fontsize=10,
                     bbox=high_low_value_bbox_style,
-                    color="white",
+                    color=theme.ink,
                     clip_on=False,
                 )
         else:
@@ -873,7 +878,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
                 va="center",
                 fontsize=10,
                 bbox=high_low_value_bbox_style,
-                color="white",
+                color=theme.ink,
                 clip_on=False,
             )
             ax.text(
@@ -884,7 +889,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
                 va="center",
                 fontsize=10,
                 bbox=high_low_value_bbox_style,
-                color="white",
+                color=theme.ink,
                 clip_on=False,
             )
 
@@ -899,7 +904,7 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
             fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha="left", y=0.97)
             fig.text(0.065, 0.90, title_info["price"], color=title_info["color"], fontsize=12)
 
-        fig.patch.set_facecolor("#0b1b3b")
+        fig.patch.set_facecolor(theme.surface)
 
         image_name = f"{symbol}_{round(time.time())}.jpg"
         if save_to_local_file:
@@ -920,7 +925,10 @@ def get_tw_stock_candles_png(symbol: str, save_to_local_file: bool = False) -> s
         return None
 
 
-def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False) -> str | None:
+def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool | None = None) -> str | None:
+    if save_to_local_file is None:
+        # On Lambda, upload to S3 (LINE needs a public URL); locally, save a file to inspect.
+        save_to_local_file = not is_running_on_lambda()
     try:
         stock_info = get_tw_stock_price(symbol)
         if not stock_info:
@@ -949,18 +957,19 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             "月線(20MA)": 20,
             "季線(60MA)": 60,
         }
+        theme = get_chart_theme()
         ma_colors = {
-            "日線(5MA)": "#fbe08a",
-            "月線(20MA)": "#9dddf8",
-            "季線(60MA)": "#dcc3f3",
+            "日線(5MA)": theme.ma5,
+            "月線(20MA)": theme.ma20,
+            "季線(60MA)": theme.ma60,
         }
         ma_series: dict[str, pd.Series] = {name: df["Close"].rolling(window=window, min_periods=window).mean() for name, window in ma_windows.items()}
         ma_addplots = [mpf.make_addplot(ma_series[name], type="line", color=ma_colors[name], width=1.1, panel=0) for name in ma_windows]
 
         market_colors = mpf.make_marketcolors(
-            up="red",
-            down="green",
-            wick={"up": "red", "down": "green"},
+            up=theme.up,
+            down=theme.down,
+            wick={"up": theme.up, "down": theme.down},
             edge="inherit",
             volume="inherit",
         )
@@ -974,11 +983,11 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             except Exception as exc:
                 logger.warning("Failed to load font %s: %s", FONT_PATH, exc)
 
-        dark_blue_style = mpf.make_mpf_style(
-            base_mpf_style="nightclouds",
+        chart_style = mpf.make_mpf_style(
+            base_mpf_style=theme.base_mpf_style,
             marketcolors=market_colors,
-            facecolor="#0b1b3b",
-            gridcolor="#1f2f57",
+            facecolor=theme.surface,
+            gridcolor=theme.grid,
             rc={"font.family": font_name},
         )
 
@@ -995,7 +1004,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             ylim=new_y_lim,
             addplot=ma_addplots,
             datetime_format="%Y-%m-%d",
-            style=dark_blue_style,
+            style=chart_style,
             returnfig=True,
             tight_layout=True,
             scale_padding={"left": 0.6, "top": 4, "right": 1, "bottom": 0.6},
@@ -1022,7 +1031,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
         low_text_y = low_val - y_pad * 0.7
         high_text_y = high_val + y_pad * 0.7
 
-        high_low_value_bbox_style = dict(facecolor="#01050A54", edgecolor="none", boxstyle="square,pad=0.4")
+        high_low_value_bbox_style = dict(facecolor=theme.label_box, edgecolor="none", boxstyle="square,pad=0.4")
 
         (high_x, high_ha) = get_x_label_align(df["High"].argmax(), x_max_current)
         (low_x, low_ha) = get_x_label_align(df["Low"].argmin(), x_max_current)
@@ -1034,7 +1043,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             va="top",
             fontsize=10,
             bbox=high_low_value_bbox_style,
-            color="white",
+            color=theme.ink,
             clip_on=False,
         )
         ax.text(
@@ -1045,7 +1054,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             va="bottom",
             fontsize=10,
             bbox=high_low_value_bbox_style,
-            color="white",
+            color=theme.ink,
             clip_on=False,
         )
 
@@ -1060,9 +1069,9 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
                 loc="upper left",
                 fontsize=9,
                 frameon=True,
-                facecolor="#0b1b3b",
-                edgecolor="#1f2f57",
-                labelcolor="white",
+                facecolor=theme.surface,
+                edgecolor=theme.grid,
+                labelcolor=theme.ink,
             )
 
         # hide y and volume's label
@@ -1076,7 +1085,7 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool = False)
             fig.suptitle(title_info["title"], x=fig.subplotpars.left - 0.06, ha="left", y=0.97)
             fig.text(0.065, 0.90, title_info["price"], color=title_info["color"], fontsize=12)
 
-        fig.patch.set_facecolor("#0b1b3b")
+        fig.patch.set_facecolor(theme.surface)
 
         image_name = f"{symbol}_1y_{round(time.time())}.jpg"
         if save_to_local_file:

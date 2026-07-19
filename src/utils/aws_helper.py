@@ -49,6 +49,15 @@ def put_image(key: str, png_bytes, expire_time: int = 432000) -> str:
     return presigned_url
 
 
+def is_running_on_lambda() -> bool:
+    """True when executing inside AWS Lambda.
+
+    AWS sets AWS_LAMBDA_FUNCTION_NAME in every Lambda runtime; it is absent in
+    local development and `sam local` invocations.
+    """
+    return bool(os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+
+
 def is_s3_presigned_url(text: str) -> bool:
     try:
         parsed = urlparse(text)
