@@ -45,10 +45,10 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
     try:
         stock_info = fugle_quote_stock(symbol)
         if stock_info:
-            current_price = stock_info.get("lastPrice", stock_info.get("closePrice"))
-            previous_close = stock_info.get("referencePrice", stock_info.get("previousClose"))
+            current_price = stock_info.get("lastPrice") or stock_info.get("closePrice")
+            previous_close = stock_info.get("referencePrice") or stock_info.get("previousClose")
 
-            yf_stock_info = {
+            yf_format_stock_info = {
                 "exchange": stock_info.get("exchange", "TWSE"),
                 # normalize fields to yahoo finance format
                 "symbol": symbol,
@@ -69,12 +69,12 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
                 ticker = yf.Ticker(yahoo_symbol)
                 history = ticker.history(period=period)
 
-            return format_price_output(symbol, yf_stock_info, history)
+            return format_price_output(symbol, yf_format_stock_info, history)
     except ImportError:
         # Fallback to simple web scraping if yfinance not available
         return _fallback_stock_price(symbol)
     except Exception as e:
-        logger.error("Error fetching stock price with yfinance: %s", e)
+        logger.error("Error fetching tw stock price: %s", e)
         logger.exception(e)
         return _fallback_stock_price(symbol)
 
