@@ -1,12 +1,18 @@
-# Graph Report - .  (2026-07-19)
+# Graph Report - pharaoh  (2026-07-21)
 
 ## Corpus Check
-- Corpus is ~46,588 words - fits in a single context window. You may not need a graph.
+- 33 files · ~17,543 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 341 nodes · 522 edges · 24 communities (21 shown, 3 thin omitted)
+- 343 nodes · 523 edges · 26 communities (22 shown, 4 thin omitted)
 - Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 127 edges (avg confidence: 0.81)
-- Token cost: 108,251 input · 12,028 output
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `30c0d9a3`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - TW Stock Data Sync
@@ -31,6 +37,8 @@
 - Deploy Script
 - Init Script
 - Local Dev Script
+- fugle.py
+- CLAUDE.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `parse_line_command()` - 20 edges
@@ -53,8 +61,8 @@
   requirements-dev.txt → src/requirements.txt
 - `interactive_test()` --calls--> `parse_line_command()`  [INFERRED]
   interactive_stock_test.py → src/line/command_parser.py
-- `save_or_upload_fig()` --calls--> `put_image()`  [INFERRED]
-  src/quote/chart_common.py → src/utils/aws_helper.py
+- `get_tw_stock_candles_png()` --calls--> `quote_stock_ticker()`  [INFERRED]
+  src/quote/tw_stock.py → src/quote/fugle.py
 
 ## Import Cycles
 - None detected.
@@ -64,23 +72,23 @@
 - **Chart Design Pillars** — _claude_skills_image_response_design_skill_color_tokens, _claude_skills_image_response_design_skill_tw_polarity, _claude_skills_image_response_design_skill_palette_validation, _claude_skills_image_response_design_skill_intraday_layout [EXTRACTED 1.00]
 - **SAM Lambda Stack Composition** — infrastructure_template_yaml_linewebhookfunction, infrastructure_template_yaml_linewebhookapi, infrastructure_template_yaml_linewebhookfunctionrole, infrastructure_template_yaml_imagebucket, infrastructure_template_yaml_deadletterqueue [EXTRACTED 1.00]
 
-## Communities (24 total, 3 thin omitted)
+## Communities (26 total, 4 thin omitted)
 
 ### Community 0 - "TW Stock Data Sync"
-Cohesion: 0.08
-Nodes (37): _extract_autocomplete_company_name(), format_total_net_diff(), _format_trade_value(), format_twse_buy_and_sell_result(), get_effective_date(), get_institues_buy_sell_today_result(), get_today_ex_dividend_stocks(), get_tpex_buy_sell_today_result() (+29 more)
+Cohesion: 0.07
+Nodes (40): MongoClient, _extract_autocomplete_company_name(), format_total_net_diff(), _format_trade_value(), format_twse_buy_and_sell_result(), get_effective_date(), get_institues_buy_sell_today_result(), get_symbol_buy_sell_today_result() (+32 more)
 
 ### Community 1 - "LINE Webhook Handler"
 Cohesion: 0.08
 Nodes (24): Any, MessagingApi, create_response(), handle_text_message(), lambda_handler(), mark_message_as_read(), Uses the Line SDK's underlying ApiClient to mark a message as read., Create HTTP response for API Gateway      Args:         status_code: HTTP status (+16 more)
 
 ### Community 2 - "Fugle Quote & Chart"
-Cohesion: 0.10
-Nodes (22): Figure, MongoClient, _build_candles_figure(), _get_api_key(), get_tw_stock_candles_png(), get_tw_stock_candles_png_bytes(), quote_stock_candles(), quote_stock_ticker() (+14 more)
+Cohesion: 0.25
+Nodes (9): _get_api_key(), _get_api_key(), _get_api_secret(), get_futopt_snapshot(), Get a one-shot futures/options snapshot from SinoPac's shioaji API.     Returns, get_ssm_parameter(), Fetches a parameter from AWS SSM Parameter Store, using a cache., generate_gemini_technical_analysis_response() (+1 more)
 
 ### Community 3 - "Chart Rendering Shared"
-Cohesion: 0.14
-Nodes (26): draw_turnover_header(), get_x_label_align(), load_chart_font_name(), Shared chart-rendering helpers used by both the TW (Fugle) and US/foreign (yfina, Register the bundled Noto Sans TC font and return its family name., Render the top-right turnover block: label / number / unit columns, right-aligne, Save the figure locally (dev) or upload to S3 and return a presigned URL (Lambda, save_or_upload_fig() (+18 more)
+Cohesion: 0.12
+Nodes (29): draw_turnover_header(), get_x_label_align(), load_chart_font_name(), Shared chart-rendering helpers used by both the TW (Fugle) and US/foreign (yfina, Register the bundled Noto Sans TC font and return its family name., Render the top-right turnover block: label / number / unit columns, right-aligne, Save the figure locally (dev) or upload to S3 and return a presigned URL (Lambda, save_or_upload_fig() (+21 more)
 
 ### Community 4 - "Quote Output Formatting"
 Cohesion: 0.13
@@ -142,16 +150,20 @@ Nodes (7): OHI Intraday Chart, Day High 50.75 / Low 49.71, Intraday Price 50.21 
 Cohesion: 0.50
 Nodes (4): Ruff Pre-Commit Hooks, Conda Environment Spec (pharaoh), Dev Python Requirements, Lambda Python Requirements
 
+### Community 24 - "fugle.py"
+Cohesion: 0.27
+Nodes (7): Figure, _build_candles_figure(), get_tw_stock_candles_png(), get_tw_stock_candles_png_bytes(), quote_stock_candles(), quote_stock_ticker(), upload_tw_stock_candles_png_to_s3()
+
 ## Knowledge Gaps
-- **37 isolated node(s):** `deploy.sh script`, `init.sh script`, `local.sh script`, `Shioaji/SinoPac Data Source`, `TWSE/TPEX Open APIs` (+32 more)
+- **38 isolated node(s):** `deploy.sh script`, `init.sh script`, `local.sh script`, `graphify`, `Shioaji/SinoPac Data Source` (+33 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `parse_line_command()` connect `Interactive REPL & Dispatch` to `LINE Webhook Handler`, `Command Parser Handlers`, `Command Parser Tests`?**
-  _High betweenness centrality (0.104) - this node is a cross-community bridge._
+  _High betweenness centrality (0.103) - this node is a cross-community bridge._
 - **Why does `get_stock_symbol_and_market_type()` connect `Command Parser Handlers` to `TW Stock Data Sync`, `Symbol Resolution Tests`, `Fixed Command Mappings`?**
   _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Why does `get_tw_stock_price()` connect `Command Parser Handlers` to `TW Stock Data Sync`, `TW Stock Price Fetch Tests`, `Chart Rendering Shared`, `Quote Output Formatting`?**

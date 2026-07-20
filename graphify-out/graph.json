@@ -57,6 +57,7 @@
       "_origin": "ast",
       "id": "interactive_stock_test",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "interactive_stock_test.py"
     },
     {
@@ -67,6 +68,7 @@
       "_origin": "ast",
       "id": "interactive_stock_test_interactive_test",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "interactive_test()"
     },
     {
@@ -77,6 +79,7 @@
       "_origin": "ast",
       "id": "interactive_stock_test_rationale_17",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "interactive testing of the stock parser"
     },
     {
@@ -91,6 +94,7 @@
       "_origin": "ast",
       "id": "scripts_deploy",
       "community": 19,
+      "community_name": "Deploy Script",
       "norm_label": "deploy.sh"
     },
     {
@@ -105,6 +109,7 @@
       "_origin": "ast",
       "id": "scripts_deploy_sh__entry",
       "community": 19,
+      "community_name": "Deploy Script",
       "norm_label": "deploy.sh script"
     },
     {
@@ -119,6 +124,7 @@
       "_origin": "ast",
       "id": "scripts_init",
       "community": 20,
+      "community_name": "Init Script",
       "norm_label": "init.sh"
     },
     {
@@ -133,6 +139,7 @@
       "_origin": "ast",
       "id": "scripts_init_sh__entry",
       "community": 20,
+      "community_name": "Init Script",
       "norm_label": "init.sh script"
     },
     {
@@ -147,6 +154,7 @@
       "_origin": "ast",
       "id": "scripts_local",
       "community": 21,
+      "community_name": "Local Dev Script",
       "norm_label": "local.sh"
     },
     {
@@ -161,6 +169,7 @@
       "_origin": "ast",
       "id": "scripts_local_sh__entry",
       "community": 21,
+      "community_name": "Local Dev Script",
       "norm_label": "local.sh script"
     },
     {
@@ -171,6 +180,7 @@
       "_origin": "ast",
       "id": "src_init",
       "community": 22,
+      "community_name": "Package Init",
       "norm_label": "__init__.py"
     },
     {
@@ -181,6 +191,7 @@
       "_origin": "ast",
       "id": "src_app",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "app.py"
     },
     {
@@ -191,6 +202,7 @@
       "_origin": "ast",
       "id": "src_app_handle_text_message",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "handle_text_message()"
     },
     {
@@ -201,6 +213,7 @@
       "_origin": "ast",
       "id": "src_app_lambda_handler",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "lambda_handler()"
     },
     {
@@ -211,6 +224,7 @@
       "_origin": "ast",
       "id": "any",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "any"
     },
     {
@@ -221,6 +235,7 @@
       "_origin": "ast",
       "id": "src_app_send_reply_message",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "send_reply_message()"
     },
     {
@@ -231,6 +246,7 @@
       "_origin": "ast",
       "id": "messagingapi",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "messagingapi"
     },
     {
@@ -241,6 +257,7 @@
       "_origin": "ast",
       "id": "src_app_send_reply_image",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "send_reply_image()"
     },
     {
@@ -251,6 +268,7 @@
       "_origin": "ast",
       "id": "src_app_mark_message_as_read",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "mark_message_as_read()"
     },
     {
@@ -261,6 +279,7 @@
       "_origin": "ast",
       "id": "src_app_create_response",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "create_response()"
     },
     {
@@ -271,6 +290,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_40",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "handles incoming text messages."
     },
     {
@@ -281,6 +301,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_62",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "aws lambda function to handle line messaging api webhooks."
     },
     {
@@ -291,6 +312,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_86",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "uses the line sdk to send a reply message."
     },
     {
@@ -301,6 +323,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_99",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "uses the line sdk to send a reply image."
     },
     {
@@ -311,6 +334,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_118",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "uses the line sdk's underlying apiclient to mark a message as read."
     },
     {
@@ -321,6 +345,7 @@
       "_origin": "ast",
       "id": "src_app_rationale_129",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "create http response for api gateway      args:         status_code: http status"
     },
     {
@@ -331,6 +356,7 @@
       "_origin": "ast",
       "id": "src_line_command_mappings",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "command_mappings.py"
     },
     {
@@ -341,6 +367,7 @@
       "_origin": "ast",
       "id": "src_line_command_mappings_format_command_help",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "format_command_help()"
     },
     {
@@ -351,6 +378,7 @@
       "_origin": "ast",
       "id": "src_line_command_mappings_get_all_commands",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "get_all_commands()"
     },
     {
@@ -361,6 +389,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "command_parser.py"
     },
     {
@@ -371,6 +400,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_get_tw_futopt_price",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get_tw_futopt_price()"
     },
     {
@@ -381,6 +411,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_parse_line_command",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "parse_line_command()"
     },
     {
@@ -391,6 +422,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_get_stock_symbol_and_market_type",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get_stock_symbol_and_market_type()"
     },
     {
@@ -401,6 +433,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_get_stock_symbol_from_fixed_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "get_stock_symbol_from_fixed_command()"
     },
     {
@@ -411,6 +444,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_stock_price_quote",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "handle_stock_price_quote()"
     },
     {
@@ -421,6 +455,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_ex_dividend_quote",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "handle_ex_dividend_quote()"
     },
     {
@@ -431,6 +466,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_stock_basic_analysis_quote",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "handle_stock_basic_analysis_quote()"
     },
     {
@@ -441,6 +477,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_format_symbol_buy_sell_response",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "format_symbol_buy_sell_response()"
     },
     {
@@ -451,6 +488,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_buy_and_sell_quote",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "handle_buy_and_sell_quote()"
     },
     {
@@ -461,6 +499,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_day_k_line",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "handle_day_k_line()"
     },
     {
@@ -471,6 +510,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_handle_year_k_line",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "handle_year_k_line()"
     },
     {
@@ -481,6 +521,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_rationale_41",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "if text starts with '#', extract the symbol and return it with market type."
     },
     {
@@ -491,6 +532,7 @@
       "_origin": "ast",
       "id": "src_line_command_parser_rationale_205",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "formats the buy/sell data into a readable string."
     },
     {
@@ -501,6 +543,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "chart_common.py"
     },
     {
@@ -511,6 +554,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_get_x_label_align",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_x_label_align()"
     },
     {
@@ -521,6 +565,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_load_chart_font_name",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "load_chart_font_name()"
     },
     {
@@ -531,6 +576,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_draw_turnover_header",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "draw_turnover_header()"
     },
     {
@@ -541,6 +587,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_save_or_upload_fig",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "save_or_upload_fig()"
     },
     {
@@ -551,6 +598,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_rationale_1",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "shared chart-rendering helpers used by both the tw (fugle) and us/foreign (yfina"
     },
     {
@@ -561,6 +609,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_rationale_33",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "register the bundled noto sans tc font and return its family name."
     },
     {
@@ -571,6 +620,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_rationale_45",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "render the top-right turnover block: label / number / unit columns, right-aligne"
     },
     {
@@ -581,6 +631,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_common_rationale_91",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "save the figure locally (dev) or upload to s3 and return a presigned url (lambda"
     },
     {
@@ -591,6 +642,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_theme",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "chart_theme.py"
     },
     {
@@ -601,6 +653,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_theme_charttheme",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "charttheme"
     },
     {
@@ -611,6 +664,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_theme_get_chart_theme",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_chart_theme()"
     },
     {
@@ -621,6 +675,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_theme_rationale_1",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "color tokens for chart image responses.  single source of truth for every color"
     },
     {
@@ -631,6 +686,7 @@
       "_origin": "ast",
       "id": "src_quote_chart_theme_rationale_146",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "return the active theme. selected via chart_theme env var; defaults to tradingvi"
     },
     {
@@ -640,7 +696,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_quote_fugle",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "fugle.py"
     },
     {
@@ -651,6 +708,7 @@
       "_origin": "ast",
       "id": "src_quote_fugle_get_api_key",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "_get_api_key()"
     },
     {
@@ -660,7 +718,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_quote_fugle_quote_stock",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "quote_stock()"
     },
     {
@@ -670,7 +729,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "src_quote_fugle_quote_stock_ticker",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "quote_stock_ticker()"
     },
     {
@@ -680,7 +740,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_quote_fugle_quote_futopt",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "quote_futopt()"
     },
     {
@@ -690,7 +751,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_quote_fugle_quote_stock_candles",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "quote_stock_candles()"
     },
     {
@@ -700,7 +762,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "src_quote_fugle_build_candles_figure",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "_build_candles_figure()"
     },
     {
@@ -710,7 +773,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "figure",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "figure"
     },
     {
@@ -720,7 +784,8 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "src_quote_fugle_get_tw_stock_candles_png",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "get_tw_stock_candles_png()"
     },
     {
@@ -730,7 +795,8 @@
       "source_location": "L357",
       "_origin": "ast",
       "id": "src_quote_fugle_get_tw_stock_candles_png_bytes",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "get_tw_stock_candles_png_bytes()"
     },
     {
@@ -740,7 +806,8 @@
       "source_location": "L409",
       "_origin": "ast",
       "id": "src_quote_fugle_upload_tw_stock_candles_png_to_s3",
-      "community": 2,
+      "community": 24,
+      "community_name": "fugle.py",
       "norm_label": "upload_tw_stock_candles_png_to_s3()"
     },
     {
@@ -751,6 +818,7 @@
       "_origin": "ast",
       "id": "src_quote_output",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "output.py"
     },
     {
@@ -761,6 +829,7 @@
       "_origin": "ast",
       "id": "src_quote_output_format_cash_dividend",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "format_cash_dividend()"
     },
     {
@@ -771,6 +840,7 @@
       "_origin": "ast",
       "id": "src_quote_output_get_ups_or_downs",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "get_ups_or_downs()"
     },
     {
@@ -781,6 +851,7 @@
       "_origin": "ast",
       "id": "src_quote_output_format_price_output",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "format_price_output()"
     },
     {
@@ -791,6 +862,7 @@
       "_origin": "ast",
       "id": "src_quote_output_format_analysis_output",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "format_analysis_output()"
     },
     {
@@ -801,6 +873,7 @@
       "_origin": "ast",
       "id": "src_quote_output_format_stock_price_response",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "format_stock_price_response()"
     },
     {
@@ -811,6 +884,7 @@
       "_origin": "ast",
       "id": "src_quote_output_get_info_for_day_candle_picture",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_info_for_day_candle_picture()"
     },
     {
@@ -821,6 +895,7 @@
       "_origin": "ast",
       "id": "src_quote_output_format_ex_dividend_response",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "format_ex_dividend_response()"
     },
     {
@@ -831,6 +906,7 @@
       "_origin": "ast",
       "id": "src_quote_output_rationale_32",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "determine if the stock price is up, down, or unchanged.     returns 1 for up, -1"
     },
     {
@@ -841,6 +917,7 @@
       "_origin": "ast",
       "id": "src_quote_output_rationale_83",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "get icon representation for ups or downs status"
     },
     {
@@ -851,6 +928,7 @@
       "_origin": "ast",
       "id": "src_quote_output_rationale_99",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get icon representation for ups or downs status"
     },
     {
@@ -861,6 +939,7 @@
       "_origin": "ast",
       "id": "src_quote_sinopac",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "sinopac.py"
     },
     {
@@ -871,6 +950,7 @@
       "_origin": "ast",
       "id": "src_quote_sinopac_get_api_key",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "_get_api_key()"
     },
     {
@@ -881,6 +961,7 @@
       "_origin": "ast",
       "id": "src_quote_sinopac_get_api_secret",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "_get_api_secret()"
     },
     {
@@ -891,6 +972,7 @@
       "_origin": "ast",
       "id": "src_quote_sinopac_get_futopt_snapshot",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "get_futopt_snapshot()"
     },
     {
@@ -901,6 +983,7 @@
       "_origin": "ast",
       "id": "src_quote_sinopac_rationale_34",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "get a one-shot futures/options snapshot from sinopac's shioaji api.     returns"
     },
     {
@@ -911,6 +994,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "tw_stock.py"
     },
     {
@@ -921,6 +1005,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_price",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get_tw_stock_price()"
     },
     {
@@ -931,6 +1016,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_index_price",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get_tw_index_price()"
     },
     {
@@ -941,6 +1027,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_today_ex_dividend_stocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_today_ex_dividend_stocks()"
     },
     {
@@ -951,6 +1038,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_to_roc_date",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_to_roc_date()"
     },
     {
@@ -961,6 +1049,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_twse_ex_dividend_stocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_twse_ex_dividend_stocks()"
     },
     {
@@ -971,6 +1060,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tpex_ex_dividend_stocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tpex_ex_dividend_stocks()"
     },
     {
@@ -981,6 +1071,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_is_ex_dividend_type",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_is_ex_dividend_type()"
     },
     {
@@ -991,6 +1082,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_normalize_twse_ex_dividend_row",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_normalize_twse_ex_dividend_row()"
     },
     {
@@ -1001,6 +1093,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_normalize_tpex_ex_dividend_row",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_normalize_tpex_ex_dividend_row()"
     },
     {
@@ -1011,6 +1104,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_fallback_stock_price",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "_fallback_stock_price()"
     },
     {
@@ -1021,6 +1115,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_name",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tw_stock_name()"
     },
     {
@@ -1031,6 +1126,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_name_from_twse",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tw_stock_name_from_twse()"
     },
     {
@@ -1041,6 +1137,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_name_from_tpex",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tw_stock_name_from_tpex()"
     },
     {
@@ -1051,6 +1148,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_symbol_from_company_name",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tw_stock_symbol_from_company_name()"
     },
     {
@@ -1061,6 +1159,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_normalize_company_name",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_normalize_company_name()"
     },
     {
@@ -1071,6 +1170,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_extract_autocomplete_company_name",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_extract_autocomplete_company_name()"
     },
     {
@@ -1081,6 +1181,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_format_total_net_diff",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "format_total_net_diff()"
     },
     {
@@ -1091,6 +1192,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_format_twse_buy_and_sell_result",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "format_twse_buy_and_sell_result()"
     },
     {
@@ -1101,6 +1203,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_previous_working_day",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "previous_working_day()"
     },
     {
@@ -1111,6 +1214,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_effective_date",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_effective_date()"
     },
     {
@@ -1121,6 +1225,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_institues_buy_sell_today_result",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_institues_buy_sell_today_result()"
     },
     {
@@ -1131,6 +1236,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_twse_buy_sell_today_result",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_twse_buy_sell_today_result()"
     },
     {
@@ -1141,6 +1247,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tpex_buy_sell_today_result",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_tpex_buy_sell_today_result()"
     },
     {
@@ -1151,6 +1258,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_sync_all_buy_sell_today_result_to_db",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "sync_all_buy_sell_today_result_to_db()"
     },
     {
@@ -1161,6 +1269,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_normalize_twse_stock_buy_sell_to_db_format",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "normalize_twse_stock_buy_sell_to_db_format()"
     },
     {
@@ -1171,6 +1280,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_normalize_tpex_stock_buy_sell_to_db_format",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "normalize_tpex_stock_buy_sell_to_db_format()"
     },
     {
@@ -1180,7 +1290,8 @@
       "source_location": "L691",
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_symbol_buy_sell_today_result",
-      "community": 2,
+      "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_symbol_buy_sell_today_result()"
     },
     {
@@ -1191,6 +1302,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_format_trade_value",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_format_trade_value()"
     },
     {
@@ -1201,6 +1313,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_candles_png",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_tw_stock_candles_png()"
     },
     {
@@ -1211,6 +1324,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_get_tw_stock_year_candles_png",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_tw_stock_year_candles_png()"
     },
     {
@@ -1221,6 +1335,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_37",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get real-time stock price for a taiwan stock symbol using fugle and yfinance lib"
     },
     {
@@ -1231,6 +1346,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_81",
       "community": 10,
+      "community_name": "Command Parser Handlers",
       "norm_label": "get real-time index price for a taiwan index symbol using fugle and yfinance lib"
     },
     {
@@ -1241,6 +1357,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_168",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "fallback method using taiwan stock exchange api or web scraping."
     },
     {
@@ -1251,6 +1368,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_209",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get taiwan stock's chinese name using twse rest api.     returns the chinese nam"
     },
     {
@@ -1261,6 +1379,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_366",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "format twse fund result json to a pretty text."
     },
     {
@@ -1271,6 +1390,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_443",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "fetch today's buy sell result from twse using the provided url format.     forma"
     },
     {
@@ -1281,6 +1401,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_463",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "downloads and parses the foreign and other investor trade summary from twse."
     },
     {
@@ -1291,6 +1412,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_503",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "downloads and parses the foreign and other investor trade summary from tpex."
     },
     {
@@ -1301,6 +1423,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_590",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "0: \u8b49\u5238\u4ee3\u865f     1: \u8b49\u5238\u540d\u7a31     2: \u5916\u9678\u8cc7\u8cb7\u9032\u80a1\u6578(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)     3: \u5916\u9678\u8cc7\u8ce3\u51fa\u80a1\u6578(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)     4: \u5916\u9678\u8cc7\u8cb7\u8ce3"
     },
     {
@@ -1311,6 +1434,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_636",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "0: \u4ee3\u865f     1: \u540d\u7a31     2: \u5916\u8cc7\u53ca\u9678\u8cc7(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)-\u8cb7\u9032\u80a1\u6578     3: \u5916\u8cc7\u53ca\u9678\u8cc7(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)-\u8ce3\u51fa\u80a1\u6578     4: \u5916\u8cc7\u53ca"
     },
     {
@@ -1321,6 +1445,7 @@
       "_origin": "ast",
       "id": "src_quote_tw_stock_rationale_704",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "format a twd trade value with a chinese unit: \u5104 (1e8) once it reaches \u5104, else \u842c"
     },
     {
@@ -1331,6 +1456,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "yahoo_finance.py"
     },
     {
@@ -1341,6 +1467,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_quote_stock",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "quote_stock()"
     },
     {
@@ -1351,6 +1478,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_format_volume",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "_format_volume()"
     },
     {
@@ -1361,6 +1489,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_get_us_stock_candles_png",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_us_stock_candles_png()"
     },
     {
@@ -1371,6 +1500,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_get_us_stock_year_candles_png",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_us_stock_year_candles_png()"
     },
     {
@@ -1381,6 +1511,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_rationale_18",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get real-time stock or index price using yfinance library.     returns a dict wi"
     },
     {
@@ -1391,6 +1522,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_rationale_39",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "compact share-volume label for us/foreign markets (no \u5f35 lots): k / m / b."
     },
     {
@@ -1401,6 +1533,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_rationale_47",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "intraday line chart for us/foreign symbols (stocks, indices, fx, commodities, cr"
     },
     {
@@ -1411,6 +1544,7 @@
       "_origin": "ast",
       "id": "src_quote_yahoo_finance_rationale_187",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "6-month daily candlestick chart for us/foreign symbols using yfinance."
     },
     {
@@ -1421,6 +1555,7 @@
       "_origin": "ast",
       "id": "src_sync_tw_data",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "sync_tw_data.py"
     },
     {
@@ -1431,6 +1566,7 @@
       "_origin": "ast",
       "id": "src_sync_tw_data_handler",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "handler()"
     },
     {
@@ -1441,6 +1577,7 @@
       "_origin": "ast",
       "id": "src_sync_tw_data_schedule_retry",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "_schedule_retry()"
     },
     {
@@ -1451,6 +1588,7 @@
       "_origin": "ast",
       "id": "src_sync_tw_data_rationale_19",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "lambda handler to trigger the synchronization of daily buy/sell data.     this f"
     },
     {
@@ -1460,7 +1598,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_aws_helper",
-      "community": 2,
+      "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "aws_helper.py"
     },
     {
@@ -1471,6 +1610,7 @@
       "_origin": "ast",
       "id": "src_utils_aws_helper_get_ssm_parameter",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "get_ssm_parameter()"
     },
     {
@@ -1480,7 +1620,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_utils_aws_helper_get_secret",
-      "community": 2,
+      "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "get_secret()"
     },
     {
@@ -1490,7 +1631,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_utils_aws_helper_put_image",
-      "community": 2,
+      "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "put_image()"
     },
     {
@@ -1501,6 +1643,7 @@
       "_origin": "ast",
       "id": "src_utils_aws_helper_is_running_on_lambda",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "is_running_on_lambda()"
     },
     {
@@ -1511,6 +1654,7 @@
       "_origin": "ast",
       "id": "src_utils_aws_helper_is_s3_presigned_url",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "is_s3_presigned_url()"
     },
     {
@@ -1521,6 +1665,7 @@
       "_origin": "ast",
       "id": "src_utils_aws_helper_rationale_13",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "fetches a parameter from aws ssm parameter store, using a cache."
     },
     {
@@ -1530,7 +1675,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_utils_aws_helper_rationale_23",
-      "community": 2,
+      "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "fetches a secret from aws secrets manager, using a cache."
     },
     {
@@ -1541,6 +1687,7 @@
       "_origin": "ast",
       "id": "src_utils_aws_helper_rationale_53",
       "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "true when executing inside aws lambda.      aws sets aws_lambda_function_name in"
     },
     {
@@ -1551,6 +1698,7 @@
       "_origin": "ast",
       "id": "src_utils_gemini_helper",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "gemini_helper.py"
     },
     {
@@ -1561,6 +1709,7 @@
       "_origin": "ast",
       "id": "src_utils_gemini_helper_get_gemini_client",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "get_gemini_client()"
     },
     {
@@ -1571,6 +1720,7 @@
       "_origin": "ast",
       "id": "src_utils_gemini_helper_generate_gemini_technical_analysis_response",
       "community": 2,
+      "community_name": "Fugle Quote & Chart",
       "norm_label": "generate_gemini_technical_analysis_response()"
     },
     {
@@ -1580,7 +1730,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_mongo_helper",
-      "community": 2,
+      "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "mongo_helper.py"
     },
     {
@@ -1590,7 +1741,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_utils_mongo_helper_get_mongo_client",
-      "community": 2,
+      "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "get_mongo_client()"
     },
     {
@@ -1600,7 +1752,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mongoclient",
-      "community": 2,
+      "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "mongoclient"
     },
     {
@@ -1611,6 +1764,7 @@
       "_origin": "ast",
       "id": "tests_conftest",
       "community": 23,
+      "community_name": "Test Fixtures",
       "norm_label": "conftest.py"
     },
     {
@@ -1621,6 +1775,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "test_command_parser.py"
     },
     {
@@ -1631,6 +1786,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "testgetstocksymbolandmarkettype"
     },
     {
@@ -1641,6 +1797,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_valid_stock_symbol",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_valid_stock_symbol()"
     },
     {
@@ -1651,6 +1808,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_valid_stock_symbol_with_spaces",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_valid_stock_symbol_with_spaces()"
     },
     {
@@ -1661,6 +1819,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_invalid_formats",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_invalid_formats()"
     },
     {
@@ -1671,6 +1830,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_edge_cases",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_edge_cases()"
     },
     {
@@ -1681,6 +1841,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_fixed_commands",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_fixed_commands()"
     },
     {
@@ -1691,6 +1852,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolandmarkettype_test_tw_company_name",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": ".test_tw_company_name()"
     },
     {
@@ -1701,6 +1863,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "testgetstocksymbolfromfixedcommand"
     },
     {
@@ -1711,6 +1874,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_dapan_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_dapan_command()"
     },
     {
@@ -1721,6 +1885,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_us_stocks_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_us_stocks_command()"
     },
     {
@@ -1731,6 +1896,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_usd_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_usd_command()"
     },
     {
@@ -1741,6 +1907,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_jpy_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_jpy_command()"
     },
     {
@@ -1751,6 +1918,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_tw_futures_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_tw_futures_command()"
     },
     {
@@ -1761,6 +1929,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_tsmc_futures_command",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_tsmc_futures_command()"
     },
     {
@@ -1771,6 +1940,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testgetstocksymbolfromfixedcommand_test_unknown_command_fallback",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": ".test_unknown_command_fallback()"
     },
     {
@@ -1781,6 +1951,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testformatstockpriceresponse",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "testformatstockpriceresponse"
     },
     {
@@ -1791,6 +1962,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testformatstockpriceresponse_test_format_price_up",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": ".test_format_price_up()"
     },
     {
@@ -1801,6 +1973,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testformatstockpriceresponse_test_format_price_down",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": ".test_format_price_down()"
     },
     {
@@ -1811,6 +1984,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testformatstockpriceresponse_test_format_price_unchanged",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": ".test_format_price_unchanged()"
     },
     {
@@ -1821,6 +1995,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "testparselinecommand"
     },
     {
@@ -1831,6 +2006,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_tw_stock_info",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": ".test_tw_stock_info()"
     },
     {
@@ -1841,6 +2017,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_us_stock_info",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_us_stock_info()"
     },
     {
@@ -1851,6 +2028,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_non_stock_command",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": ".test_non_stock_command()"
     },
     {
@@ -1861,6 +2039,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_command_too_long",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": ".test_command_too_long()"
     },
     {
@@ -1871,6 +2050,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_tw_stock_not_found",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_tw_stock_not_found()"
     },
     {
@@ -1881,6 +2061,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_us_stock_not_found",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_us_stock_not_found()"
     },
     {
@@ -1891,6 +2072,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_multiple_stocks",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_multiple_stocks()"
     },
     {
@@ -1901,6 +2083,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_tw_futures_index",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_tw_futures_index()"
     },
     {
@@ -1911,6 +2094,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_get_tw_futopt_price_success",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_get_tw_futopt_price_success()"
     },
     {
@@ -1921,6 +2105,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_get_tw_futopt_price_missing_data",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_get_tw_futopt_price_missing_data()"
     },
     {
@@ -1931,6 +2116,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_tsmc_futures_price",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": ".test_tsmc_futures_price()"
     },
     {
@@ -1941,6 +2127,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_get_tw_futopt_price_tsmc",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": ".test_get_tw_futopt_price_tsmc()"
     },
     {
@@ -1951,6 +2138,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_testparselinecommand_test_ex_dividend_command",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": ".test_ex_dividend_command()"
     },
     {
@@ -1961,6 +2149,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_16",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test cases for get_stock_symbol_and_marke_type function"
     },
     {
@@ -1971,6 +2160,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_19",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test parsing valid stock symbols starting with #"
     },
     {
@@ -1981,6 +2171,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_31",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test parsing with leading/trailing spaces"
     },
     {
@@ -1991,6 +2182,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_37",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test various invalid formats"
     },
     {
@@ -2001,6 +2193,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_64",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test fixed commands like #\u5927\u76e4, #\u7f8e\u80a1, etc."
     },
     {
@@ -2011,6 +2204,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_75",
       "community": 12,
+      "community_name": "Symbol Resolution Tests",
       "norm_label": "test tw company commands like #\u53f0\u7a4d\u96fb, #\u9577\u69ae, etc."
     },
     {
@@ -2021,6 +2215,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_85",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "test cases for get_stock_symbol_from_fixed_command function"
     },
     {
@@ -2031,6 +2226,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_93",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "test #\u7f8e\u80a1 command returns list of us indices"
     },
     {
@@ -2041,6 +2237,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_113",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "test #\u53f0\u6307\u671f command maps to txfr1 with tw_fut market type"
     },
     {
@@ -2051,6 +2248,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_118",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "test #\u53f0\u7a4d\u671f command maps to cdfr1 with tw_fut market type"
     },
     {
@@ -2061,6 +2259,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_123",
       "community": 7,
+      "community_name": "Fixed Command Mappings",
       "norm_label": "test unknown command should return none"
     },
     {
@@ -2071,6 +2270,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_129",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "test cases for format_stock_price_response function"
     },
     {
@@ -2081,6 +2281,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_132",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "test formatting when price is up"
     },
     {
@@ -2091,6 +2292,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_147",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "test formatting when price is down"
     },
     {
@@ -2101,6 +2303,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_162",
       "community": 14,
+      "community_name": "Price Response Format Tests",
       "norm_label": "test formatting when price is unchanged"
     },
     {
@@ -2111,6 +2314,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_178",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test cases for parse_line_command function"
     },
     {
@@ -2121,6 +2325,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_182",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "test getting taiwan stock info"
     },
     {
@@ -2131,6 +2336,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_200",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test getting us stock info"
     },
     {
@@ -2141,6 +2347,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_217",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "test non-stock commands return none"
     },
     {
@@ -2151,6 +2358,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_223",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "test overly long commands are ignored"
     },
     {
@@ -2161,6 +2369,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_229",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test when taiwan stock is not found"
     },
     {
@@ -2171,6 +2380,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_237",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test when us stock is not found"
     },
     {
@@ -2181,6 +2391,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_245",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test parsing multiple stocks (like #\u7f8e\u80a1)"
     },
     {
@@ -2191,6 +2402,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_285",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test #\u53f0\u6307\u671f returns taiwan futures index price."
     },
     {
@@ -2201,6 +2413,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_303",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test get_tw_futopt_price returns formatted dict."
     },
     {
@@ -2211,6 +2424,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_321",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test get_tw_futopt_price returns none when snapshot fails."
     },
     {
@@ -2221,6 +2435,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_330",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "test #\u53f0\u7a4d\u671f returns tsmc futures price."
     },
     {
@@ -2231,6 +2446,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_348",
       "community": 5,
+      "community_name": "Command Parser Tests",
       "norm_label": "test get_tw_futopt_price returns formatted dict for tsmc futures."
     },
     {
@@ -2241,6 +2457,7 @@
       "_origin": "ast",
       "id": "tests_unit_line_test_command_parser_rationale_366",
       "community": 9,
+      "community_name": "Interactive REPL & Dispatch",
       "norm_label": "test d\u9664\u606f returns today's ex-dividend stocks."
     },
     {
@@ -2251,6 +2468,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "test_output.py"
     },
     {
@@ -2261,6 +2479,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testgetupsordowns",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "testgetupsordowns"
     },
     {
@@ -2271,6 +2490,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testgetupsordowns_test_price_up",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_price_up()"
     },
     {
@@ -2281,6 +2501,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testgetupsordowns_test_price_down",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_price_down()"
     },
     {
@@ -2291,6 +2512,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testgetupsordowns_test_price_unchanged",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_price_unchanged()"
     },
     {
@@ -2301,6 +2523,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testgetupsordowns_test_edge_cases",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_edge_cases()"
     },
     {
@@ -2311,6 +2534,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatexdividendresponse",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "testformatexdividendresponse"
     },
     {
@@ -2321,6 +2545,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatexdividendresponse_test_format_ex_dividend_stocks",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_format_ex_dividend_stocks()"
     },
     {
@@ -2331,6 +2556,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatexdividendresponse_test_format_ex_dividend_stocks_sorting",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_format_ex_dividend_stocks_sorting()"
     },
     {
@@ -2341,6 +2567,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatexdividendresponse_test_format_no_ex_dividend_stocks",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_format_no_ex_dividend_stocks()"
     },
     {
@@ -2351,6 +2578,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatcashdividend",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "testformatcashdividend"
     },
     {
@@ -2361,6 +2589,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_testformatcashdividend_test_removes_trailing_zeroes",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": ".test_removes_trailing_zeroes()"
     },
     {
@@ -2371,6 +2600,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_rationale_13",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "test cases for get_ups_or_downs function"
     },
     {
@@ -2381,6 +2611,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_rationale_16",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "test when current price is higher than previous close"
     },
     {
@@ -2391,6 +2622,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_rationale_21",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "test when current price is lower than previous close"
     },
     {
@@ -2401,6 +2633,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_output_rationale_26",
       "community": 4,
+      "community_name": "Quote Output Formatting",
       "norm_label": "test when current price equals previous close"
     },
     {
@@ -2411,6 +2644,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "test_tw_stock.py"
     },
     {
@@ -2421,6 +2655,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "testgettwstockprice"
     },
     {
@@ -2431,6 +2666,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_successful_stock_fetch_with_yfinance",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": ".test_successful_stock_fetch_with_yfinance()"
     },
     {
@@ -2441,6 +2677,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_stock_not_found_yfinance",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": ".test_stock_not_found_yfinance()"
     },
     {
@@ -2451,6 +2688,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_fallback_when_fugle_fails",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": ".test_fallback_when_fugle_fails()"
     },
     {
@@ -2461,6 +2699,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_fallback_when_yfinance_fails",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": ".test_fallback_when_yfinance_fails()"
     },
     {
@@ -2471,6 +2710,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_fallback_twse_api",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": ".test_fallback_twse_api()"
     },
     {
@@ -2481,6 +2721,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgetexdividendstocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "testgetexdividendstocks"
     },
     {
@@ -2491,6 +2732,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgetexdividendstocks_test_get_twse_ex_dividend_stocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": ".test_get_twse_ex_dividend_stocks()"
     },
     {
@@ -2501,6 +2743,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgetexdividendstocks_test_get_tpex_ex_dividend_stocks",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": ".test_get_tpex_ex_dividend_stocks()"
     },
     {
@@ -2511,6 +2754,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": "testgettwstocksymbolfromcompanyname"
     },
     {
@@ -2521,6 +2765,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname_test_prefers_exact_company_name_match",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": ".test_prefers_exact_company_name_match()"
     },
     {
@@ -2531,6 +2776,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname_test_falls_back_to_first_match_when_no_exact_company_name",
       "community": 0,
+      "community_name": "TW Stock Data Sync",
       "norm_label": ".test_falls_back_to_first_match_when_no_exact_company_name()"
     },
     {
@@ -2541,6 +2787,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_20",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test cases for get_tw_stock_price function"
     },
     {
@@ -2551,6 +2798,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_25",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test successful stock price fetch using fugle and yfinance"
     },
     {
@@ -2561,6 +2809,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_62",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test when stock symbol is not found with yfinance"
     },
     {
@@ -2571,6 +2820,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_76",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test fallback method when fugleyfinance fails"
     },
     {
@@ -2581,6 +2831,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_98",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test fallback method when fugleyfinance fails"
     },
     {
@@ -2591,6 +2842,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_tw_stock_rationale_126",
       "community": 11,
+      "community_name": "TW Stock Price Fetch Tests",
       "norm_label": "test fallback using twse api"
     },
     {
@@ -2601,6 +2853,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "test_yahoo_finance.py"
     },
     {
@@ -2611,6 +2864,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_testquotestock",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "testquotestock"
     },
     {
@@ -2621,6 +2875,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_testquotestock_test_successful_stock_fetch",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": ".test_successful_stock_fetch()"
     },
     {
@@ -2631,6 +2886,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_testquotestock_test_stock_not_found",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": ".test_stock_not_found()"
     },
     {
@@ -2641,6 +2897,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_testquotestock_test_stock_yfinance_error",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": ".test_stock_yfinance_error()"
     },
     {
@@ -2651,6 +2908,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_rationale_10",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "test cases for quote_stock function"
     },
     {
@@ -2661,6 +2919,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_rationale_14",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "test successful stock price fetch using yfinance"
     },
     {
@@ -2671,6 +2930,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_rationale_42",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "test when stock symbol is not found"
     },
     {
@@ -2681,6 +2941,7 @@
       "_origin": "ast",
       "id": "tests_unit_quote_test_yahoo_finance_rationale_55",
       "community": 15,
+      "community_name": "Yahoo Finance Tests",
       "norm_label": "test when yfinance fails"
     },
     {
@@ -2691,6 +2952,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test_app.py"
     },
     {
@@ -2701,6 +2963,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "testapp"
     },
     {
@@ -2711,6 +2974,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_setup_method",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".setup_method()"
     },
     {
@@ -2721,6 +2985,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_teardown_method",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".teardown_method()"
     },
     {
@@ -2731,6 +2996,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_test_lambda_handler_success",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".test_lambda_handler_success()"
     },
     {
@@ -2741,6 +3007,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".test_lambda_handler_invalid_signature()"
     },
     {
@@ -2751,6 +3018,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".test_lambda_handler_general_exception()"
     },
     {
@@ -2761,6 +3029,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_test_text_message_event_with_command",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".test_text_message_event_with_command()"
     },
     {
@@ -2771,6 +3040,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_testapp_test_text_message_event_no_command",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": ".test_text_message_event_no_command()"
     },
     {
@@ -2781,6 +3051,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_12",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test cases for the refactored app.py using line-bot-sdk."
     },
     {
@@ -2791,6 +3062,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_15",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "set up test environment variables before each test."
     },
     {
@@ -2801,6 +3073,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_26",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "clean up environment variables after each test."
     },
     {
@@ -2811,6 +3084,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_31",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test lambda_handler successfully processes a valid event."
     },
     {
@@ -2821,6 +3095,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_48",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test lambda_handler returns 400 on invalidsignatureerror."
     },
     {
@@ -2831,6 +3106,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_65",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test lambda_handler returns 500 on a general exception."
     },
     {
@@ -2841,6 +3117,7 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_83",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test that a text message with a valid command triggers a reply."
     },
     {
@@ -2851,7 +3128,30 @@
       "_origin": "ast",
       "id": "tests_unit_test_app_rationale_106",
       "community": 1,
+      "community_name": "LINE Webhook Handler",
       "norm_label": "test that a text message without a command does not trigger a reply."
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude",
+      "community": 25,
+      "community_name": "CLAUDE.md",
+      "norm_label": "claude.md"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_graphify",
+      "community": 25,
+      "community_name": "CLAUDE.md",
+      "norm_label": "graphify"
     },
     {
       "label": "Pharaoh Project Overview",
@@ -2862,9 +3162,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_pharaoh_overview",
       "community": 6,
-      "norm_label": "pharaoh project overview"
+      "norm_label": "pharaoh project overview",
+      "id": "_claude_claude_md_pharaoh_overview",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "line-webhook Lambda",
@@ -2875,9 +3176,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_line_webhook_lambda",
       "community": 6,
-      "norm_label": "line-webhook lambda"
+      "norm_label": "line-webhook lambda",
+      "id": "_claude_claude_md_line_webhook_lambda",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "sync-tw-data Lambda",
@@ -2888,9 +3190,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_sync_tw_data_lambda",
       "community": 6,
-      "norm_label": "sync-tw-data lambda"
+      "norm_label": "sync-tw-data lambda",
+      "id": "_claude_claude_md_sync_tw_data_lambda",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Bot Command Grammar",
@@ -2901,9 +3204,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_command_grammar",
       "community": 8,
-      "norm_label": "bot command grammar"
+      "norm_label": "bot command grammar",
+      "id": "_claude_claude_md_command_grammar",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Symbol Resolution & Market Routing",
@@ -2914,9 +3218,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_symbol_resolution",
       "community": 8,
-      "norm_label": "symbol resolution & market routing"
+      "norm_label": "symbol resolution & market routing",
+      "id": "_claude_claude_md_symbol_resolution",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Fugle Data Source",
@@ -2927,9 +3232,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_fugle_source",
       "community": 8,
-      "norm_label": "fugle data source"
+      "norm_label": "fugle data source",
+      "id": "_claude_claude_md_fugle_source",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Shioaji/SinoPac Data Source",
@@ -2940,9 +3246,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_shioaji_source",
       "community": 8,
-      "norm_label": "shioaji/sinopac data source"
+      "norm_label": "shioaji/sinopac data source",
+      "id": "_claude_claude_md_shioaji_source",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "yfinance Data Source",
@@ -2953,9 +3260,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_yfinance_source",
       "community": 8,
-      "norm_label": "yfinance data source"
+      "norm_label": "yfinance data source",
+      "id": "_claude_claude_md_yfinance_source",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "TWSE/TPEX Open APIs",
@@ -2966,9 +3274,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_twse_tpex_apis",
       "community": 6,
-      "norm_label": "twse/tpex open apis"
+      "norm_label": "twse/tpex open apis",
+      "id": "_claude_claude_md_twse_tpex_apis",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Gemini AI Commentary",
@@ -2979,9 +3288,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_gemini_source",
       "community": 8,
-      "norm_label": "gemini ai commentary"
+      "norm_label": "gemini ai commentary",
+      "id": "_claude_claude_md_gemini_source",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "SSM Parameter Store Secrets",
@@ -2992,9 +3302,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_ssm_secrets",
       "community": 6,
-      "norm_label": "ssm parameter store secrets"
+      "norm_label": "ssm parameter store secrets",
+      "id": "_claude_claude_md_ssm_secrets",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Shared Quote Output Normalization",
@@ -3005,9 +3316,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_output_normalization",
       "community": 8,
-      "norm_label": "shared quote output normalization"
+      "norm_label": "shared quote output normalization",
+      "id": "_claude_claude_md_output_normalization",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "S3 Presigned URL Reply Contract",
@@ -3018,9 +3330,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_claude_md_presigned_url_contract",
       "community": 8,
-      "norm_label": "s3 presigned url reply contract"
+      "norm_label": "s3 presigned url reply contract",
+      "id": "_claude_claude_md_presigned_url_contract",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Image Response Design Guideline",
@@ -3031,9 +3344,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_guideline",
       "community": 8,
-      "norm_label": "image response design guideline"
+      "norm_label": "image response design guideline",
+      "id": "_claude_skills_image_response_design_skill_guideline",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Chart Color Tokens",
@@ -3044,9 +3358,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_color_tokens",
       "community": 8,
-      "norm_label": "chart color tokens"
+      "norm_label": "chart color tokens",
+      "id": "_claude_skills_image_response_design_skill_color_tokens",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Theme Discipline (Selected Not Flipped)",
@@ -3057,9 +3372,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_theme_discipline",
       "community": 8,
-      "norm_label": "theme discipline (selected not flipped)"
+      "norm_label": "theme discipline (selected not flipped)",
+      "id": "_claude_skills_image_response_design_skill_theme_discipline",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Taiwan Market Polarity Convention",
@@ -3070,9 +3386,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_tw_polarity",
       "community": 8,
-      "norm_label": "taiwan market polarity convention"
+      "norm_label": "taiwan market polarity convention",
+      "id": "_claude_skills_image_response_design_skill_tw_polarity",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Palette Validation via validate_palette",
@@ -3083,9 +3400,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_palette_validation",
       "community": 8,
-      "norm_label": "palette validation via validate_palette"
+      "norm_label": "palette validation via validate_palette",
+      "id": "_claude_skills_image_response_design_skill_palette_validation",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Fixed MA Categorical Slots",
@@ -3096,9 +3414,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_categorical_ma_slots",
       "community": 8,
-      "norm_label": "fixed ma categorical slots"
+      "norm_label": "fixed ma categorical slots",
+      "id": "_claude_skills_image_response_design_skill_categorical_ma_slots",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Intraday P-Chart Layout & Scale",
@@ -3109,9 +3428,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_intraday_layout",
       "community": 8,
-      "norm_label": "intraday p-chart layout & scale"
+      "norm_label": "intraday p-chart layout & scale",
+      "id": "_claude_skills_image_response_design_skill_intraday_layout",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "dataviz skill (referenced)",
@@ -3122,9 +3442,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_claude_skills_image_response_design_skill_dataviz_skill",
       "community": 8,
-      "norm_label": "dataviz skill (referenced)"
+      "norm_label": "dataviz skill (referenced)",
+      "id": "_claude_skills_image_response_design_skill_dataviz_skill",
+      "community_name": "Project Concepts & Rationale"
     },
     {
       "label": "Ruff Pre-Commit Hooks",
@@ -3135,9 +3456,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_pre_commit_config_ruff_hooks",
       "community": 18,
-      "norm_label": "ruff pre-commit hooks"
+      "norm_label": "ruff pre-commit hooks",
+      "id": "_pre_commit_config_ruff_hooks",
+      "community_name": "Deps & Tooling Config"
     },
     {
       "label": "README Template Boilerplate",
@@ -3148,9 +3470,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_pharaoh_template_boilerplate",
       "community": 6,
-      "norm_label": "readme template boilerplate"
+      "norm_label": "readme template boilerplate",
+      "id": "readme_pharaoh_template_boilerplate",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Line Messaging API",
@@ -3161,9 +3484,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_line_messaging_api",
       "community": 6,
-      "norm_label": "line messaging api"
+      "norm_label": "line messaging api",
+      "id": "readme_line_messaging_api",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "AWS SAM Deployment",
@@ -3174,9 +3498,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_aws_sam",
       "community": 6,
-      "norm_label": "aws sam deployment"
+      "norm_label": "aws sam deployment",
+      "id": "readme_aws_sam",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Conda Environment Spec (pharaoh)",
@@ -3187,9 +3512,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "environment_yml_conda_env",
       "community": 18,
-      "norm_label": "conda environment spec (pharaoh)"
+      "norm_label": "conda environment spec (pharaoh)",
+      "id": "environment_yml_conda_env",
+      "community_name": "Deps & Tooling Config"
     },
     {
       "label": "SAM CloudFormation Stack",
@@ -3200,9 +3526,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_stack",
       "community": 6,
-      "norm_label": "sam cloudformation stack"
+      "norm_label": "sam cloudformation stack",
+      "id": "infrastructure_template_yaml_stack",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "LineWebhookFunction (SAM)",
@@ -3213,9 +3540,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_linewebhookfunction",
       "community": 6,
-      "norm_label": "linewebhookfunction (sam)"
+      "norm_label": "linewebhookfunction (sam)",
+      "id": "infrastructure_template_yaml_linewebhookfunction",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "SyncTwDataFunction (SAM)",
@@ -3226,9 +3554,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_synctwdatafunction",
       "community": 6,
-      "norm_label": "synctwdatafunction (sam)"
+      "norm_label": "synctwdatafunction (sam)",
+      "id": "infrastructure_template_yaml_synctwdatafunction",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "LineWebhookApi Gateway",
@@ -3239,9 +3568,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_linewebhookapi",
       "community": 6,
-      "norm_label": "linewebhookapi gateway"
+      "norm_label": "linewebhookapi gateway",
+      "id": "infrastructure_template_yaml_linewebhookapi",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "ImageBucket (S3)",
@@ -3252,9 +3582,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_imagebucket",
       "community": 6,
-      "norm_label": "imagebucket (s3)"
+      "norm_label": "imagebucket (s3)",
+      "id": "infrastructure_template_yaml_imagebucket",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "LineWebhookFunctionRole (IAM)",
@@ -3265,9 +3596,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_linewebhookfunctionrole",
       "community": 6,
-      "norm_label": "linewebhookfunctionrole (iam)"
+      "norm_label": "linewebhookfunctionrole (iam)",
+      "id": "infrastructure_template_yaml_linewebhookfunctionrole",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "DeadLetterQueue (SQS)",
@@ -3278,9 +3610,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_deadletterqueue",
       "community": 6,
-      "norm_label": "deadletterqueue (sqs)"
+      "norm_label": "deadletterqueue (sqs)",
+      "id": "infrastructure_template_yaml_deadletterqueue",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "MongoDbConnectionStrParameter (SSM)",
@@ -3291,9 +3624,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_mongodbparameter",
       "community": 6,
-      "norm_label": "mongodbconnectionstrparameter (ssm)"
+      "norm_label": "mongodbconnectionstrparameter (ssm)",
+      "id": "infrastructure_template_yaml_mongodbparameter",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "ScheduledSync EventBridge Cron",
@@ -3304,9 +3638,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "infrastructure_template_yaml_scheduled_sync",
       "community": 6,
-      "norm_label": "scheduledsync eventbridge cron"
+      "norm_label": "scheduledsync eventbridge cron",
+      "id": "infrastructure_template_yaml_scheduled_sync",
+      "community_name": "AWS SAM Infrastructure"
     },
     {
       "label": "Dev Python Requirements",
@@ -3317,9 +3652,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "requirements_dev_txt_dev_deps",
       "community": 18,
-      "norm_label": "dev python requirements"
+      "norm_label": "dev python requirements",
+      "id": "requirements_dev_txt_dev_deps",
+      "community_name": "Deps & Tooling Config"
     },
     {
       "label": "Lambda Python Requirements",
@@ -3330,9 +3666,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "src_requirements_txt_lambda_deps",
       "community": 18,
-      "norm_label": "lambda python requirements"
+      "norm_label": "lambda python requirements",
+      "id": "src_requirements_txt_lambda_deps",
+      "community_name": "Deps & Tooling Config"
     },
     {
       "label": "NVDA Intraday Chart",
@@ -3343,9 +3680,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_chart",
       "community": 16,
-      "norm_label": "nvda intraday chart"
+      "norm_label": "nvda intraday chart",
+      "id": "nvda_1784456449_chart",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "NVIDIA Corporation (NVDA)",
@@ -3356,9 +3694,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_symbol",
       "community": 16,
-      "norm_label": "nvidia corporation (nvda)"
+      "norm_label": "nvidia corporation (nvda)",
+      "id": "nvda_1784456449_symbol",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "Price 202.81 (-4.59, -2.21%)",
@@ -3369,9 +3708,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_price",
       "community": 16,
-      "norm_label": "price 202.81 (-4.59, -2.21%)"
+      "norm_label": "price 202.81 (-4.59, -2.21%)",
+      "id": "nvda_1784456449_price",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "Intraday High 206.65",
@@ -3382,9 +3722,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_high",
       "community": 16,
-      "norm_label": "intraday high 206.65"
+      "norm_label": "intraday high 206.65",
+      "id": "nvda_1784456449_high",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "Intraday Low 197.97",
@@ -3395,9 +3736,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_low",
       "community": 16,
-      "norm_label": "intraday low 197.97"
+      "norm_label": "intraday low 197.97",
+      "id": "nvda_1784456449_low",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "Turnover 126.8M",
@@ -3408,9 +3750,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_volume",
       "community": 16,
-      "norm_label": "turnover 126.8m"
+      "norm_label": "turnover 126.8m",
+      "id": "nvda_1784456449_volume",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "US Session 09:30-16:00",
@@ -3421,9 +3764,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_session",
       "community": 16,
-      "norm_label": "us session 09:30-16:00"
+      "norm_label": "us session 09:30-16:00",
+      "id": "nvda_1784456449_session",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "yfinance data source",
@@ -3434,9 +3778,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1784456449_source",
       "community": 16,
-      "norm_label": "yfinance data source"
+      "norm_label": "yfinance data source",
+      "id": "nvda_1784456449_source",
+      "community_name": "NVDA Intraday Chart Image"
     },
     {
       "label": "NVDA 1-Year Candlestick Chart",
@@ -3447,9 +3792,10 @@
       "captured_at": "2026-07-14",
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_chart",
       "community": 13,
-      "norm_label": "nvda 1-year candlestick chart"
+      "norm_label": "nvda 1-year candlestick chart",
+      "id": "nvda_1y_1784456438_chart",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "NVIDIA Corporation (NVDA)",
@@ -3460,9 +3806,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_symbol_nvda",
       "community": 13,
-      "norm_label": "nvidia corporation (nvda)"
+      "norm_label": "nvidia corporation (nvda)",
+      "id": "nvda_1y_1784456438_symbol_nvda",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "Current Price 202.81 (-2.21%)",
@@ -3473,9 +3820,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_price",
       "community": 13,
-      "norm_label": "current price 202.81 (-2.21%)"
+      "norm_label": "current price 202.81 (-2.21%)",
+      "id": "nvda_1y_1784456438_price",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "5-Day MA 207.61",
@@ -3486,9 +3834,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_ma5",
       "community": 13,
-      "norm_label": "5-day ma 207.61"
+      "norm_label": "5-day ma 207.61",
+      "id": "nvda_1y_1784456438_ma5",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "20-Day MA 202.12",
@@ -3499,9 +3848,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_ma20",
       "community": 13,
-      "norm_label": "20-day ma 202.12"
+      "norm_label": "20-day ma 202.12",
+      "id": "nvda_1y_1784456438_ma20",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "60-Day MA 208.85",
@@ -3512,9 +3862,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_ma60",
       "community": 13,
-      "norm_label": "60-day ma 208.85"
+      "norm_label": "60-day ma 208.85",
+      "id": "nvda_1y_1784456438_ma60",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "Period High 236.26",
@@ -3525,9 +3876,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_high",
       "community": 13,
-      "norm_label": "period high 236.26"
+      "norm_label": "period high 236.26",
+      "id": "nvda_1y_1784456438_high",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "Period Low 164.08",
@@ -3538,9 +3890,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_low",
       "community": 13,
-      "norm_label": "period low 164.08"
+      "norm_label": "period low 164.08",
+      "id": "nvda_1y_1784456438_low",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "Volume Subplot",
@@ -3551,9 +3904,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_volume",
       "community": 13,
-      "norm_label": "volume subplot"
+      "norm_label": "volume subplot",
+      "id": "nvda_1y_1784456438_volume",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "yfinance data source",
@@ -3564,9 +3918,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_yfinance",
       "community": 13,
-      "norm_label": "yfinance data source"
+      "norm_label": "yfinance data source",
+      "id": "nvda_1y_1784456438_yfinance",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "Uptrend from Feb low to May peak",
@@ -3577,9 +3932,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nvda_1y_1784456438_uptrend",
       "community": 13,
-      "norm_label": "uptrend from feb low to may peak"
+      "norm_label": "uptrend from feb low to may peak",
+      "id": "nvda_1y_1784456438_uptrend",
+      "community_name": "NVDA Yearly Chart Image"
     },
     {
       "label": "OHI Intraday Chart",
@@ -3590,9 +3946,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_chart",
       "community": 17,
-      "norm_label": "ohi intraday chart"
+      "norm_label": "ohi intraday chart",
+      "id": "ohi_1784456416_chart",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Omega Healthcare Investors (OHI)",
@@ -3603,9 +3960,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_symbol_ohi",
       "community": 17,
-      "norm_label": "omega healthcare investors (ohi)"
+      "norm_label": "omega healthcare investors (ohi)",
+      "id": "ohi_1784456416_symbol_ohi",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Intraday Price 50.21 (+0.68%)",
@@ -3616,9 +3974,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_price_metric",
       "community": 17,
-      "norm_label": "intraday price 50.21 (+0.68%)"
+      "norm_label": "intraday price 50.21 (+0.68%)",
+      "id": "ohi_1784456416_price_metric",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Day High 50.75 / Low 49.71",
@@ -3629,9 +3988,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_high_low",
       "community": 17,
-      "norm_label": "day high 50.75 / low 49.71"
+      "norm_label": "day high 50.75 / low 49.71",
+      "id": "ohi_1784456416_high_low",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Trade Turnover 1.5M",
@@ -3642,9 +4002,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_volume",
       "community": 17,
-      "norm_label": "trade turnover 1.5m"
+      "norm_label": "trade turnover 1.5m",
+      "id": "ohi_1784456416_volume",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Trend: morning peak, midday dip, late-day recovery",
@@ -3655,9 +4016,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_trend",
       "community": 17,
-      "norm_label": "trend: morning peak, midday dip, late-day recovery"
+      "norm_label": "trend: morning peak, midday dip, late-day recovery",
+      "id": "ohi_1784456416_trend",
+      "community_name": "OHI Intraday Chart Image"
     },
     {
       "label": "Data source: yfinance (US intraday)",
@@ -3668,9 +4030,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ohi_1784456416_source_yfinance",
       "community": 17,
-      "norm_label": "data source: yfinance (us intraday)"
+      "norm_label": "data source: yfinance (us intraday)",
+      "id": "ohi_1784456416_source_yfinance",
+      "community_name": "OHI Intraday Chart Image"
     }
   ],
   "links": [
@@ -8946,6 +9309,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude",
+      "target": "claude_graphify",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -9611,5 +9985,5 @@
       "source_file": "infrastructure/template.yaml"
     }
   ],
-  "built_at_commit": "eff90137b99c8b08c52aca198c644ee494d87bef"
+  "built_at_commit": "30c0d9a356ac6dcd8c9babcbda356fc04540e634"
 }
