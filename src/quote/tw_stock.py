@@ -41,8 +41,8 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
     try:
         stock_info = fugle_quote_stock(symbol)
         if stock_info:
-            current_price = stock_info.get("lastPrice") or stock_info.get("closePrice")
-            previous_close = stock_info.get("referencePrice") or stock_info.get("previousClose")
+            previous_close = stock_info.get("previousClose") or stock_info.get("referencePrice")
+            current_price = stock_info.get("lastPrice") or stock_info.get("closePrice") or previous_close
 
             yf_format_stock_info = {
                 "exchange": stock_info.get("exchange") or "TWSE",
