@@ -1,19 +1,21 @@
-FROM public.ecr.aws/lambda/python:3.14 AS base
+# Builder stage: compile/install deps with the toolchain, then discard it.
+FROM public.ecr.aws/lambda/python:3.14 AS builder
 
 RUN dnf -y install gcc gcc-c++ make \
-    && dnf -y clean all \
-    && python -m pip install --upgrade pip
+    && dnf -y clean all
 
-# Install dependencies
-COPY src/requirements.txt ${LAMBDA_TASK_ROOT}/requirements.txt
+COPY src/requirements.txt /tmp/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --upgrade pip \
-    && python -m pip install -r ${LAMBDA_TASK_ROOT}/requirements.txt
+    && python -m pip install -r /tmp/requirements.txt --target ${LAMBDA_TASK_ROOT}
 
-# Copy application code
+# Runtime stage: no compilers, just the installed deps + app code.
+# libstdc++/libgomp are the shared libs pandas/numpy/grpcio wheels link against.
+FROM public.ecr.aws/lambda/python:3.14 AS app
+
+RUN dnf -y install libstdc++ libgomp \
+    && dnf -y clean all
+
+# Deps first (changes rarely) so code-only deploys only rebuild the last layer.
+COPY --from=builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
 COPY src/ ${LAMBDA_TASK_ROOT}
-
-# Function-specific targets share the same base image layers.
-FROM base AS sync-tw-data
-
-FROM base AS line-webhook

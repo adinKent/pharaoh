@@ -5,7 +5,7 @@ PRE_COMMIT = pre-commit
 SAM = sam
 
 
-.PHONY: help fmt lint check test test-watch test-coverage build package deploy-dev deploy-staging deploy-prod local-start local-invoke logs clean setup install-deps
+.PHONY: help fmt lint check test test-watch test-coverage build package deploy-dev sync-dev deploy-staging deploy-prod local-start local-invoke logs clean setup install-deps
 
 help:
 	@echo "可用指令:"
@@ -54,10 +54,15 @@ build: install-deps lint test
 	@echo "Build complete."
 
 package:
-	$(SAM) build --template-file infrastructure/template.yaml
+	DOCKER_BUILDKIT=1 $(SAM) build --template-file infrastructure/template.yaml
 
 deploy-dev: package
 	$(SAM) deploy --config-env dev
+
+# Fast dev loop: rebuilds the image and updates function code directly,
+# skipping the full CloudFormation changeset. Ctrl-C to stop watching.
+sync-dev:
+	DOCKER_BUILDKIT=1 $(SAM) sync --config-env dev --stack-name pharaoh-line-webhook-dev
 
 deploy-staging: package
 	$(SAM) deploy --config-env staging
