@@ -98,6 +98,34 @@ def quote_stock_candles(symbol: str) -> dict | None:
         return None
 
 
+def quote_stock_historical_candles(symbol: str, from_date: str, to_date: str) -> dict | None:
+    """Daily OHLCV candles between from_date and to_date (both YYYY-MM-DD, inclusive).
+
+    Used for multi-month charts. `from` is a Python keyword, so the query params
+    are passed via dict unpacking rather than as keyword arguments.
+    """
+    try:
+        stock = client.stock
+        result = stock.historical.candles(
+            **{
+                "symbol": symbol,
+                "from": from_date,
+                "to": to_date,
+                "fields": "open,high,low,close,volume",
+            }
+        )
+
+        if not result:
+            logger.warning("Fugle responses missing historical candles data for %s", symbol)
+            return None
+
+        return result
+    except Exception as exc:
+        logger.error("Fugle API error for %s: %s", symbol, exc)
+        logger.exception(exc)
+        return None
+
+
 def _build_candles_figure(
     symbol: str,
     timeframe: str = "1",

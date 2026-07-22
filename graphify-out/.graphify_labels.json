@@ -23,5 +23,8 @@
   "21": "Local Dev Script",
   "22": "Package Init",
   "23": "Test Fixtures",
-  "25": "CLAUDE.md"
+  "24": "format_stock_price_response",
+  "25": "CLAUDE.md",
+  "26": "interactive_test",
+  "27": ".test_get_tw_futopt_price_missing_data"
 }

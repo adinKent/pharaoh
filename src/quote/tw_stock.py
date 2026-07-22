@@ -21,6 +21,7 @@ from quote.fugle import (
 )
 from quote.fugle import (
     quote_stock_candles,
+    quote_stock_historical_candles,
     quote_stock_ticker,
 )
 from quote.output import format_price_output, get_info_for_day_candle_picture
@@ -933,22 +934,34 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool | None =
         if not stock_info:
             return None
 
-        ticker = fugle_quote_stock(symbol)
         title_info = get_info_for_day_candle_picture(stock_info)
 
-        yahoo_symbol = f"{symbol}.TW"
-        if ticker and ticker["exchange"] == "TPEx":
-            yahoo_symbol = f"{symbol}.TWO"
-        elif ticker and ticker["type"] == "INDEX":
-            if symbol == "IX0001":
-                yahoo_symbol = "^TWII"
-            elif symbol == "IX0043":
-                yahoo_symbol = "IX0043.TWO"
+        # Fetch ~6 months of daily candles from Fugle (same source as the price
+        # quote), instead of yfinance. Fugle takes the symbol as-is for TWSE,
+        # TPEx and indices, so no Yahoo suffix/ticker remapping is needed.
+        taipei_today = datetime.now(ZoneInfo("Asia/Taipei")).date()
+        from_date = (taipei_today - timedelta(days=186)).isoformat()
+        to_date = taipei_today.isoformat()
 
-        df = yf.Ticker(yahoo_symbol).history(period="6mo")
-        if df.empty:
-            logger.warning("No 1-year history found for %s", yahoo_symbol)
+        resp = quote_stock_historical_candles(symbol, from_date, to_date)
+        candles = (resp or {}).get("data", [])
+        if not candles:
+            logger.warning("No 6-month history found for %s", symbol)
             return None
+
+        # Fugle returns candles newest-first; sort ascending for mplfinance/MAs.
+        df = pd.DataFrame(candles)
+        df["time"] = pd.to_datetime(df["date"])
+        df = df.set_index("time").sort_index()
+        df = df.rename(
+            columns={
+                "open": "Open",
+                "high": "High",
+                "low": "Low",
+                "close": "Close",
+                "volume": "Volume",
+            }
+        )
 
         # season/month/day lines in TW charts usually map to MA60/20/5.
         ma_windows = {

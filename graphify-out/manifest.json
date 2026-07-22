@@ -1,8 +1,8 @@
 {
   ".claude/settings.local.json": {
-    "mtime": 1784457166.1008568,
-    "ast_hash": "b5e784c2ac5a7ace306be67bce55b4ec",
-    "semantic_hash": "b5e784c2ac5a7ace306be67bce55b4ec"
+    "mtime": 1784739329.1592853,
+    "ast_hash": "1e4e5f42871702900146a58aee1f085e",
+    "semantic_hash": ""
   },
   "interactive_stock_test.py": {
     "mtime": 1772209335.7744682,
@@ -65,9 +65,9 @@
     "semantic_hash": "0f2aebe1621c4e8c616e0d7185f1fa18"
   },
   "src/quote/fugle.py": {
-    "mtime": 1781416376.2848427,
-    "ast_hash": "73344ab9ec37021eb4e91eb075d7d8d7",
-    "semantic_hash": "73344ab9ec37021eb4e91eb075d7d8d7"
+    "mtime": 1784739276.1380792,
+    "ast_hash": "db3d6f8bd1e7ba428fa5813a5ca7dfb5",
+    "semantic_hash": ""
   },
   "src/quote/output.py": {
     "mtime": 1784444194.9091465,
@@ -80,8 +80,8 @@
     "semantic_hash": "0d9203101002a3cd5857d83e300b56d4"
   },
   "src/quote/tw_stock.py": {
-    "mtime": 1784565704.279876,
-    "ast_hash": "b934f63543ce3e17380382a383b47a31",
+    "mtime": 1784739302.5974693,
+    "ast_hash": "1e7ddf6c99e40f18f2169612af52e0da",
     "semantic_hash": ""
   },
   "src/quote/yahoo_finance.py": {
