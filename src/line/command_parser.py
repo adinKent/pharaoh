@@ -19,7 +19,7 @@ from quote.yahoo_finance import (
     get_us_stock_year_candles_png,
     quote_stock,
 )
-from utils.gemini_helper import generate_gemini_technical_analysis_response
+from utils.groq_helper import generate_groq_technical_analysis_response
 
 MAX_COMMAND_TEXT_LENGTH = 20
 
@@ -156,11 +156,14 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     full_info = stock_info["fullInfo"]
     history = stock_info["history"]
 
-    ma5 = history["Close"].rolling(window=5).mean().iloc[-1]
-    ma20 = history["Close"].rolling(window=20).mean().iloc[-1]
-    ma60 = history["Close"].rolling(window=60).mean().iloc[-1]
-    ma120 = history["Close"].rolling(window=120).mean().iloc[-1]
-    ma240 = history["Close"].rolling(window=240).mean().iloc[-1]
+    # Yahoo can include an incomplete latest trading-day row whose Close is
+    # NaN. Exclude it so it does not invalidate every trailing MA window.
+    close_history = history["Close"].dropna()
+    ma5 = close_history.rolling(window=5).mean().iloc[-1]
+    ma20 = close_history.rolling(window=20).mean().iloc[-1]
+    ma60 = close_history.rolling(window=60).mean().iloc[-1]
+    ma120 = close_history.rolling(window=120).mean().iloc[-1]
+    ma240 = close_history.rolling(window=240).mean().iloc[-1]
 
     stock_only_info = []
     if full_info.get("dividendYield", None):
@@ -171,9 +174,9 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
         trailing_pe = round(full_info.get("trailingPE", 0), 1)
         stock_only_info.append(f"PE: {trailing_pe}")
 
-    # if full_info.get('forwardPE', None): forwardPE is not correct by yFinance's query
-    #     forward_pe = round(full_info.get('forwardPE', 0), 1)
-    #     stock_only_info.append(f'ForwardPE: {forward_pe}')
+    if full_info.get("forwardPE", None):  # forwardPE is not correct by yFinance's query
+        forward_pe = round(full_info.get("forwardPE", 0), 1)
+        stock_only_info.append(f"ForwardPE: {forward_pe}")
 
     if len(stock_only_info) > 0:
         stock_only_info = ["  ".join(stock_only_info), ""]
@@ -197,7 +200,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
             https://tw.stock.yahoo.com/quote/{yahoo_stock_symbol}/dividend
         """
 
-    ai_analysis_content = generate_gemini_technical_analysis_response(prompt)
+    ai_analysis_content = generate_groq_technical_analysis_response(prompt)  # generate_gemini_technical_analysis_response(prompt)
     return "\n".join([technical_analysis_content, "", "AI分析:", "", ai_analysis_content])
 
 

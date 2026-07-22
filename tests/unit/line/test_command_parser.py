@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import pandas as pd
 import pytest
 
 from line.command_parser import (
@@ -212,6 +213,28 @@ class TestParseLineCommand:
         assert "AAPL" in result
         assert "Apple Inc." in result
         mock_quote_stock.assert_called_once_with("AAPL")
+
+    @patch("line.command_parser.generate_groq_technical_analysis_response")
+    @patch("line.command_parser.get_tw_stock_price")
+    def test_basic_analysis_ignores_trailing_missing_close(self, mock_get_tw_price, mock_generate_analysis):
+        """A partial Yahoo row must not make every moving average NaN."""
+        mock_get_tw_price.return_value = {
+            "symbol": "2891",
+            "name": "CTBC Financial",
+            "price": 62.7,
+            "previous_price": 61.5,
+            "currency": "TWD",
+            "fullInfo": {"exchange": "TWSE"},
+            "history": pd.DataFrame({"Close": [*range(1, 241), float("nan")]}),
+        }
+        mock_generate_analysis.return_value = "analysis"
+
+        result = parse_line_command("A2891")
+
+        assert "5日線: 238.0  月線: 230.5" in result
+        assert "季線: 210.5  半年線: 180.5  年線: 120.5" in result
+        assert "線: nan" not in result.lower()
+        mock_get_tw_price.assert_called_once_with("2891", period="1y")
 
     def test_non_stock_command(self):
         """Test non-stock commands return None"""
