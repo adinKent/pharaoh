@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'ECR repositories for Pharaoh Lambda container images. Deployed as a standalone bootstrap stack before the application stack, so the repositories exist when SAM pushes images.'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+    Description: Environment name
+
+Resources:
+  LineWebhookRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub "pharaoh-line-webhook-${Environment}"
+      # Let CloudFormation delete the repo even when it still holds images.
+      EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Delete untagged images after 7 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 7
+                },
+                "action": {
+                  "type": "expire"
+                }
+              },
+              {
+                "rulePriority": 2,
+                "description": "Keep the last 3 tagged images",
+                "selection": {
+                  "tagStatus": "tagged",
+                  "tagPatternList": ["*"],
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 3
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+  SyncTwDataRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub "pharaoh-sync-tw-data-${Environment}"
+      EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Delete untagged images after 7 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 7
+                },
+                "action": {
+                  "type": "expire"
+                }
+              },
+              {
+                "rulePriority": 2,
+                "description": "Keep the last 3 tagged images",
+                "selection": {
+                  "tagStatus": "tagged",
+                  "tagPatternList": ["*"],
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 3
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+Outputs:
+  LineWebhookRepositoryUri:
+    Description: 'URI of the line-webhook ECR repository'
+    Value: !GetAtt LineWebhookRepository.RepositoryUri
+  SyncTwDataRepositoryUri:
+    Description: 'URI of the sync-tw-data ECR repository'
+    Value: !GetAtt SyncTwDataRepository.RepositoryUri

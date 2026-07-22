@@ -50,15 +50,31 @@ if [ "$STACK_STATUS" = "ROLLBACK_COMPLETE" ]; then
     echo "Stack deleted successfully."
 fi
 
+# Get AWS account ID for ECR repository URIs
+AWS_ACCOUNT_ID=$(aws --profile "$AWS_PROFILE" sts get-caller-identity --query Account --output text)
+
+# Bootstrap the ECR repositories in their own stack first. SAM pushes the
+# container images before the application changeset runs, so the target repos
+# (with lifecycle policies) must already exist by then.
+echo "Bootstrapping ECR repositories..."
+aws --profile "$AWS_PROFILE" --region "$AWS_REGION" cloudformation deploy \
+    --stack-name pharaoh-ecr-$ENVIRONMENT \
+    --template-file infrastructure/ecr.yaml \
+    --parameter-overrides Environment=$ENVIRONMENT \
+    --no-fail-on-empty-changeset
+
+ECR_REGISTRY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
 sam deploy --profile $AWS_PROFILE \
     --stack-name pharaoh-line-webhook-$ENVIRONMENT \
-    --resolve-image-repos \
+    --image-repositories LineWebhookFunction=$ECR_REGISTRY/pharaoh-line-webhook-$ENVIRONMENT \
+    --image-repositories SyncTwDataFunction=$ECR_REGISTRY/pharaoh-sync-tw-data-$ENVIRONMENT \
     --resolve-s3 \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --no-confirm-changeset \
     --config-env $ENVIRONMENT \
     --parameter-overrides \
-        MongoDbConnectionStr=$MONGODB_CONNECTION_STR 
+        MongoDbConnectionStr=$MONGODB_CONNECTION_STR
         
 # Get the webhook URL
 echo "Getting webhook URL..."
