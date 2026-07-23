@@ -181,13 +181,25 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     if len(stock_only_info) > 0:
         stock_only_info = ["  ".join(stock_only_info), ""]
 
+    # Skip any moving average that is NaN (not enough history for that window).
+    def _ma_line(pairs):
+        return "  ".join(f"{label}: {round(value, 2)}" for label, value in pairs if not math.isnan(value))
+
+    ma_lines = [
+        line
+        for line in (
+            _ma_line((("5日線", ma5), ("月線", ma20))),
+            _ma_line((("季線", ma60), ("半年線", ma120), ("年線", ma240))),
+        )
+        if line
+    ]
+
     technical_analysis_content = "\n".join(
         [
             f"{format_stock_price_response(stock_info)}",
             "",
             *stock_only_info,
-            f"5日線: {round(ma5, 2)}  月線: {round(ma20, 2)}",
-            f"季線: {round(ma60, 2)}  半年線: {round(ma120, 2)}  年線: {round(ma240, 2)}",
+            *ma_lines,
         ]
     )
 

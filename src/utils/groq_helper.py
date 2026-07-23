@@ -20,8 +20,8 @@ def get_groq_client():
 
 def generate_groq_technical_analysis_response(prompt_content: str) -> str:
     contents = (
-        "根據以下資料用基本面與技術分析這檔股票目前狀況，基本面需要提供具體數字，"
-        f"不要提及資料來源，內容要在500字內，不需要提醒投資者任何警語:\n {prompt_content}"
+        "根據以下資料用技術分析與基本面分析這檔股票，技術分析為主，基本面需要提供具體數字，"
+        f"不要提及資料來源，不要markdown格式，內容要在500字內，不需要提醒投資者任何警語:\n {prompt_content}"
     )
     groq_client = get_groq_client()
 

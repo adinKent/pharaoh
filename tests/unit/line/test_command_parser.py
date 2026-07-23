@@ -236,6 +236,30 @@ class TestParseLineCommand:
         assert "線: nan" not in result.lower()
         mock_get_tw_price.assert_called_once_with("2891", period="1y")
 
+    @patch("line.command_parser.generate_groq_technical_analysis_response")
+    @patch("line.command_parser.get_tw_stock_price")
+    def test_basic_analysis_omits_nan_moving_averages(self, mock_get_tw_price, mock_generate_analysis):
+        """NaN moving averages (too little history) must not be written into the output."""
+        mock_get_tw_price.return_value = {
+            "symbol": "2891",
+            "name": "CTBC Financial",
+            "price": 62.7,
+            "previous_price": 61.5,
+            "currency": "TWD",
+            "fullInfo": {"exchange": "TWSE"},
+            # 30 rows: ma5/ma20 resolvable, ma60/ma120/ma240 are NaN.
+            "history": pd.DataFrame({"Close": [*range(1, 31)]}),
+        }
+        mock_generate_analysis.return_value = "analysis"
+
+        result = parse_line_command("A2891")
+
+        assert "5日線: 28.0  月線: 20.5" in result
+        assert "線: nan" not in result.lower()
+        assert "季線" not in result
+        assert "半年線" not in result
+        assert "年線" not in result
+
     def test_non_stock_command(self):
         """Test non-stock commands return None"""
         assert parse_line_command("Hello world") is None
