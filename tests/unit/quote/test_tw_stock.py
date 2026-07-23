@@ -19,10 +19,9 @@ sys.modules["yfinance"] = Mock()
 class TestGetTwStockPrice:
     """Test cases for get_tw_stock_price function"""
 
-    @patch("quote.tw_stock.yf.Ticker")
     @patch("quote.tw_stock.fugle_quote_stock")
-    def test_successful_stock_fetch_with_yfinance(self, mock_fugle_quote_stock, mock_ticker_class):
-        """Test successful stock price fetch using fugle and yfinance"""
+    def test_successful_stock_fetch(self, mock_fugle_quote_stock):
+        """Test successful stock price fetch using fugle (no period -> no history)"""
         # Mock quote result from fugle
         mock_fugle_quote_stock.return_value = {
             "exchange": "TWSE",
@@ -31,21 +30,6 @@ class TestGetTwStockPrice:
             "lastPrice": 525.0,
             "previousClose": 510.0,
         }
-
-        mock_ticker = Mock()
-        mock_ticker_class.return_value = mock_ticker
-
-        # Mock the yahoo finance info and history
-        mock_ticker.info = {
-            "shortName": "Taiwan Semiconductor",
-            "currentPrice": 525,
-            "regularMarketPrice": 525,
-            "regularMarketPreviousClose": 510,
-            "currency": "TWD",
-        }
-
-        mock_history = pd.DataFrame({"Close": [525.0]})
-        mock_ticker.history.return_value = mock_history
 
         result = get_tw_stock_price("2330")
 
@@ -57,15 +41,36 @@ class TestGetTwStockPrice:
         assert result["upsOrDowns"] == 1
         mock_fugle_quote_stock.assert_called_once_with("2330")
 
-    @patch("quote.tw_stock.yf.Ticker")
-    def test_stock_not_found_yfinance(self, mock_ticker_class):
-        """Test when stock symbol is not found with yfinance"""
-        mock_ticker = Mock()
-        mock_ticker_class.return_value = mock_ticker
+    @patch("quote.tw_stock.quote_stock_historical_candles")
+    @patch("quote.tw_stock.fugle_quote_stock")
+    def test_history_from_fugle(self, mock_fugle_quote_stock, mock_hist):
+        """With a period, history is fetched from Fugle and shaped like a yfinance frame."""
+        mock_fugle_quote_stock.return_value = {
+            "exchange": "TWSE",
+            "symbol": "2330",
+            "name": "台積電",
+            "lastPrice": 525.0,
+            "previousClose": 510.0,
+        }
+        # Fugle returns candles newest-first; the frame must come out ascending.
+        mock_hist.return_value = {
+            "data": [
+                {"date": "2024-07-02", "open": 1, "high": 2, "low": 1, "close": 520.0, "volume": 10},
+                {"date": "2024-07-01", "open": 1, "high": 2, "low": 1, "close": 515.0, "volume": 10},
+            ]
+        }
 
-        # Empty history and no info
-        mock_ticker.history.return_value = pd.DataFrame()
-        mock_ticker.info = {}
+        result = get_tw_stock_price("2330", period="1y")
+
+        history = result["history"]
+        assert isinstance(history, pd.DataFrame)
+        assert list(history["Close"]) == [515.0, 520.0]
+        mock_hist.assert_called_once()
+
+    @patch("quote.tw_stock.fugle_quote_stock")
+    def test_stock_not_found(self, mock_fugle_quote_stock):
+        """Test when fugle returns no data for the symbol"""
+        mock_fugle_quote_stock.return_value = None
 
         result = get_tw_stock_price("9999")
         assert result is None
@@ -73,8 +78,8 @@ class TestGetTwStockPrice:
     @patch("quote.tw_stock.fugle_quote_stock")
     @patch("quote.tw_stock._fallback_stock_price")
     def test_fallback_when_fugle_fails(self, mock_fallback, mock_fugle_quote_stock):
-        """Test fallback method when fugleyfinance fails"""
-        # Make yfinance raise an exception
+        """Test fallback method when the fugle quote raises"""
+        # Make the fugle quote raise an exception
         mock_fugle_quote_stock.side_effect = Exception("fugle error")
 
         # Mock fallback to return data
@@ -92,10 +97,10 @@ class TestGetTwStockPrice:
         mock_fallback.assert_called_once_with("2884")
 
     @patch("quote.tw_stock.fugle_quote_stock")
-    @patch("quote.tw_stock.yf")
+    @patch("quote.tw_stock.quote_stock_historical_candles")
     @patch("quote.tw_stock._fallback_stock_price")
-    def test_fallback_when_yfinance_fails(self, mock_fallback, mock_yf, mock_fugle_quote_stock):
-        """Test fallback method when fugleyfinance fails"""
+    def test_fallback_when_history_fetch_fails(self, mock_fallback, mock_hist, mock_fugle_quote_stock):
+        """Test fallback method when the fugle history fetch raises"""
         mock_fugle_quote_stock.return_value = {
             "exchange": "TWSE",
             "symbol": "2884",
@@ -104,8 +109,8 @@ class TestGetTwStockPrice:
             "previousClose": 25.0,
         }
 
-        # Make yfinance raise an exception
-        mock_yf.Ticker.side_effect = Exception("yfinance error")
+        # Make the fugle history fetch raise an exception
+        mock_hist.side_effect = Exception("fugle history error")
 
         # Mock fallback to return data
         mock_fallback.return_value = {

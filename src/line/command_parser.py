@@ -1,6 +1,8 @@
 import math
 import re
 
+import pandas as pd
+
 from line.command_mappings import get_all_commands
 from quote.output import FIXED_SYMBOL_NAME_MAPPINGS, format_ex_dividend_response, format_stock_price_response
 from quote.sinopac import get_futopt_snapshot
@@ -154,16 +156,27 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
             stock_info = quote_stock(symbol, period="1y")
 
     full_info = stock_info["fullInfo"]
-    history = stock_info["history"]
+    history = stock_info.get("history")
 
-    # Yahoo can include an incomplete latest trading-day row whose Close is
-    # NaN. Exclude it so it does not invalidate every trailing MA window.
-    close_history = history["Close"].dropna()
-    ma5 = close_history.rolling(window=5).mean().iloc[-1]
-    ma20 = close_history.rolling(window=20).mean().iloc[-1]
-    ma60 = close_history.rolling(window=60).mean().iloc[-1]
-    ma120 = close_history.rolling(window=120).mean().iloc[-1]
-    ma240 = close_history.rolling(window=240).mean().iloc[-1]
+    # History may be a Fugle-derived frame (TW path) or a yfinance frame (US path);
+    # both expose a "Close" column. A partial latest row can be NaN, and the price
+    # fallback path may omit history entirely — guard for both. Drop NaN closes so
+    # an incomplete latest trading-day row does not invalidate every MA window.
+    if isinstance(history, pd.DataFrame) and "Close" in history:
+        close_history = history["Close"].dropna()
+    else:
+        close_history = pd.Series(dtype="float64")
+
+    def _last_ma(window):
+        if close_history.empty:
+            return float("nan")
+        return close_history.rolling(window=window).mean().iloc[-1]
+
+    ma5 = _last_ma(5)
+    ma20 = _last_ma(20)
+    ma60 = _last_ma(60)
+    ma120 = _last_ma(120)
+    ma240 = _last_ma(240)
 
     stock_only_info = []
     if full_info.get("dividendYield", None):

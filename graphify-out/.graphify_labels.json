@@ -9,6 +9,8 @@
   "7": "Fixed Command Mappings",
   "8": "Project Concepts & Rationale",
   "9": "Interactive REPL & Dispatch",
+  "10": "get_tw_stock_price",
+  "11": "command_parser.py",
   "12": "Symbol Resolution Tests",
   "13": "NVDA Yearly Chart Image",
   "14": "Price Response Format Tests",
@@ -21,5 +23,7 @@
   "21": "Local Dev Script",
   "22": "Package Init",
   "23": "Test Fixtures",
-  "25": "CLAUDE.md"
+  "24": "format_stock_price_response",
+  "25": "CLAUDE.md",
+  "26": "get_tw_futopt_price"
 }

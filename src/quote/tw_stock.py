@@ -10,7 +10,6 @@ from zoneinfo import ZoneInfo
 import mplfinance as mpf
 import pandas as pd
 import requests
-import yfinance as yf
 from bs4 import BeautifulSoup
 from pymongo import UpdateOne
 
@@ -34,9 +33,38 @@ TWSE_EX_DIVIDEND_URL = "https://openapi.twse.com.tw/v1/exchangeReport/TWT48U_ALL
 TPEX_EX_DIVIDEND_URL = "https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost"
 
 
-def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | None = None) -> dict | None:
+_PERIOD_TO_DAYS = {"1mo": 31, "3mo": 93, "6mo": 186, "1y": 364}
+
+
+def _period_to_days(period: str) -> int:
+    """Map a yfinance-style period string to a calendar-day lookback for Fugle."""
+    return _PERIOD_TO_DAYS.get(period, 364)
+
+
+def _fugle_history_df(symbol: str, days: int) -> pd.DataFrame:
+    """Fetch ~`days` calendar days of daily candles from Fugle as a yfinance-shaped
+    frame: capitalized OHLCV columns on an ascending DatetimeIndex. Returns an empty
+    frame when Fugle has no data. Fugle takes the symbol as-is for TWSE/TPEx/indices.
     """
-    Get real-time stock price for a Taiwan stock symbol using fugle and yfinance library.
+    taipei_today = datetime.now(ZoneInfo("Asia/Taipei")).date()
+    from_date = (taipei_today - timedelta(days=days)).isoformat()
+    to_date = taipei_today.isoformat()
+
+    resp = quote_stock_historical_candles(symbol, from_date, to_date)
+    candles = (resp or {}).get("data", [])
+    if not candles:
+        return pd.DataFrame()
+
+    # Fugle returns candles newest-first; sort ascending for MAs/mplfinance.
+    df = pd.DataFrame(candles)
+    df["time"] = pd.to_datetime(df["date"])
+    df = df.set_index("time").sort_index()
+    return df.rename(columns={"open": "Open", "high": "High", "low": "Low", "close": "Close", "volume": "Volume"})
+
+
+def get_tw_stock_price(symbol: str, period: str | None = None) -> dict | None:
+    """
+    Get real-time stock price for a Taiwan stock symbol using fugle.
     Returns a dict with price info or None if not found.
     """
     try:
@@ -58,18 +86,11 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
 
             history = dict()
             if period:
-                exchange = stock_info.get("exchange", "TWSE")
-                yahoo_symbol = yf_symbol
-                if not yahoo_symbol:
-                    market_type = "TW" if exchange == "TWSE" else "TWO"
-                    yahoo_symbol = f"{symbol}.{market_type}"
-                ticker = yf.Ticker(yahoo_symbol)
-                history = ticker.history(period=period)
+                # History now comes from Fugle (same source as the quote), shaped
+                # like a yfinance history frame so downstream MA code is unchanged.
+                history = _fugle_history_df(symbol, _period_to_days(period))
 
             return format_price_output(symbol, yf_format_stock_info, history)
-    except ImportError:
-        # Fallback to simple web scraping if yfinance not available
-        return _fallback_stock_price(symbol)
     except Exception as e:
         logger.error("Error fetching tw stock price: %s", e)
         logger.exception(e)
@@ -80,16 +101,11 @@ def get_tw_stock_price(symbol: str, period: str | None = None, yf_symbol: str | 
 
 def get_tw_index_price(symbol: str, period: str | None = None) -> dict | None:
     """
-    Get real-time index price for a Taiwan index symbol using fugle and yfinance library.
-    Returns a dict with price info or None if not found.
+    Get real-time index price for a Taiwan index symbol using fugle.
+    Fugle takes the index symbol as-is, so this is a thin wrapper over
+    get_tw_stock_price kept for call-site clarity.
     """
-    yahoo_symbol = None
-    if symbol == "IX0001":
-        yahoo_symbol = "^TWII"
-    elif symbol == "IX0043":
-        yahoo_symbol = "IX0043.TWO"
-
-    return get_tw_stock_price(symbol, period, yahoo_symbol)
+    return get_tw_stock_price(symbol, period)
 
 
 def get_today_ex_dividend_stocks() -> tuple[list[dict], str]:
@@ -936,32 +952,11 @@ def get_tw_stock_year_candles_png(symbol: str, save_to_local_file: bool | None =
 
         title_info = get_info_for_day_candle_picture(stock_info)
 
-        # Fetch ~6 months of daily candles from Fugle (same source as the price
-        # quote), instead of yfinance. Fugle takes the symbol as-is for TWSE,
-        # TPEx and indices, so no Yahoo suffix/ticker remapping is needed.
-        taipei_today = datetime.now(ZoneInfo("Asia/Taipei")).date()
-        from_date = (taipei_today - timedelta(days=186)).isoformat()
-        to_date = taipei_today.isoformat()
-
-        resp = quote_stock_historical_candles(symbol, from_date, to_date)
-        candles = (resp or {}).get("data", [])
-        if not candles:
+        # ~6 months of daily candles from Fugle (same source as the price quote).
+        df = _fugle_history_df(symbol, _period_to_days("6mo"))
+        if df.empty:
             logger.warning("No 6-month history found for %s", symbol)
             return None
-
-        # Fugle returns candles newest-first; sort ascending for mplfinance/MAs.
-        df = pd.DataFrame(candles)
-        df["time"] = pd.to_datetime(df["date"])
-        df = df.set_index("time").sort_index()
-        df = df.rename(
-            columns={
-                "open": "Open",
-                "high": "High",
-                "low": "Low",
-                "close": "Close",
-                "volume": "Volume",
-            }
-        )
 
         # season/month/day lines in TW charts usually map to MA60/20/5.
         ma_windows = {
