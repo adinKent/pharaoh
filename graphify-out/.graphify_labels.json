@@ -25,5 +25,10 @@
   "23": "Test Fixtures",
   "24": "format_stock_price_response",
   "25": "CLAUDE.md",
-  "26": "get_tw_futopt_price"
+  "26": "get_tw_futopt_price",
+  "27": "interactive_test",
+  "28": "command_mappings.py",
+  "29": ".test_basic_analysis_omits_nan_moving_averages",
+  "30": ".test_command_too_long",
+  "31": ".test_tw_futures_index"
 }

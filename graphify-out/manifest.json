@@ -80,8 +80,8 @@
     "semantic_hash": "0d9203101002a3cd5857d83e300b56d4"
   },
   "src/quote/tw_stock.py": {
-    "mtime": 1784819749.7682333,
-    "ast_hash": "8ea2fab75943f9f11521bddd15d786e7",
+    "mtime": 1784820405.6298254,
+    "ast_hash": "4440594650b4f8ff246a432850e18407",
     "semantic_hash": ""
   },
   "src/quote/yahoo_finance.py": {
@@ -202,11 +202,6 @@
   "tests/unit/utils/test_groq_helper.py": {
     "mtime": 1784738989.6767128,
     "ast_hash": "701b808bd74e77714d6b6198fdcde163",
-    "semantic_hash": ""
-  },
-  "2890_1784819212.jpg": {
-    "mtime": 1784819212.534782,
-    "ast_hash": "f5efd02cf881ecac8645444ec36f21c8",
     "semantic_hash": ""
   }
 }
