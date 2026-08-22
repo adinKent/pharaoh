@@ -217,15 +217,13 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
     )
 
     prompt = technical_analysis_content
-    if stock_info["fullInfo"]["exchange"]:
-        yahoo_stock_symbol = f"{symbol}.{'TW' if stock_info['fullInfo']['exchange'] == 'TWSE' else 'TWO'}"
-        prompt += f"""
-            可參考下面網站做基本面分析:
-            https://tw.stock.yahoo.com/quote/{yahoo_stock_symbol}/profile
-            https://tw.stock.yahoo.com/quote/{yahoo_stock_symbol}/dividend
-        """
-
-    ai_analysis_content = generate_opencode_technical_analysis_response(prompt)
+    stock_name = stock_info.get("name") or full_info.get("longName") or full_info.get("shortName")
+    ai_analysis_content = generate_opencode_technical_analysis_response(
+        prompt,
+        symbol=symbol,
+        market_type=market_type,
+        name=stock_name,
+    )
     return "\n".join([technical_analysis_content, "", "AI分析:", "", ai_analysis_content])
 
 

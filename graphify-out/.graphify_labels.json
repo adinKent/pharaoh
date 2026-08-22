@@ -30,5 +30,6 @@
   "28": "command_mappings.py",
   "29": ".test_basic_analysis_omits_nan_moving_averages",
   "30": ".test_command_too_long",
-  "31": ".test_tw_futures_index"
+  "31": ".test_tw_futures_index",
+  "32": ".test_tw_stock_not_found"
 }
