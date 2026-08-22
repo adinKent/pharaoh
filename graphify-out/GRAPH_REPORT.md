@@ -1,16 +1,16 @@
 # Graph Report - pharaoh  (2026-08-22)
 
 ## Corpus Check
-- 37 files · ~18,956 words
+- 39 files · ~20,457 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 374 nodes · 530 edges · 33 communities (24 shown, 9 thin omitted)
-- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 92 edges (avg confidence: 0.81)
+- 402 nodes · 576 edges · 35 communities (30 shown, 5 thin omitted)
+- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 96 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `43623ccb`
+- Built from commit: `f97b661f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -42,9 +42,10 @@
 - get_tw_futopt_price
 - interactive_test
 - .test_basic_analysis_omits_nan_moving_averages
-- .test_command_too_long
 - .test_tw_futures_index
 - .test_tw_stock_not_found
+- get_tw_stock_candles_png
+- _fallback_stock_price
 
 ## God Nodes (most connected - your core abstractions)
 1. `parse_line_command()` - 22 edges
@@ -78,11 +79,11 @@
 - **Chart Design Pillars** — _claude_skills_image_response_design_skill_color_tokens, _claude_skills_image_response_design_skill_tw_polarity, _claude_skills_image_response_design_skill_palette_validation, _claude_skills_image_response_design_skill_intraday_layout [EXTRACTED 1.00]
 - **SAM Lambda Stack Composition** — infrastructure_template_yaml_linewebhookfunction, infrastructure_template_yaml_linewebhookapi, infrastructure_template_yaml_linewebhookfunctionrole, infrastructure_template_yaml_imagebucket, infrastructure_template_yaml_deadletterqueue [EXTRACTED 1.00]
 
-## Communities (33 total, 9 thin omitted)
+## Communities (35 total, 5 thin omitted)
 
 ### Community 0 - "TW Stock Data Sync"
-Cohesion: 0.08
-Nodes (35): _extract_autocomplete_company_name(), format_total_net_diff(), format_twse_buy_and_sell_result(), get_effective_date(), get_institues_buy_sell_today_result(), get_today_ex_dividend_stocks(), get_tpex_buy_sell_today_result(), get_tpex_ex_dividend_stocks() (+27 more)
+Cohesion: 0.20
+Nodes (14): _extract_autocomplete_company_name(), get_today_ex_dividend_stocks(), get_tpex_ex_dividend_stocks(), get_tw_stock_name(), get_tw_stock_name_from_tpex(), get_tw_stock_name_from_twse(), get_tw_stock_symbol_from_company_name(), get_twse_ex_dividend_stocks() (+6 more)
 
 ### Community 1 - "LINE Webhook Handler"
 Cohesion: 0.08
@@ -117,16 +118,16 @@ Cohesion: 0.14
 Nodes (16): Bot Command Grammar, Fugle Data Source, Gemini AI Commentary, Shared Quote Output Normalization, S3 Presigned URL Reply Contract, Shioaji/SinoPac Data Source, Symbol Resolution & Market Routing, yfinance Data Source (+8 more)
 
 ### Community 9 - "Interactive REPL & Dispatch"
-Cohesion: 0.10
-Nodes (11): Test cases for parse_line_command function, Test getting Taiwan stock info, A partial Yahoo row must not make every moving average NaN., NaN moving averages (too little history) must not be written into the output., Test non-stock commands return None, Test when US stock is not found, Test parsing multiple stocks (like #美股), Test #台指期 returns Taiwan futures index price. (+3 more)
+Cohesion: 0.08
+Nodes (19): interactive_test(), Interactive testing of the stock parser, handle_ex_dividend_quote(), parse_line_command(), If text starts with '#', extract the symbol and return it with market type., Test cases for parse_line_command function, Test getting Taiwan stock info, Test getting US stock info (+11 more)
 
 ### Community 10 - "get_tw_stock_price"
-Cohesion: 0.09
-Nodes (23): DataFrame, _fallback_stock_price(), _format_trade_value(), _fugle_history_df(), get_tw_index_price(), get_tw_stock_candles_png(), get_tw_stock_price(), get_tw_stock_year_candles_png() (+15 more)
+Cohesion: 0.12
+Nodes (16): _fugle_history_df(), get_tw_index_price(), get_tw_stock_price(), get_tw_stock_year_candles_png(), _period_to_days(), Get real-time index price for a Taiwan index symbol using fugle.     Fugle takes, Map a yfinance-style period string to a calendar-day lookback for Fugle., Fetch ~`days` calendar days of daily candles from Fugle as a yfinance-shaped (+8 more)
 
 ### Community 11 - "command_parser.py"
-Cohesion: 0.36
-Nodes (11): format_symbol_buy_sell_response(), get_stock_symbol_and_market_type(), handle_buy_and_sell_quote(), handle_day_k_line(), handle_ex_dividend_quote(), handle_stock_basic_analysis_quote(), handle_stock_price_quote(), handle_year_k_line() (+3 more)
+Cohesion: 0.42
+Nodes (8): format_symbol_buy_sell_response(), get_stock_symbol_and_market_type(), handle_buy_and_sell_quote(), handle_day_k_line(), handle_stock_basic_analysis_quote(), handle_stock_price_quote(), handle_year_k_line(), Formats the buy/sell data into a readable string.
 
 ### Community 12 - "Symbol Resolution Tests"
 Cohesion: 0.15
@@ -153,8 +154,8 @@ Cohesion: 0.29
 Nodes (7): OHI Intraday Chart, Day High 50.75 / Low 49.71, Intraday Price 50.21 (+0.68%), Data source: yfinance (US intraday), Omega Healthcare Investors (OHI), Trend: morning peak, midday dip, late-day recovery, Trade Turnover 1.5M
 
 ### Community 24 - "format_stock_price_response"
-Cohesion: 0.47
-Nodes (3): completion(), test_generate_response_retries_with_fallback_model(), test_generate_response_uses_main_model()
+Cohesion: 0.31
+Nodes (6): completion(), test_generate_response_handles_tool_calls(), test_generate_response_prefetches_market_search(), test_generate_response_retries_with_fallback_model(), test_generate_response_uses_main_model(), tool_call()
 
 ### Community 25 - "CLAUDE.md"
 Cohesion: 0.50
@@ -164,20 +165,40 @@ Nodes (3): instructions, $schema, ./claude/CLAUDE.md
 Cohesion: 0.29
 Nodes (4): get_tw_futopt_price(), Test get_tw_futopt_price returns formatted dict., Test get_tw_futopt_price returns None when snapshot fails., Test get_tw_futopt_price returns formatted dict for TSMC futures.
 
+### Community 27 - "interactive_test"
+Cohesion: 0.17
+Nodes (14): get_effective_date(), get_tpex_buy_sell_today_result(), get_twse_buy_sell_today_result(), normalize_tpex_stock_buy_sell_to_db_format(), normalize_twse_stock_buy_sell_to_db_format(), previous_working_day(), Downloads and parses the foreign and other investor trade summary from TWSE., Downloads and parses the foreign and other investor trade summary from TPEX. (+6 more)
+
+### Community 29 - ".test_basic_analysis_omits_nan_moving_averages"
+Cohesion: 0.19
+Nodes (18): _chat_with_tools(), generate_opencode_technical_analysis_response(), get_opencode_client(), _message_to_dict(), _run_tool(), _duckduckgo_instant_answer(), _fetch_text(), _format_us_info_value() (+10 more)
+
+### Community 32 - ".test_tw_stock_not_found"
+Cohesion: 0.40
+Nodes (5): format_total_net_diff(), format_twse_buy_and_sell_result(), get_institues_buy_sell_today_result(), Format TWSE fund result JSON to a pretty text., Fetch today's buy sell result from TWSE using the provided URL format.     Forma
+
+### Community 33 - "get_tw_stock_candles_png"
+Cohesion: 0.50
+Nodes (4): DataFrame, _format_trade_value(), get_tw_stock_candles_png(), Format a TWD trade value with a Chinese unit: 億 (1e8) once it reaches 億, else 萬
+
+### Community 34 - "_fallback_stock_price"
+Cohesion: 0.50
+Nodes (3): _fallback_stock_price(), Fallback method using Taiwan Stock Exchange API or web scraping., Test fallback using TWSE API
+
 ## Knowledge Gaps
 - **39 isolated node(s):** `$schema`, `./claude/CLAUDE.md`, `init.sh script`, `deploy.sh script`, `local.sh script` (+34 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `parse_line_command()` connect `command_parser.py` to `.test_tw_stock_not_found`, `LINE Webhook Handler`, `Interactive REPL & Dispatch`, `interactive_test`, `.test_command_too_long`, `.test_tw_futures_index`?**
-  _High betweenness centrality (0.095) - this node is a cross-community bridge._
-- **Why does `get_tw_stock_price()` connect `get_tw_stock_price` to `TW Stock Data Sync`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+- **Why does `parse_line_command()` connect `Interactive REPL & Dispatch` to `LINE Webhook Handler`, `command_parser.py`?**
+  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+- **Why does `get_tw_stock_price()` connect `get_tw_stock_price` to `TW Stock Data Sync`, `get_tw_stock_candles_png`, `_fallback_stock_price`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **Why does `get_stock_symbol_and_market_type()` connect `command_parser.py` to `Symbol Resolution Tests`, `Fixed Command Mappings`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Are the 14 inferred relationships involving `parse_line_command()` (e.g. with `interactive_test()` and `handle_text_message()`) actually correct?**
   _`parse_line_command()` has 14 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 6 inferred relationships involving `get_stock_symbol_and_market_type()` (e.g. with `.test_edge_cases()` and `.test_fixed_commands()`) actually correct?**

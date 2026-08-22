@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 client = None
 
 base_url = "https://opencode.ai/zen/go/v1"
-main_model = "kimi-k2.7-code"
+main_model = "gpt-5.6-luna"
 fallback_model = "deepseek-v4-flash"
 _MAX_TOOL_ROUNDS = 3
 
@@ -144,7 +144,7 @@ def generate_opencode_technical_analysis_response(
 ) -> str:
     contents = (
         "根據以下資料用技術分析與基本面分析這檔股票，技術分析為主，基本面需要提供具體數字，"
-        "不要提及資料來源，不要markdown格式，內容要在500字內，不需要提醒投資者任何警語。"
+        "不要提及資料來源，不要markdown格式，內容要在600字內，不需要提醒投資者任何警語。"
         "若基本面資料不足，可呼叫 search_tw_stock（台股）或 search_us_stock（美股）或 web_search 取得最新資料後再分析。"
         f"\n {prompt_content}"
     )
