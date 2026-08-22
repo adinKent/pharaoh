@@ -214,7 +214,7 @@ class TestParseLineCommand:
         assert "Apple Inc." in result
         mock_quote_stock.assert_called_once_with("AAPL")
 
-    @patch("line.command_parser.generate_groq_technical_analysis_response")
+    @patch("line.command_parser.generate_opencode_technical_analysis_response")
     @patch("line.command_parser.get_tw_stock_price")
     def test_basic_analysis_ignores_trailing_missing_close(self, mock_get_tw_price, mock_generate_analysis):
         """A partial Yahoo row must not make every moving average NaN."""
@@ -236,7 +236,7 @@ class TestParseLineCommand:
         assert "線: nan" not in result.lower()
         mock_get_tw_price.assert_called_once_with("2891", period="1y")
 
-    @patch("line.command_parser.generate_groq_technical_analysis_response")
+    @patch("line.command_parser.generate_opencode_technical_analysis_response")
     @patch("line.command_parser.get_tw_stock_price")
     def test_basic_analysis_omits_nan_moving_averages(self, mock_get_tw_price, mock_generate_analysis):
         """NaN moving averages (too little history) must not be written into the output."""

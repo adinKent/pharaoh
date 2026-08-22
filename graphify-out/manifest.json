@@ -80,8 +80,8 @@
     "semantic_hash": "0d9203101002a3cd5857d83e300b56d4"
   },
   "src/quote/tw_stock.py": {
-    "mtime": 1784820405.6298254,
-    "ast_hash": "4440594650b4f8ff246a432850e18407",
+    "mtime": 1786116431.0368557,
+    "ast_hash": "5e8a4a3c59de294073f93521686366d7",
     "semantic_hash": ""
   },
   "src/quote/yahoo_finance.py": {

@@ -21,7 +21,7 @@ from quote.yahoo_finance import (
     get_us_stock_year_candles_png,
     quote_stock,
 )
-from utils.groq_helper import generate_groq_technical_analysis_response
+from utils.opencode_helper import generate_opencode_technical_analysis_response
 
 MAX_COMMAND_TEXT_LENGTH = 20
 
@@ -225,7 +225,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
             https://tw.stock.yahoo.com/quote/{yahoo_stock_symbol}/dividend
         """
 
-    ai_analysis_content = generate_groq_technical_analysis_response(prompt)  # generate_gemini_technical_analysis_response(prompt)
+    ai_analysis_content = generate_opencode_technical_analysis_response(prompt)
     return "\n".join([technical_analysis_content, "", "AI分析:", "", ai_analysis_content])
 
 
