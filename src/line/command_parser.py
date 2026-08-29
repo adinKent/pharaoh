@@ -21,7 +21,11 @@ from quote.yahoo_finance import (
     get_us_stock_year_candles_png,
     quote_stock,
 )
-from utils.opencode_helper import generate_opencode_technical_analysis_response, infer_line_command
+from utils.opencode_helper import (
+    generate_opencode_technical_analysis_response,
+    infer_line_candidate_commands,
+    infer_line_command,
+)
 
 MAX_COMMAND_TEXT_LENGTH = 20
 
@@ -78,6 +82,11 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
         if inferred_command and inferred_command != command_text:
             return parse_line_command(inferred_command)
 
+        candidates = infer_line_candidate_commands(command_text)
+        if candidates:
+            commands = "\n".join(f"{index}. {candidate['command']}" for index, candidate in enumerate(candidates, 1))
+            return f"你可能想查詢以下指令：\n{commands}\n請直接回覆正確的指令。"
+
     return None
 
 
@@ -98,7 +107,9 @@ def get_stock_symbol_and_market_type(symbol: str):
             stock_symbol = get_tw_stock_symbol_from_company_name(symbol)
             if stock_symbol:
                 return (stock_symbol, "TW")
-        elif bool(re.search(r"^[A-Za-z0-9]+", symbol)):
+        # Yahoo Finance tickers may contain a leading '^' (indices) and
+        # punctuation such as '-' or '=' (for example ^GSPC, BRK-B, GC=F).
+        elif re.fullmatch(r"\^?[A-Za-z0-9][A-Za-z0-9.=_-]*", symbol):
             return (symbol.upper(), "US")
 
     return None
@@ -114,6 +125,8 @@ def get_stock_symbol_from_fixed_command(
 def handle_stock_price_quote(symbol_in_command) -> str:
     symbol_name = symbol_in_command.group(1)
     symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if symbol_list is None:
+        return ""
     if isinstance(symbol_list, str):
         return symbol_list
 
@@ -121,8 +134,10 @@ def handle_stock_price_quote(symbol_in_command) -> str:
         symbol_list = [symbol_list]
 
     stock_info_list = []
+    print(symbol_list)
     for symbol, market_type in symbol_list:
         stock_info = None
+        market_type = market_type or ""
         match market_type:
             case "TW":
                 stock_info = get_tw_stock_price(symbol)

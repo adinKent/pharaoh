@@ -149,6 +149,36 @@ def test_infer_line_command_retries_with_fallback_model(mocker):
     ]
 
 
+def test_infer_line_candidate_commands_returns_ranked_candidates(mocker):
+    client = Mock()
+    client.chat.completions.create.return_value = completion(
+        '{"candidates":['
+        '{"command":"#2330","confidence":0.62},'
+        '{"command":"A2330","confidence":0.51},'
+        '{"command":"P2330","confidence":0.43},'
+        '{"command":"invalid","confidence":0.99}'
+        "]}"
+    )
+    mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
+
+    assert opencode_helper.infer_line_candidate_commands("想看看台積電") == [
+        {"command": "#2330", "confidence": 0.62},
+        {"command": "A2330", "confidence": 0.51},
+        {"command": "P2330", "confidence": 0.43},
+    ]
+    prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
+    assert "比特幣使用 BTC-USD" in prompt
+    assert "F 只適用台股" in prompt
+
+
+def test_infer_line_command_rejects_low_confidence_candidate(mocker):
+    client = Mock()
+    client.chat.completions.create.return_value = completion('{"candidates":[{"command":"#2330","confidence":0.79}]}')
+    mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
+
+    assert opencode_helper.infer_line_command("想看看台積電") is None
+
+
 def test_infer_line_command_retries_with_free_go_model(mocker):
     client = Mock()
     client.chat.completions.create.side_effect = [

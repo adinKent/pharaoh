@@ -23,6 +23,8 @@ class TestGetStockSymbolAndMarketType:
         assert get_stock_symbol_and_market_type("1234") == ("1234", "TW")
         assert get_stock_symbol_and_market_type("AAPL") == ("AAPL", "US")
         assert get_stock_symbol_and_market_type("TSLA") == ("TSLA", "US")
+        assert get_stock_symbol_and_market_type("^GSPC") == ("^GSPC", "US")
+        assert get_stock_symbol_and_market_type("BTC-USD") == ("BTC-USD", "US")
         assert get_stock_symbol_and_market_type("aapl") == (
             "AAPL",
             "US",
@@ -37,6 +39,7 @@ class TestGetStockSymbolAndMarketType:
     def test_invalid_formats(self):
         """Test various invalid formats"""
         assert get_stock_symbol_and_market_type("#") is None  # Just #
+        assert get_stock_symbol_and_market_type("^") is None
         assert get_stock_symbol_and_market_type("##2884") is None  # Double #
         assert get_stock_symbol_and_market_type("") is None  # Empty string
         assert get_stock_symbol_and_market_type("2884 extra text") == (
