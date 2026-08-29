@@ -1,16 +1,16 @@
 # Graph Report - pharaoh  (2026-08-29)
 
 ## Corpus Check
-- 39 files · ~20,645 words
+- 39 files · ~20,913 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 395 nodes · 562 edges · 34 communities (29 shown, 5 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 87 edges (avg confidence: 0.8)
+- 401 nodes · 575 edges · 35 communities (30 shown, 5 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 91 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4145e462`
+- Built from commit: `fd1c6c73`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -45,18 +45,19 @@
 - format_twse_buy_and_sell_result
 - get_tw_stock_candles_png
 - _fallback_stock_price
+- opencode_helper.py
 
 ## God Nodes (most connected - your core abstractions)
-1. `parse_line_command()` - 22 edges
-2. `TestParseLineCommand` - 17 edges
+1. `parse_line_command()` - 25 edges
+2. `TestParseLineCommand` - 19 edges
 3. `get_stock_symbol_and_market_type()` - 13 edges
 4. `get_tw_stock_price()` - 13 edges
 5. `get_us_stock_candles_png()` - 11 edges
 6. `TestApp` - 10 edges
 7. `NVDA 1-Year Candlestick Chart` - 10 edges
-8. `handle_text_message()` - 9 edges
-9. `get_stock_symbol_from_fixed_command()` - 9 edges
-10. `TestGetStockSymbolFromFixedCommand` - 9 edges
+8. `get_stock_symbol_from_fixed_command()` - 9 edges
+9. `TestGetStockSymbolFromFixedCommand` - 9 edges
+10. `handle_text_message()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `README Template Boilerplate` --semantically_similar_to--> `Pharaoh Project Overview`  [INFERRED] [semantically similar]
@@ -67,8 +68,8 @@
   .pre-commit-config.yaml → environment.yml
 - `handle_text_message()` --calls--> `parse_line_command()`  [INFERRED]
   src/app.py → src/line/command_parser.py
-- `save_or_upload_fig()` --calls--> `put_image()`  [INFERRED]
-  src/quote/chart_common.py → src/utils/aws_helper.py
+- `parse_line_command()` --calls--> `infer_line_command()`  [INFERRED]
+  src/line/command_parser.py → src/utils/opencode_helper.py
 
 ## Import Cycles
 - None detected.
@@ -77,7 +78,7 @@
 - **Market-Type Quote Source Routing** — _claude_claude_md_symbol_resolution, _claude_claude_md_fugle_source, _claude_claude_md_shioaji_source, _claude_claude_md_yfinance_source [EXTRACTED 1.00]
 - **Chart Design Pillars** — _claude_skills_image_response_design_skill_color_tokens, _claude_skills_image_response_design_skill_tw_polarity, _claude_skills_image_response_design_skill_palette_validation, _claude_skills_image_response_design_skill_intraday_layout [EXTRACTED 1.00]
 
-## Communities (34 total, 5 thin omitted)
+## Communities (35 total, 5 thin omitted)
 
 ### Community 0 - "TW Stock Data Sync"
 Cohesion: 0.20
@@ -152,8 +153,8 @@ Cohesion: 0.29
 Nodes (7): OHI Intraday Chart, Day High 50.75 / Low 49.71, Intraday Price 50.21 (+0.68%), Data source: yfinance (US intraday), Omega Healthcare Investors (OHI), Trend: morning peak, midday dip, late-day recovery, Trade Turnover 1.5M
 
 ### Community 24 - "format_stock_price_response"
-Cohesion: 0.31
-Nodes (6): completion(), test_generate_response_handles_tool_calls(), test_generate_response_prefetches_market_search(), test_generate_response_retries_with_fallback_model(), test_generate_response_uses_main_model(), tool_call()
+Cohesion: 0.27
+Nodes (8): completion(), test_generate_response_handles_tool_calls(), test_generate_response_prefetches_market_search(), test_generate_response_retries_with_fallback_model(), test_generate_response_uses_main_model(), test_infer_line_command_retries_with_fallback_model(), test_infer_line_command_retries_with_free_go_model(), tool_call()
 
 ### Community 25 - "CLAUDE.md"
 Cohesion: 0.50
@@ -164,8 +165,8 @@ Cohesion: 0.29
 Nodes (4): get_tw_futopt_price(), Test get_tw_futopt_price returns formatted dict., Test get_tw_futopt_price returns None when snapshot fails., Test get_tw_futopt_price returns formatted dict for TSMC futures.
 
 ### Community 29 - ".test_basic_analysis_omits_nan_moving_averages"
-Cohesion: 0.17
-Nodes (18): _chat_with_tools(), generate_opencode_technical_analysis_response(), get_opencode_client(), _message_to_dict(), _run_tool(), _duckduckgo_instant_answer(), _fetch_text(), _format_us_info_value() (+10 more)
+Cohesion: 0.24
+Nodes (13): _duckduckgo_instant_answer(), _fetch_text(), _format_us_info_value(), Fetch latest TW stock fundamentals from Yahoo TW pages + web search., Fetch latest US stock fundamentals via yfinance + web search.      Do not scrape, Route search by market type (TW / TW_IND / US / other)., General web search via DuckDuckGo instant answer API., search_stock_by_market() (+5 more)
 
 ### Community 31 - "format_twse_buy_and_sell_result"
 Cohesion: 0.40
@@ -179,6 +180,10 @@ Nodes (4): DataFrame, _format_trade_value(), get_tw_stock_candles_png(), Format 
 Cohesion: 0.50
 Nodes (3): _fallback_stock_price(), Fallback method using Taiwan Stock Exchange API or web scraping., Test fallback using TWSE API
 
+### Community 34 - "opencode_helper.py"
+Cohesion: 0.43
+Nodes (7): _chat_with_tools(), generate_opencode_technical_analysis_response(), get_opencode_client(), infer_line_command(), _message_to_dict(), Infer one supported LINE command from natural-language input., _run_tool()
+
 ## Knowledge Gaps
 - **36 isolated node(s):** `init.sh script`, `$schema`, `./claude/CLAUDE.md`, `deploy.sh script`, `local.sh script` (+31 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -187,14 +192,14 @@ Nodes (3): _fallback_stock_price(), Fallback method using Taiwan Stock Exchange 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `parse_line_command()` connect `Interactive REPL & Dispatch` to `LINE Webhook Handler`, `command_parser.py`?**
-  _High betweenness centrality (0.095) - this node is a cross-community bridge._
+- **Why does `parse_line_command()` connect `Interactive REPL & Dispatch` to `LINE Webhook Handler`, `opencode_helper.py`, `command_parser.py`?**
+  _High betweenness centrality (0.103) - this node is a cross-community bridge._
 - **Why does `get_tw_stock_price()` connect `get_tw_stock_price` to `TW Stock Data Sync`, `_fallback_stock_price`, `get_tw_stock_candles_png`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
 - **Why does `get_stock_symbol_and_market_type()` connect `command_parser.py` to `Symbol Resolution Tests`, `Fixed Command Mappings`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **Are the 14 inferred relationships involving `parse_line_command()` (e.g. with `interactive_test()` and `handle_text_message()`) actually correct?**
-  _`parse_line_command()` has 14 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Are the 17 inferred relationships involving `parse_line_command()` (e.g. with `interactive_test()` and `handle_text_message()`) actually correct?**
+  _`parse_line_command()` has 17 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 6 inferred relationships involving `get_stock_symbol_and_market_type()` (e.g. with `.test_edge_cases()` and `.test_fixed_commands()`) actually correct?**
   _`get_stock_symbol_and_market_type()` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 5 inferred relationships involving `get_tw_stock_price()` (e.g. with `.test_fallback_when_fugle_fails()` and `.test_fallback_when_history_fetch_fails()`) actually correct?**
