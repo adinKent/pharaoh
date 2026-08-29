@@ -41,11 +41,15 @@ def handle_text_message(event):
     try:
         text = event.message.text
         reply_token = event.reply_token
+        source = event.source
+        mention = getattr(event.message, "mention", None)
+        mentioned_user_ids = {mentionee.user_id for mentionee in (getattr(mention, "mentionees", None) or []) if getattr(mentionee, "user_id", None)}
+        is_one_to_one = source.type == "user" or (os.environ.get("LINE_OFFICIAL_CHANNEL_USER_ID") in mentioned_user_ids)
 
         if event.message.mark_as_read_token:
             mark_message_as_read(line_bot_api, event.message.mark_as_read_token)
 
-        response_text = parse_line_command(text)
+        response_text = parse_line_command(text, is_one_to_one)
         if response_text:
             if is_s3_presigned_url(response_text):
                 send_reply_image(line_bot_api, reply_token, response_text)

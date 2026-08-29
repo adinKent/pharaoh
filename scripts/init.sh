@@ -6,6 +6,8 @@
 #     ./scripts/init.sh --env dev --mongo-user <user> --mongo-password <pass>
 #   Update LINE credentials:
 #     ./scripts/init.sh --env dev --line-channel-secret <secret> --line-channel-access-token <token>
+#   Update the LINE Offical Channel user ID:
+#     ./scripts/init.sh --env dev --line-official-channel-user-id <user-id>
 #   Update both:
 #     ./scripts/init.sh --env dev --mongo-user <user> --mongo-password <password> --line-channel-secret <secret> --line-channel-access-token <token>
 #   Update FUGLE API key:
@@ -28,6 +30,7 @@ MONGODB_USERNAME=""
 MONGODB_PASSWORD=""
 LINE_CHANNEL_SECRET=""
 LINE_CHANNEL_ACCESS_TOKEN=""
+LINE_OFFICIAL_CHANNEL_USER_ID=""
 GEMINI_API_KEY=""
 GROQ_API_KEY=""
 OPENCODE_API_KEY=""
@@ -57,6 +60,10 @@ while [[ $# -gt 0 ]]; do
         ;;
         --line-channel-access-token)
         LINE_CHANNEL_ACCESS_TOKEN="$2"
+        shift 2
+        ;;
+        --line-official-channel-user-id)
+        LINE_OFFICIAL_CHANNEL_USER_ID="$2"
         shift 2
         ;;
         --gemini-api-key)
@@ -90,9 +97,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ] && [ -z "$GROQ_API_KEY" ] && [ -z "$OPENCODE_API_KEY" ] && [ -z "$FUGLE_API_KEY" ] && [ -z "$SINOPAC_API_KEY" ] && [ -z "$SINOPAC_API_SECRET" ]; then
+if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$LINE_OFFICIAL_CHANNEL_USER_ID" ] && [ -z "$GEMINI_API_KEY" ] && [ -z "$GROQ_API_KEY" ] && [ -z "$OPENCODE_API_KEY" ] && [ -z "$FUGLE_API_KEY" ] && [ -z "$SINOPAC_API_KEY" ] && [ -z "$SINOPAC_API_SECRET" ]; then
     echo "Error: No credentials provided to update."
-    echo "Usage: ./scripts/init.sh [--env <env>] [--groq-api-key <key>] [--opencode-api-key <key>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
+    echo "Usage: ./scripts/init.sh [--env <env>] [--line-official-channel-user-id <user-id>] [--groq-api-key <key>] [--opencode-api-key <key>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
     exit 1
 fi
 
@@ -134,6 +141,13 @@ if [ -n "$LINE_CHANNEL_ACCESS_TOKEN" ]; then
     fi
     
     aws ssm put-parameter --name "$PARAM_NAME" --description "LINE Channel Access Token for Pharaoh in $ENVIRONMENT" --overwrite --value "$LINE_CHANNEL_ACCESS_TOKEN" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
+fi
+
+if [ -n "$LINE_OFFICIAL_CHANNEL_USER_ID" ]; then
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/line/official-channel-user-id"
+    echo "Checking for existing LINE mention user ID parameter: $PARAM_NAME"
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "LINE official channel user ID for Pharaoh in $ENVIRONMENT" --overwrite --value "$LINE_OFFICIAL_CHANNEL_USER_ID" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 if [ -n "$GEMINI_API_KEY" ]; then

@@ -18,6 +18,7 @@ class TestApp:
             {
                 "LINE_CHANNEL_SECRET": "test-secret",
                 "LINE_CHANNEL_ACCESS_TOKEN": "test-token",
+                "LINE_OFFICIAL_CHANNEL_USER_ID": "test-bot-user-id",
             },
         )
         self.patcher.start()
@@ -92,12 +93,14 @@ class TestApp:
         mock_event.message = MagicMock(spec=TextMessageContent)
         mock_event.message.text = "#AAPL"
         mock_event.message.mark_as_read_token = None
+        mock_event.source = MagicMock()
+        mock_event.source.type = "user"
 
         # Act
         handle_text_message(mock_event)
 
         # Assert
-        mock_parse_command.assert_called_once_with("#AAPL")
+        mock_parse_command.assert_called_once_with("#AAPL", True)
         mock_send_reply.assert_called_once_with(line_bot_api, "test-reply-token", "Stock Price: $100")
 
     @patch("app.send_reply_message")
@@ -112,10 +115,29 @@ class TestApp:
         mock_event.message = MagicMock(spec=TextMessageContent)
         mock_event.message.text = "hello world"
         mock_event.message.mark_as_read_token = None
+        mock_event.source = MagicMock()
+        mock_event.source.type = "group"
 
         # Act
         handle_text_message(mock_event)
 
         # Assert
-        mock_parse_command.assert_called_once_with("hello world")
+        mock_parse_command.assert_called_once_with("hello world", False)
         mock_send_reply.assert_not_called()
+
+    @patch("app.parse_line_command")
+    def test_text_message_mention_of_configured_user_is_one_to_one(self, mock_parse_command):
+        """A configured user mention is treated as a one-to-one conversation."""
+        mock_event = MagicMock(spec=MessageEvent)
+        mock_event.reply_token = "test-reply-token"
+        mock_event.message = MagicMock(spec=TextMessageContent)
+        mock_event.message.text = "@Bot #AAPL"
+        mock_event.message.mark_as_read_token = None
+        mock_event.message.mention = MagicMock()
+        mock_event.message.mention.mentionees = [MagicMock(user_id="test-bot-user-id")]
+        mock_event.source = MagicMock()
+        mock_event.source.type = "group"
+
+        handle_text_message(mock_event)
+
+        mock_parse_command.assert_called_once_with("@Bot #AAPL", True)

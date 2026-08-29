@@ -39,7 +39,7 @@ def get_tw_futopt_price(symbol: str) -> dict | None:
     }
 
 
-def parse_line_command(command_text: str) -> str | None:
+def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | None:
     """
     If text starts with '#', extract the symbol and return it with market type.
     For Taiwan stocks: #2330, #00930A -> ('2330', 'TW'), ('00930A', 'TW')

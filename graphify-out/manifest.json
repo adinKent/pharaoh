@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "src/utils/opencode_helper.py": {
-    "mtime": 1787390665.6867108,
-    "ast_hash": "ff8fce34899f01645daec36739f9a486",
+    "mtime": 1787394733.3200893,
+    "ast_hash": "3de03493d76c2dd940caf6d06f4e161d",
     "semantic_hash": ""
   },
   "tests/unit/utils/test_opencode_helper.py": {
