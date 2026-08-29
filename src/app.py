@@ -43,8 +43,9 @@ def handle_text_message(event):
         reply_token = event.reply_token
         source = event.source
         mention = getattr(event.message, "mention", None)
-        mentioned_user_ids = {mentionee.user_id for mentionee in (getattr(mention, "mentionees", None) or []) if getattr(mentionee, "user_id", None)}
-        is_one_to_one = source.type == "user" or (os.environ.get("LINE_OFFICIAL_CHANNEL_USER_ID") in mentioned_user_ids)
+        mentionees = getattr(mention, "mentionees", None) or []
+        is_bot_mentioned = any(getattr(mentionee, "is_self", False) for mentionee in mentionees)
+        is_one_to_one = source.type == "user" or is_bot_mentioned
 
         if event.message.mark_as_read_token:
             mark_message_as_read(line_bot_api, event.message.mark_as_read_token)

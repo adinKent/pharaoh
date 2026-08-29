@@ -18,7 +18,6 @@ class TestApp:
             {
                 "LINE_CHANNEL_SECRET": "test-secret",
                 "LINE_CHANNEL_ACCESS_TOKEN": "test-token",
-                "LINE_OFFICIAL_CHANNEL_USER_ID": "test-bot-user-id",
             },
         )
         self.patcher.start()
@@ -134,7 +133,7 @@ class TestApp:
         mock_event.message.text = "@Bot #AAPL"
         mock_event.message.mark_as_read_token = None
         mock_event.message.mention = MagicMock()
-        mock_event.message.mention.mentionees = [MagicMock(user_id="test-bot-user-id")]
+        mock_event.message.mention.mentionees = [MagicMock(is_self=True)]
         mock_event.source = MagicMock()
         mock_event.source.type = "group"
 

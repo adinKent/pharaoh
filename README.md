@@ -214,7 +214,6 @@ make fmt
 |----------|-------------|----------|
 | `LINE_CHANNEL_SECRET` | Line Messaging API Channel Secret | Yes |
 | `LINE_CHANNEL_ACCESS_TOKEN` | Line Messaging API Channel Access Token | Yes |
-| `LINE_OFFICIAL_CHANNEL_USER_ID` | LINE user ID treated as an official account mention | No |
 | `ENVIRONMENT` | Environment name (dev/staging/prod) | Yes |
 
 ### SAM Configuration

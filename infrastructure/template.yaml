@@ -141,7 +141,6 @@ Resources:
           ENVIRONMENT: !Ref Environment
           LINE_CHANNEL_SECRET: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-secret}}'
           LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-access-token}}'
-          LINE_OFFICIAL_CHANNEL_USER_ID: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/official-channel-user-id}}'
           FUGLE_API_KEY: !Sub '{{resolve:ssm:/pharaoh/${Environment}/fugle/api-key}}'
           IMAGE_BUCKET_NAME: !Ref ImageBucket
       Tags:
