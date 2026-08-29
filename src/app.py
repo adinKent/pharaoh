@@ -107,44 +107,29 @@ def send_reply_message(
 
 def create_candidate_commands_flex(candidates: list[dict]) -> FlexMessage:
     """Build clickable LINE commands so users can resolve ambiguous requests."""
-    bubbles = []
-    for candidate in candidates[:12]:
-        command = candidate["command"]
-        confidence = candidate.get("confidence", 0)
-        bubbles.append(
+    buttons = [
+        {
+            "type": "button",
+            "style": "secondary",
+            "action": MessageAction(label=candidate["command"], text=candidate["command"]).to_dict(),
+        }
+        for candidate in candidates[:12]
+    ]
+
+    return FlexMessage(
+        alt_text="猜您想查詢",
+        contents=FlexContainer.from_dict(
             {
                 "type": "bubble",
                 "body": {
                     "type": "box",
                     "layout": "vertical",
                     "spacing": "md",
-                    "contents": [
-                        {"type": "text", "text": command, "weight": "bold", "size": "xl"},
-                        {
-                            "type": "text",
-                            "text": f"信心度：{confidence:.0%}",
-                            "size": "sm",
-                            "color": "#888888",
-                        },
-                    ],
+                    "contents": [{"type": "text", "text": "猜您想查詢", "weight": "bold", "size": "md"}, {"type": "separator"}],
                 },
-                "footer": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {
-                            "type": "button",
-                            "style": "primary",
-                            "action": MessageAction(label="執行此指令", text=command).to_dict(),
-                        }
-                    ],
-                },
+                "footer": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": buttons},
             }
-        )
-
-    return FlexMessage(
-        alt_text="請選擇要執行的指令",
-        contents=FlexContainer.from_dict({"type": "carousel", "contents": bubbles}),
+        ),
     )
 
 

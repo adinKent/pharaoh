@@ -27,11 +27,20 @@ class TestApp:
         self.patcher.stop()
 
     def test_create_candidate_commands_flex_uses_message_actions(self):
-        message = create_candidate_commands_flex([{"command": "#BTC-USD", "confidence": 0.4}])
+        message = create_candidate_commands_flex(
+            [
+                {"command": "#BTC-USD", "confidence": 0.4},
+                {"command": "#ETH-USD", "confidence": 0.3},
+            ]
+        )
 
         payload = message.contents.to_dict()
-        action = payload["contents"][0]["footer"]["contents"][0]["action"]
-        assert action == {"type": "message", "label": "執行此指令", "text": "#BTC-USD"}
+        assert payload["type"] == "bubble"
+        actions = [button["action"] for button in payload["footer"]["contents"]]
+        assert actions == [
+            {"type": "message", "label": "#BTC-USD", "text": "#BTC-USD"},
+            {"type": "message", "label": "#ETH-USD", "text": "#ETH-USD"},
+        ]
 
     @patch("app.send_reply_flex")
     @patch("app.parse_line_command")
