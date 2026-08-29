@@ -124,11 +124,46 @@ def test_generate_response_retries_with_fallback_model(mocker):
             tool_choice="auto",
         ),
         call(
-            model=opencode_helper.fallback_model,
+            model=opencode_helper.fallback_models[0],
             messages=[{"role": "user", "content": mocker.ANY}],
             tools=opencode_helper.WEB_SEARCH_TOOLS,
             tool_choice="auto",
         ),
+    ]
+
+
+def test_infer_line_command_retries_with_fallback_model(mocker):
+    client = Mock()
+    client.chat.completions.create.side_effect = [
+        RuntimeError("primary unavailable"),
+        completion('{"command":"#2330","confidence":0.95}'),
+    ]
+    mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
+
+    result = opencode_helper.infer_line_command("查詢台積電股價")
+
+    assert result == "#2330"
+    assert [call_args.kwargs["model"] for call_args in client.chat.completions.create.call_args_list] == [
+        opencode_helper.main_model,
+        opencode_helper.fallback_models[0],
+    ]
+
+
+def test_infer_line_command_retries_with_free_go_model(mocker):
+    client = Mock()
+    client.chat.completions.create.side_effect = [
+        RuntimeError("primary unavailable"),
+        RuntimeError("fallback unavailable"),
+        completion('{"command":"#2330","confidence":0.95}'),
+    ]
+    mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
+
+    result = opencode_helper.infer_line_command("查詢台積電股價")
+
+    assert result == "#2330"
+    assert [call_args.kwargs["model"] for call_args in client.chat.completions.create.call_args_list] == [
+        opencode_helper.main_model,
+        *opencode_helper.fallback_models,
     ]
 
 

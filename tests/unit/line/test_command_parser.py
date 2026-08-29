@@ -266,6 +266,20 @@ class TestParseLineCommand:
         assert parse_line_command("2884") is None
         assert parse_line_command("") is None
 
+    @patch("line.command_parser.handle_ex_dividend_quote", return_value="ex-dividend")
+    @patch("line.command_parser.infer_line_command", return_value="D除息")
+    def test_infers_command_for_one_to_one_message(self, mock_infer, mock_ex_dividend):
+        result = parse_line_command("今天有哪些除息股票？", is_one_to_one=True)
+
+        assert result == "ex-dividend"
+        mock_infer.assert_called_once_with("今天有哪些除息股票？")
+        mock_ex_dividend.assert_called_once_with()
+
+    @patch("line.command_parser.infer_line_command")
+    def test_does_not_infer_command_for_group_message(self, mock_infer):
+        assert parse_line_command("今天有哪些除息股票？") is None
+        mock_infer.assert_not_called()
+
     def test_command_too_long(self):
         """Test overly long commands are ignored"""
         too_long_command = "#" + ("A" * (MAX_COMMAND_TEXT_LENGTH + 1))

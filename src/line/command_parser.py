@@ -21,7 +21,7 @@ from quote.yahoo_finance import (
     get_us_stock_year_candles_png,
     quote_stock,
 )
-from utils.opencode_helper import generate_opencode_technical_analysis_response
+from utils.opencode_helper import generate_opencode_technical_analysis_response, infer_line_command
 
 MAX_COMMAND_TEXT_LENGTH = 20
 
@@ -46,7 +46,7 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
     For US stocks: #AAPL -> ('AAPL', 'US')
     Otherwise, return None.
     """
-    if len(command_text) > MAX_COMMAND_TEXT_LENGTH:
+    if len(command_text) > MAX_COMMAND_TEXT_LENGTH and not is_one_to_one:
         return None
 
     price_qutoe_command_match = re.match(r"^#(.+)", command_text.strip())
@@ -72,6 +72,11 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
     year_k_line_match = re.match(r"^K(.+)", command_text.strip())
     if year_k_line_match:
         return handle_year_k_line(year_k_line_match)
+
+    if is_one_to_one:
+        inferred_command = infer_line_command(command_text)
+        if inferred_command and inferred_command != command_text:
+            return parse_line_command(inferred_command)
 
     return None
 

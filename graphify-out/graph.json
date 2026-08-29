@@ -30,90 +30,204 @@
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
         "source_file": ".claude/skills/image-response-design/SKILL.md"
-      },
-      {
-        "id": "sam_lambda_stack_composition",
-        "label": "SAM Lambda Stack Composition",
-        "nodes": [
-          "infrastructure_template_yaml_linewebhookfunction",
-          "infrastructure_template_yaml_linewebhookapi",
-          "infrastructure_template_yaml_linewebhookfunctionrole",
-          "infrastructure_template_yaml_imagebucket",
-          "infrastructure_template_yaml_deadletterqueue"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "infrastructure/template.yaml"
       }
     ]
   },
   "nodes": [
     {
-      "label": "opencode_helper.py",
+      "label": "init.sh",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
+      "source_file": "scripts/init.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_init",
+      "community": 20,
+      "community_name": "Init Script",
+      "norm_label": "init.sh"
+    },
+    {
+      "label": "init.sh script",
+      "file_type": "code",
+      "source_file": "scripts/init.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "scripts_init_sh__entry",
+      "community": 20,
+      "community_name": "Init Script",
+      "norm_label": "init.sh script"
+    },
+    {
+      "label": "app.py",
+      "file_type": "code",
+      "source_file": "src/app.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "opencode_helper.py"
+      "id": "src_app",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "app.py"
     },
     {
-      "label": "get_opencode_client()",
+      "label": "handle_text_message()",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
+      "source_file": "src/app.py",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "src_app_handle_text_message",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "handle_text_message()"
+    },
+    {
+      "label": "lambda_handler()",
+      "file_type": "code",
+      "source_file": "src/app.py",
       "source_location": "L65",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper_get_opencode_client",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "get_opencode_client()"
+      "id": "src_app_lambda_handler",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "lambda_handler()"
     },
     {
-      "label": "_run_tool()",
+      "label": "Any",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L75",
+      "source_file": "",
+      "source_location": "",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper_run_tool",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "_run_tool()"
+      "id": "any",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "any"
     },
     {
-      "label": "_message_to_dict()",
+      "label": "send_reply_message()",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
+      "source_file": "src/app.py",
       "source_location": "L85",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper_message_to_dict",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "_message_to_dict()"
+      "id": "src_app_send_reply_message",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "send_reply_message()"
     },
     {
-      "label": "_chat_with_tools()",
+      "label": "MessagingApi",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L106",
+      "source_file": "",
+      "source_location": "",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper_chat_with_tools",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "_chat_with_tools()"
+      "id": "messagingapi",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "messagingapi"
     },
     {
-      "label": "generate_opencode_technical_analysis_response()",
+      "label": "send_reply_image()",
       "file_type": "code",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L138",
+      "source_file": "src/app.py",
+      "source_location": "L98",
       "_origin": "ast",
-      "id": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
-      "community": 29,
-      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
-      "norm_label": "generate_opencode_technical_analysis_response()"
+      "id": "src_app_send_reply_image",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "send_reply_image()"
+    },
+    {
+      "label": "mark_message_as_read()",
+      "file_type": "code",
+      "source_file": "src/app.py",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "src_app_mark_message_as_read",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "mark_message_as_read()"
+    },
+    {
+      "label": "create_response()",
+      "file_type": "code",
+      "source_file": "src/app.py",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "src_app_create_response",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "create_response()"
+    },
+    {
+      "label": "Handles incoming text messages.",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_app_rationale_40",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "handles incoming text messages."
+    },
+    {
+      "label": "AWS Lambda function to handle Line Messaging API webhooks.",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "src_app_rationale_66",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "aws lambda function to handle line messaging api webhooks."
+    },
+    {
+      "label": "Uses the Line SDK to send a reply message.",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "src_app_rationale_90",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "uses the line sdk to send a reply message."
+    },
+    {
+      "label": "Uses the Line SDK to send a reply image.",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "src_app_rationale_103",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "uses the line sdk to send a reply image."
+    },
+    {
+      "label": "Uses the Line SDK's underlying ApiClient to mark a message as read.",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "src_app_rationale_122",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "uses the line sdk's underlying apiclient to mark a message as read."
+    },
+    {
+      "label": "Create HTTP response for API Gateway      Args:         status_code: HTTP status",
+      "file_type": "rationale",
+      "source_file": "src/app.py",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "src_app_rationale_133",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "create http response for api gateway      args:         status_code: http status"
     },
     {
       "label": "command_parser.py",
@@ -121,10 +235,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_line_command_parser",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "command_parser.py",
-      "id": "src_line_command_parser"
+      "norm_label": "command_parser.py"
     },
     {
       "label": "get_tw_futopt_price()",
@@ -132,10 +246,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L29",
       "_origin": "ast",
+      "id": "src_line_command_parser_get_tw_futopt_price",
       "community": 26,
       "community_name": "get_tw_futopt_price",
-      "norm_label": "get_tw_futopt_price()",
-      "id": "src_line_command_parser_get_tw_futopt_price"
+      "norm_label": "get_tw_futopt_price()"
     },
     {
       "label": "parse_line_command()",
@@ -143,10 +257,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L42",
       "_origin": "ast",
+      "id": "src_line_command_parser_parse_line_command",
       "community": 9,
       "community_name": "Interactive REPL & Dispatch",
-      "norm_label": "parse_line_command()",
-      "id": "src_line_command_parser_parse_line_command"
+      "norm_label": "parse_line_command()"
     },
     {
       "label": "get_stock_symbol_and_market_type()",
@@ -154,10 +268,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L79",
       "_origin": "ast",
+      "id": "src_line_command_parser_get_stock_symbol_and_market_type",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "get_stock_symbol_and_market_type()",
-      "id": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "norm_label": "get_stock_symbol_and_market_type()"
     },
     {
       "label": "get_stock_symbol_from_fixed_command()",
@@ -165,10 +279,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L102",
       "_origin": "ast",
+      "id": "src_line_command_parser_get_stock_symbol_from_fixed_command",
       "community": 7,
       "community_name": "Fixed Command Mappings",
-      "norm_label": "get_stock_symbol_from_fixed_command()",
-      "id": "src_line_command_parser_get_stock_symbol_from_fixed_command"
+      "norm_label": "get_stock_symbol_from_fixed_command()"
     },
     {
       "label": "handle_stock_price_quote()",
@@ -176,10 +290,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L109",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_stock_price_quote",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "handle_stock_price_quote()",
-      "id": "src_line_command_parser_handle_stock_price_quote"
+      "norm_label": "handle_stock_price_quote()"
     },
     {
       "label": "handle_ex_dividend_quote()",
@@ -187,10 +301,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L137",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_ex_dividend_quote",
       "community": 9,
       "community_name": "Interactive REPL & Dispatch",
-      "norm_label": "handle_ex_dividend_quote()",
-      "id": "src_line_command_parser_handle_ex_dividend_quote"
+      "norm_label": "handle_ex_dividend_quote()"
     },
     {
       "label": "handle_stock_basic_analysis_quote()",
@@ -198,10 +312,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L142",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_stock_basic_analysis_quote",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "handle_stock_basic_analysis_quote()",
-      "id": "src_line_command_parser_handle_stock_basic_analysis_quote"
+      "norm_label": "handle_stock_basic_analysis_quote()"
     },
     {
       "label": "format_symbol_buy_sell_response()",
@@ -209,10 +323,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L230",
       "_origin": "ast",
+      "id": "src_line_command_parser_format_symbol_buy_sell_response",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "format_symbol_buy_sell_response()",
-      "id": "src_line_command_parser_format_symbol_buy_sell_response"
+      "norm_label": "format_symbol_buy_sell_response()"
     },
     {
       "label": "handle_buy_and_sell_quote()",
@@ -220,10 +334,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L272",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_buy_and_sell_quote",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "handle_buy_and_sell_quote()",
-      "id": "src_line_command_parser_handle_buy_and_sell_quote"
+      "norm_label": "handle_buy_and_sell_quote()"
     },
     {
       "label": "handle_day_k_line()",
@@ -231,10 +345,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L288",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_day_k_line",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "handle_day_k_line()",
-      "id": "src_line_command_parser_handle_day_k_line"
+      "norm_label": "handle_day_k_line()"
     },
     {
       "label": "handle_year_k_line()",
@@ -242,10 +356,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L301",
       "_origin": "ast",
+      "id": "src_line_command_parser_handle_year_k_line",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "handle_year_k_line()",
-      "id": "src_line_command_parser_handle_year_k_line"
+      "norm_label": "handle_year_k_line()"
     },
     {
       "label": "If text starts with '#', extract the symbol and return it with market type.",
@@ -253,10 +367,10 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L43",
       "_origin": "ast",
+      "id": "src_line_command_parser_rationale_43",
       "community": 9,
       "community_name": "Interactive REPL & Dispatch",
-      "norm_label": "if text starts with '#', extract the symbol and return it with market type.",
-      "id": "src_line_command_parser_rationale_43"
+      "norm_label": "if text starts with '#', extract the symbol and return it with market type."
     },
     {
       "label": "Formats the buy/sell data into a readable string.",
@@ -264,10 +378,285 @@
       "source_file": "src/line/command_parser.py",
       "source_location": "L231",
       "_origin": "ast",
+      "id": "src_line_command_parser_rationale_231",
       "community": 11,
       "community_name": "command_parser.py",
-      "norm_label": "formats the buy/sell data into a readable string.",
-      "id": "src_line_command_parser_rationale_231"
+      "norm_label": "formats the buy/sell data into a readable string."
+    },
+    {
+      "label": "test_app.py",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_unit_test_app",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test_app.py"
+    },
+    {
+      "label": "TestApp",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "testapp"
+    },
+    {
+      "label": ".setup_method()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_setup_method",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".setup_method()"
+    },
+    {
+      "label": ".teardown_method()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_teardown_method",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".teardown_method()"
+    },
+    {
+      "label": ".test_lambda_handler_success()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_lambda_handler_success",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_lambda_handler_success()"
+    },
+    {
+      "label": ".test_lambda_handler_invalid_signature()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_lambda_handler_invalid_signature()"
+    },
+    {
+      "label": ".test_lambda_handler_general_exception()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_lambda_handler_general_exception()"
+    },
+    {
+      "label": ".test_text_message_event_with_command()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_text_message_event_with_command",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_text_message_event_with_command()"
+    },
+    {
+      "label": ".test_text_message_event_no_command()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_text_message_event_no_command",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_text_message_event_no_command()"
+    },
+    {
+      "label": ".test_text_message_mention_of_configured_user_is_one_to_one()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_testapp_test_text_message_mention_of_configured_user_is_one_to_one",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": ".test_text_message_mention_of_configured_user_is_one_to_one()"
+    },
+    {
+      "label": "Test cases for the refactored app.py using line-bot-sdk.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_12",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test cases for the refactored app.py using line-bot-sdk."
+    },
+    {
+      "label": "Set up test environment variables before each test.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_15",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "set up test environment variables before each test."
+    },
+    {
+      "label": "Clean up environment variables after each test.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_27",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "clean up environment variables after each test."
+    },
+    {
+      "label": "Test lambda_handler successfully processes a valid event.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_32",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test lambda_handler successfully processes a valid event."
+    },
+    {
+      "label": "Test lambda_handler returns 400 on InvalidSignatureError.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_49",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test lambda_handler returns 400 on invalidsignatureerror."
+    },
+    {
+      "label": "Test lambda_handler returns 500 on a general exception.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_66",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test lambda_handler returns 500 on a general exception."
+    },
+    {
+      "label": "Test that a text message with a valid command triggers a reply.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_84",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test that a text message with a valid command triggers a reply."
+    },
+    {
+      "label": "Test that a text message without a command does not trigger a reply.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_109",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "test that a text message without a command does not trigger a reply."
+    },
+    {
+      "label": "A configured user mention is treated as a one-to-one conversation.",
+      "file_type": "rationale",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L130",
+      "_origin": "ast",
+      "id": "tests_unit_test_app_rationale_130",
+      "community": 1,
+      "community_name": "LINE Webhook Handler",
+      "norm_label": "a configured user mention is treated as a one-to-one conversation."
+    },
+    {
+      "label": "opencode_helper.py",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "opencode_helper.py",
+      "id": "src_utils_opencode_helper"
+    },
+    {
+      "label": "get_opencode_client()",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L65",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "get_opencode_client()",
+      "id": "src_utils_opencode_helper_get_opencode_client"
+    },
+    {
+      "label": "_run_tool()",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L75",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "_run_tool()",
+      "id": "src_utils_opencode_helper_run_tool"
+    },
+    {
+      "label": "_message_to_dict()",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L85",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "_message_to_dict()",
+      "id": "src_utils_opencode_helper_message_to_dict"
+    },
+    {
+      "label": "_chat_with_tools()",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L106",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "_chat_with_tools()",
+      "id": "src_utils_opencode_helper_chat_with_tools"
+    },
+    {
+      "label": "generate_opencode_technical_analysis_response()",
+      "file_type": "code",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L138",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": ".test_basic_analysis_omits_nan_moving_averages",
+      "norm_label": "generate_opencode_technical_analysis_response()",
+      "id": "src_utils_opencode_helper_generate_opencode_technical_analysis_response"
     },
     {
       "label": "web_search.py",
@@ -653,36 +1042,6 @@
       "community_name": "CLAUDE.md",
       "norm_label": "./claude/claude.md",
       "id": "ref_claude_claude_md"
-    },
-    {
-      "label": "init.sh",
-      "file_type": "code",
-      "source_file": "scripts/init.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "file"
-      },
-      "_origin": "ast",
-      "community": 20,
-      "community_name": "Init Script",
-      "norm_label": "init.sh",
-      "id": "scripts_init"
-    },
-    {
-      "label": "init.sh script",
-      "file_type": "code",
-      "source_file": "scripts/init.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "bash_entrypoint"
-      },
-      "_origin": "ast",
-      "community": 20,
-      "community_name": "Init Script",
-      "norm_label": "init.sh script",
-      "id": "scripts_init_sh__entry"
     },
     {
       "label": "test_command_parser.py",
@@ -1460,8 +1819,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 32,
+      "community_name": "get_tw_stock_candles_png",
       "norm_label": "dataframe",
       "id": "dataframe"
     },
@@ -1570,8 +1929,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L184",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 33,
+      "community_name": "_fallback_stock_price",
       "norm_label": "_fallback_stock_price()",
       "id": "src_quote_tw_stock_fallback_stock_price"
     },
@@ -1647,8 +2006,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L372",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 31,
+      "community_name": "format_twse_buy_and_sell_result",
       "norm_label": "format_total_net_diff()",
       "id": "src_quote_tw_stock_format_total_net_diff"
     },
@@ -1658,8 +2017,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L382",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 31,
+      "community_name": "format_twse_buy_and_sell_result",
       "norm_label": "format_twse_buy_and_sell_result()",
       "id": "src_quote_tw_stock_format_twse_buy_and_sell_result"
     },
@@ -1669,8 +2028,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L437",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "previous_working_day()",
       "id": "src_quote_tw_stock_previous_working_day"
     },
@@ -1680,8 +2039,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L444",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "get_effective_date()",
       "id": "src_quote_tw_stock_get_effective_date"
     },
@@ -1691,8 +2050,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L459",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 31,
+      "community_name": "format_twse_buy_and_sell_result",
       "norm_label": "get_institues_buy_sell_today_result()",
       "id": "src_quote_tw_stock_get_institues_buy_sell_today_result"
     },
@@ -1702,8 +2061,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L479",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "get_twse_buy_sell_today_result()",
       "id": "src_quote_tw_stock_get_twse_buy_sell_today_result"
     },
@@ -1713,8 +2072,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L519",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "get_tpex_buy_sell_today_result()",
       "id": "src_quote_tw_stock_get_tpex_buy_sell_today_result"
     },
@@ -1724,8 +2083,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L558",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "sync_all_buy_sell_today_result_to_db()",
       "id": "src_quote_tw_stock_sync_all_buy_sell_today_result_to_db"
     },
@@ -1735,8 +2094,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L606",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "normalize_twse_stock_buy_sell_to_db_format()",
       "id": "src_quote_tw_stock_normalize_twse_stock_buy_sell_to_db_format"
     },
@@ -1746,8 +2105,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L652",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "normalize_tpex_stock_buy_sell_to_db_format()",
       "id": "src_quote_tw_stock_normalize_tpex_stock_buy_sell_to_db_format"
     },
@@ -1768,8 +2127,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L720",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 32,
+      "community_name": "get_tw_stock_candles_png",
       "norm_label": "_format_trade_value()",
       "id": "src_quote_tw_stock_format_trade_value"
     },
@@ -1779,8 +2138,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L732",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 32,
+      "community_name": "get_tw_stock_candles_png",
       "norm_label": "get_tw_stock_candles_png()",
       "id": "src_quote_tw_stock_get_tw_stock_candles_png"
     },
@@ -1845,8 +2204,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L185",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 33,
+      "community_name": "_fallback_stock_price",
       "norm_label": "fallback method using taiwan stock exchange api or web scraping.",
       "id": "src_quote_tw_stock_rationale_185"
     },
@@ -1867,8 +2226,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L383",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 31,
+      "community_name": "format_twse_buy_and_sell_result",
       "norm_label": "format twse fund result json to a pretty text.",
       "id": "src_quote_tw_stock_rationale_383"
     },
@@ -1878,8 +2237,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L460",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 31,
+      "community_name": "format_twse_buy_and_sell_result",
       "norm_label": "fetch today's buy sell result from twse using the provided url format.     forma",
       "id": "src_quote_tw_stock_rationale_460"
     },
@@ -1889,8 +2248,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L480",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "downloads and parses the foreign and other investor trade summary from twse.",
       "id": "src_quote_tw_stock_rationale_480"
     },
@@ -1900,8 +2259,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L520",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "downloads and parses the foreign and other investor trade summary from tpex.",
       "id": "src_quote_tw_stock_rationale_520"
     },
@@ -1911,8 +2270,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L607",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "0: \u8b49\u5238\u4ee3\u865f     1: \u8b49\u5238\u540d\u7a31     2: \u5916\u9678\u8cc7\u8cb7\u9032\u80a1\u6578(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)     3: \u5916\u9678\u8cc7\u8ce3\u51fa\u80a1\u6578(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)     4: \u5916\u9678\u8cc7\u8cb7\u8ce3",
       "id": "src_quote_tw_stock_rationale_607"
     },
@@ -1922,8 +2281,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L653",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "0: \u4ee3\u865f     1: \u540d\u7a31     2: \u5916\u8cc7\u53ca\u9678\u8cc7(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)-\u8cb7\u9032\u80a1\u6578     3: \u5916\u8cc7\u53ca\u9678\u8cc7(\u4e0d\u542b\u5916\u8cc7\u81ea\u71df\u5546)-\u8ce3\u51fa\u80a1\u6578     4: \u5916\u8cc7\u53ca",
       "id": "src_quote_tw_stock_rationale_653"
     },
@@ -1933,8 +2292,8 @@
       "source_file": "src/quote/tw_stock.py",
       "source_location": "L721",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 32,
+      "community_name": "get_tw_stock_candles_png",
       "norm_label": "format a twd trade value with a chinese unit: \u5104 (1e8) once it reaches \u5104, else \u842c",
       "id": "src_quote_tw_stock_rationale_721"
     },
@@ -1944,8 +2303,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": "test_tw_stock.py",
       "id": "tests_unit_quote_test_tw_stock"
     },
@@ -2021,8 +2380,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L130",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 33,
+      "community_name": "_fallback_stock_price",
       "norm_label": ".test_fallback_twse_api()",
       "id": "tests_unit_quote_test_tw_stock_testgettwstockprice_test_fallback_twse_api"
     },
@@ -2032,8 +2391,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L147",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": "testgetexdividendstocks",
       "id": "tests_unit_quote_test_tw_stock_testgetexdividendstocks"
     },
@@ -2054,8 +2413,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L191",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": ".test_get_tpex_ex_dividend_stocks()",
       "id": "tests_unit_quote_test_tw_stock_testgetexdividendstocks_test_get_tpex_ex_dividend_stocks"
     },
@@ -2065,8 +2424,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L241",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": "testgettwstocksymbolfromcompanyname",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname"
     },
@@ -2076,8 +2435,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L243",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": ".test_prefers_exact_company_name_match()",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname_test_prefers_exact_company_name_match"
     },
@@ -2087,8 +2446,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L255",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 27,
+      "community_name": "test_tw_stock.py",
       "norm_label": ".test_falls_back_to_first_match_when_no_exact_company_name()",
       "id": "tests_unit_quote_test_tw_stock_testgettwstocksymbolfromcompanyname_test_falls_back_to_first_match_when_no_exact_company_name"
     },
@@ -2164,8 +2523,8 @@
       "source_file": "tests/unit/quote/test_tw_stock.py",
       "source_location": "L131",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "get_tw_stock_price",
+      "community": 33,
+      "community_name": "_fallback_stock_price",
       "norm_label": "test fallback using twse api",
       "id": "tests_unit_quote_test_tw_stock_rationale_131"
     },
@@ -2272,171 +2631,6 @@
       "community_name": "Package Init",
       "norm_label": "__init__.py",
       "id": "src_init"
-    },
-    {
-      "label": "app.py",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "app.py",
-      "id": "src_app"
-    },
-    {
-      "label": "handle_text_message()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L39",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "handle_text_message()",
-      "id": "src_app_handle_text_message"
-    },
-    {
-      "label": "lambda_handler()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L61",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "lambda_handler()",
-      "id": "src_app_lambda_handler"
-    },
-    {
-      "label": "Any",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "any",
-      "id": "any"
-    },
-    {
-      "label": "send_reply_message()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L81",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "send_reply_message()",
-      "id": "src_app_send_reply_message"
-    },
-    {
-      "label": "MessagingApi",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "messagingapi",
-      "id": "messagingapi"
-    },
-    {
-      "label": "send_reply_image()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L94",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "send_reply_image()",
-      "id": "src_app_send_reply_image"
-    },
-    {
-      "label": "mark_message_as_read()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L117",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "mark_message_as_read()",
-      "id": "src_app_mark_message_as_read"
-    },
-    {
-      "label": "create_response()",
-      "file_type": "code",
-      "source_file": "src/app.py",
-      "source_location": "L128",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "create_response()",
-      "id": "src_app_create_response"
-    },
-    {
-      "label": "Handles incoming text messages.",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L40",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "handles incoming text messages.",
-      "id": "src_app_rationale_40"
-    },
-    {
-      "label": "AWS Lambda function to handle Line Messaging API webhooks.",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L62",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "aws lambda function to handle line messaging api webhooks.",
-      "id": "src_app_rationale_62"
-    },
-    {
-      "label": "Uses the Line SDK to send a reply message.",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L86",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "uses the line sdk to send a reply message.",
-      "id": "src_app_rationale_86"
-    },
-    {
-      "label": "Uses the Line SDK to send a reply image.",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L99",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "uses the line sdk to send a reply image.",
-      "id": "src_app_rationale_99"
-    },
-    {
-      "label": "Uses the Line SDK's underlying ApiClient to mark a message as read.",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L118",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "uses the line sdk's underlying apiclient to mark a message as read.",
-      "id": "src_app_rationale_118"
-    },
-    {
-      "label": "Create HTTP response for API Gateway      Args:         status_code: HTTP status",
-      "file_type": "rationale",
-      "source_file": "src/app.py",
-      "source_location": "L129",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "create http response for api gateway      args:         status_code: http status",
-      "id": "src_app_rationale_129"
     },
     {
       "label": "command_mappings.py",
@@ -3049,8 +3243,8 @@
       "source_file": "src/sync_tw_data.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "sync_tw_data.py",
       "id": "src_sync_tw_data"
     },
@@ -3060,8 +3254,8 @@
       "source_file": "src/sync_tw_data.py",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "handler()",
       "id": "src_sync_tw_data_handler"
     },
@@ -3071,8 +3265,8 @@
       "source_file": "src/sync_tw_data.py",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "_schedule_retry()",
       "id": "src_sync_tw_data_schedule_retry"
     },
@@ -3082,8 +3276,8 @@
       "source_file": "src/sync_tw_data.py",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "TW Stock Data Sync",
+      "community": 6,
+      "community_name": "AWS SAM Infrastructure",
       "norm_label": "lambda handler to trigger the synchronization of daily buy/sell data.     this f",
       "id": "src_sync_tw_data_rationale_19"
     },
@@ -3148,8 +3342,8 @@
       "source_file": "src/utils/aws_helper.py",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
+      "community": 3,
+      "community_name": "Chart Rendering Shared",
       "norm_label": "is_s3_presigned_url()",
       "id": "src_utils_aws_helper_is_s3_presigned_url"
     },
@@ -3572,193 +3766,6 @@
       "id": "tests_unit_quote_test_yahoo_finance_rationale_55"
     },
     {
-      "label": "test_app.py",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test_app.py",
-      "id": "tests_unit_test_app"
-    },
-    {
-      "label": "TestApp",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "testapp",
-      "id": "tests_unit_test_app_testapp"
-    },
-    {
-      "label": ".setup_method()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".setup_method()",
-      "id": "tests_unit_test_app_testapp_setup_method"
-    },
-    {
-      "label": ".teardown_method()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L25",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".teardown_method()",
-      "id": "tests_unit_test_app_testapp_teardown_method"
-    },
-    {
-      "label": ".test_lambda_handler_success()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L30",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".test_lambda_handler_success()",
-      "id": "tests_unit_test_app_testapp_test_lambda_handler_success"
-    },
-    {
-      "label": ".test_lambda_handler_invalid_signature()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L47",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".test_lambda_handler_invalid_signature()",
-      "id": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature"
-    },
-    {
-      "label": ".test_lambda_handler_general_exception()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L64",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".test_lambda_handler_general_exception()",
-      "id": "tests_unit_test_app_testapp_test_lambda_handler_general_exception"
-    },
-    {
-      "label": ".test_text_message_event_with_command()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L82",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".test_text_message_event_with_command()",
-      "id": "tests_unit_test_app_testapp_test_text_message_event_with_command"
-    },
-    {
-      "label": ".test_text_message_event_no_command()",
-      "file_type": "code",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L105",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": ".test_text_message_event_no_command()",
-      "id": "tests_unit_test_app_testapp_test_text_message_event_no_command"
-    },
-    {
-      "label": "Test cases for the refactored app.py using line-bot-sdk.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test cases for the refactored app.py using line-bot-sdk.",
-      "id": "tests_unit_test_app_rationale_12"
-    },
-    {
-      "label": "Set up test environment variables before each test.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L15",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "set up test environment variables before each test.",
-      "id": "tests_unit_test_app_rationale_15"
-    },
-    {
-      "label": "Clean up environment variables after each test.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L26",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "clean up environment variables after each test.",
-      "id": "tests_unit_test_app_rationale_26"
-    },
-    {
-      "label": "Test lambda_handler successfully processes a valid event.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L31",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test lambda_handler successfully processes a valid event.",
-      "id": "tests_unit_test_app_rationale_31"
-    },
-    {
-      "label": "Test lambda_handler returns 400 on InvalidSignatureError.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L48",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test lambda_handler returns 400 on invalidsignatureerror.",
-      "id": "tests_unit_test_app_rationale_48"
-    },
-    {
-      "label": "Test lambda_handler returns 500 on a general exception.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L65",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test lambda_handler returns 500 on a general exception.",
-      "id": "tests_unit_test_app_rationale_65"
-    },
-    {
-      "label": "Test that a text message with a valid command triggers a reply.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L83",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test that a text message with a valid command triggers a reply.",
-      "id": "tests_unit_test_app_rationale_83"
-    },
-    {
-      "label": "Test that a text message without a command does not trigger a reply.",
-      "file_type": "rationale",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L106",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "LINE Webhook Handler",
-      "norm_label": "test that a text message without a command does not trigger a reply.",
-      "id": "tests_unit_test_app_rationale_106"
-    },
-    {
       "label": "test_groq_helper.py",
       "file_type": "code",
       "source_file": "tests/unit/utils/test_groq_helper.py",
@@ -3833,9 +3840,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "pharaoh project overview",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "_claude_claude_md_pharaoh_overview"
     },
     {
@@ -3847,9 +3854,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "line-webhook lambda",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "_claude_claude_md_line_webhook_lambda"
     },
     {
@@ -3861,9 +3868,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "sync-tw-data lambda",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "_claude_claude_md_sync_tw_data_lambda"
     },
     {
@@ -3945,9 +3952,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "twse/tpex open apis",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "_claude_claude_md_twse_tpex_apis"
     },
     {
@@ -3973,9 +3980,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "ssm parameter store secrets",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "_claude_claude_md_ssm_secrets"
     },
     {
@@ -4141,9 +4148,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "readme template boilerplate",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "readme_pharaoh_template_boilerplate"
     },
     {
@@ -4155,9 +4162,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "line messaging api",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "readme_line_messaging_api"
     },
     {
@@ -4169,9 +4176,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 6,
+      "community": 8,
       "norm_label": "aws sam deployment",
-      "community_name": "AWS SAM Infrastructure",
+      "community_name": "Project Concepts & Rationale",
       "id": "readme_aws_sam"
     },
     {
@@ -4187,132 +4194,6 @@
       "norm_label": "conda environment spec (pharaoh)",
       "community_name": "Deps & Tooling Config",
       "id": "environment_yml_conda_env"
-    },
-    {
-      "label": "SAM CloudFormation Stack",
-      "file_type": "document",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "sam cloudformation stack",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_stack"
-    },
-    {
-      "label": "LineWebhookFunction (SAM)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "linewebhookfunction (sam)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_linewebhookfunction"
-    },
-    {
-      "label": "SyncTwDataFunction (SAM)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "synctwdatafunction (sam)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_synctwdatafunction"
-    },
-    {
-      "label": "LineWebhookApi Gateway",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "linewebhookapi gateway",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_linewebhookapi"
-    },
-    {
-      "label": "ImageBucket (S3)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "imagebucket (s3)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_imagebucket"
-    },
-    {
-      "label": "LineWebhookFunctionRole (IAM)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "linewebhookfunctionrole (iam)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_linewebhookfunctionrole"
-    },
-    {
-      "label": "DeadLetterQueue (SQS)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "deadletterqueue (sqs)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_deadletterqueue"
-    },
-    {
-      "label": "MongoDbConnectionStrParameter (SSM)",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "mongodbconnectionstrparameter (ssm)",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_mongodbparameter"
-    },
-    {
-      "label": "ScheduledSync EventBridge Cron",
-      "file_type": "code",
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "norm_label": "scheduledsync eventbridge cron",
-      "community_name": "AWS SAM Infrastructure",
-      "id": "infrastructure_template_yaml_scheduled_sync"
     },
     {
       "label": "NVDA Intraday Chart",
@@ -4681,81 +4562,103 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/init.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_init",
+      "target": "scripts_init_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L24",
+      "source_file": "src/app.py",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_utils_opencode_helper"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L106",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_opencode_helper_chat_with_tools",
+      "source": "src_app",
+      "target": "src_line_command_parser",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L138",
+      "source_file": "src/app.py",
+      "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
+      "source": "src_app",
+      "target": "src_app_create_response",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
+      "source_file": "src/app.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_app_handle_text_message",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
       "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_opencode_helper_get_opencode_client",
+      "source": "src_app",
+      "target": "src_app_lambda_handler",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
+      "source_file": "src/app.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_app_mark_message_as_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_app_send_reply_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
       "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_opencode_helper_message_to_dict",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L75",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_opencode_helper_run_tool",
+      "source": "src_app",
+      "target": "src_app_send_reply_message",
       "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L6",
+      "source_file": "src/app.py",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper",
+      "source": "src_app",
       "target": "src_utils_aws_helper",
       "confidence_score": 1.0
     },
@@ -4763,60 +4666,48 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L7",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper",
-      "target": "src_utils_web_search",
+      "source": "tests_unit_test_app",
+      "target": "src_app",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L159",
+      "source_file": "src/app.py",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
-      "target": "src_utils_opencode_helper_get_opencode_client",
+      "source": "src_app_handle_text_message",
+      "target": "src_app_mark_message_as_read",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L126",
+      "source_file": "src/app.py",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper_chat_with_tools",
-      "target": "src_utils_opencode_helper_run_tool",
+      "source": "src_app_handle_text_message",
+      "target": "src_app_send_reply_image",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L120",
+      "source_file": "src/app.py",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_utils_opencode_helper_chat_with_tools",
-      "target": "src_utils_opencode_helper_message_to_dict",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/opencode_helper.py",
-      "source_location": "L163",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
-      "target": "src_utils_opencode_helper_chat_with_tools",
+      "source": "src_app_handle_text_message",
+      "target": "src_app_send_reply_message",
       "confidence_score": 1.0
     },
     {
@@ -4824,12 +4715,222 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L221",
+      "source_file": "src/app.py",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_line_command_parser_handle_stock_basic_analysis_quote",
-      "target": "src_utils_opencode_helper_generate_opencode_technical_analysis_response"
+      "source": "src_app_handle_text_message",
+      "target": "src_line_command_parser_parse_line_command"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_40",
+      "target": "src_app_handle_text_message",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_text_message_event_no_command",
+      "target": "src_app_handle_text_message"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_text_message_event_with_command",
+      "target": "src_app_handle_text_message"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_text_message_mention_of_configured_user_is_one_to_one",
+      "target": "src_app_handle_text_message"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_lambda_handler",
+      "target": "any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_lambda_handler",
+      "target": "src_app_create_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_66",
+      "target": "src_app_lambda_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
+      "target": "src_app_lambda_handler"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
+      "target": "src_app_lambda_handler"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp_test_lambda_handler_success",
+      "target": "src_app_lambda_handler"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_create_response",
+      "target": "any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_90",
+      "target": "src_app_send_reply_message",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_send_reply_message",
+      "target": "messagingapi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_mark_message_as_read",
+      "target": "messagingapi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_send_reply_image",
+      "target": "messagingapi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_103",
+      "target": "src_app_send_reply_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_122",
+      "target": "src_app_mark_message_as_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_rationale_133",
+      "target": "src_app_create_response",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4847,146 +4948,13 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_line_command_parser"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/line/command_parser.py",
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser",
-      "target": "src_line_command_mappings"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L230",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_format_symbol_buy_sell_response"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L79",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L102",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_get_stock_symbol_from_fixed_command"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_get_tw_futopt_price"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L272",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_buy_and_sell_quote"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L288",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_day_k_line"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L137",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_ex_dividend_quote"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L142",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_stock_basic_analysis_quote"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L109",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_stock_price_quote"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L301",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_handle_year_k_line"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/line/command_parser.py",
-      "source_location": "L42",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_line_command_parser",
-      "target": "src_line_command_parser_parse_line_command"
+      "target": "src_line_command_mappings",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4996,9 +4964,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser",
-      "target": "src_quote_output"
+      "target": "src_quote_output",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -5008,9 +4976,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser",
-      "target": "src_quote_sinopac"
+      "target": "src_quote_sinopac",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -5020,9 +4988,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser",
-      "target": "src_quote_tw_stock"
+      "target": "src_quote_tw_stock",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -5032,9 +5000,142 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser",
-      "target": "src_quote_yahoo_finance"
+      "target": "src_quote_yahoo_finance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L230",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_format_symbol_buy_sell_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_get_stock_symbol_from_fixed_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_get_tw_futopt_price",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L272",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_buy_and_sell_quote",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_day_k_line",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_ex_dividend_quote",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_stock_basic_analysis_quote",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_stock_price_quote",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L301",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_handle_year_k_line",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_line_command_parser_parse_line_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/line/command_parser.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_line_command_parser",
+      "target": "src_utils_opencode_helper",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -5056,9 +5157,9 @@
       "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_stock_price_quote",
-      "target": "src_line_command_parser_get_tw_futopt_price"
+      "target": "src_line_command_parser_get_tw_futopt_price",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5111,26 +5212,14 @@
     {
       "relation": "calls",
       "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/app.py",
-      "source_location": "L48",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_handle_text_message",
-      "target": "src_line_command_parser_parse_line_command"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/line/command_parser.py",
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_buy_and_sell_quote"
+      "target": "src_line_command_parser_handle_buy_and_sell_quote",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5140,9 +5229,9 @@
       "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_day_k_line"
+      "target": "src_line_command_parser_handle_day_k_line",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5152,9 +5241,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_ex_dividend_quote"
+      "target": "src_line_command_parser_handle_ex_dividend_quote",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5164,9 +5253,9 @@
       "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_stock_basic_analysis_quote"
+      "target": "src_line_command_parser_handle_stock_basic_analysis_quote",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5176,9 +5265,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_stock_price_quote"
+      "target": "src_line_command_parser_handle_stock_price_quote",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5188,9 +5277,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_parse_line_command",
-      "target": "src_line_command_parser_handle_year_k_line"
+      "target": "src_line_command_parser_handle_year_k_line",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -5199,9 +5288,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_rationale_43",
-      "target": "src_line_command_parser_parse_line_command"
+      "target": "src_line_command_parser_parse_line_command",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5355,9 +5444,9 @@
       "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_get_stock_symbol_and_market_type",
-      "target": "src_line_command_parser_get_stock_symbol_from_fixed_command"
+      "target": "src_line_command_parser_get_stock_symbol_from_fixed_command",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5367,9 +5456,9 @@
       "source_location": "L274",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_buy_and_sell_quote",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5379,9 +5468,9 @@
       "source_location": "L290",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_day_k_line",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5391,9 +5480,9 @@
       "source_location": "L144",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_stock_basic_analysis_quote",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5403,9 +5492,9 @@
       "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_stock_price_quote",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5415,9 +5504,9 @@
       "source_location": "L303",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_year_k_line",
-      "target": "src_line_command_parser_get_stock_symbol_and_market_type"
+      "target": "src_line_command_parser_get_stock_symbol_and_market_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5583,9 +5672,9 @@
       "source_location": "L284",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_buy_and_sell_quote",
-      "target": "src_line_command_parser_handle_stock_price_quote"
+      "target": "src_line_command_parser_handle_stock_price_quote",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5595,9 +5684,9 @@
       "source_location": "L285",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_handle_buy_and_sell_quote",
-      "target": "src_line_command_parser_format_symbol_buy_sell_response"
+      "target": "src_line_command_parser_format_symbol_buy_sell_response",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -5606,9 +5695,334 @@
       "source_location": "L231",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_line_command_parser_rationale_231",
-      "target": "src_line_command_parser_format_symbol_buy_sell_response"
+      "target": "src_line_command_parser_format_symbol_buy_sell_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app",
+      "target": "tests_unit_test_app_testapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_12",
+      "target": "tests_unit_test_app_testapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_setup_method",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_teardown_method",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_success",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_text_message_event_no_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_text_message_event_with_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_testapp",
+      "target": "tests_unit_test_app_testapp_test_text_message_mention_of_configured_user_is_one_to_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_15",
+      "target": "tests_unit_test_app_testapp_setup_method",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_27",
+      "target": "tests_unit_test_app_testapp_teardown_method",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_32",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_success",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_49",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_66",
+      "target": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_84",
+      "target": "tests_unit_test_app_testapp_test_text_message_event_with_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_109",
+      "target": "tests_unit_test_app_testapp_test_text_message_event_no_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_app.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_unit_test_app_rationale_130",
+      "target": "tests_unit_test_app_testapp_test_text_message_mention_of_configured_user_is_one_to_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_aws_helper"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_opencode_helper_chat_with_tools"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_opencode_helper_generate_opencode_technical_analysis_response"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_opencode_helper_get_opencode_client"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_opencode_helper_message_to_dict"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_opencode_helper_run_tool"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper",
+      "target": "src_utils_web_search"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
+      "target": "src_utils_opencode_helper_get_opencode_client"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper_chat_with_tools",
+      "target": "src_utils_opencode_helper_run_tool"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper_chat_with_tools",
+      "target": "src_utils_opencode_helper_message_to_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/opencode_helper.py",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_utils_opencode_helper_generate_opencode_technical_analysis_response",
+      "target": "src_utils_opencode_helper_chat_with_tools"
     },
     {
       "relation": "contains",
@@ -6119,17 +6533,6 @@
       "confidence_score": 1.0,
       "source": "opencode_instructions",
       "target": "ref_claude_claude_md"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/init.sh",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_init",
-      "target": "scripts_init_sh__entry"
     },
     {
       "relation": "imports_from",
@@ -8267,342 +8670,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L128",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_create_response"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_handle_text_message"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_lambda_handler"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_mark_message_as_read"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L94",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_send_reply_image"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L81",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_send_reply_message"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_utils_aws_helper"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app",
-      "target": "src_app"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L46",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_handle_text_message",
-      "target": "src_app_mark_message_as_read"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_handle_text_message",
-      "target": "src_app_send_reply_image"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L53",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_handle_text_message",
-      "target": "src_app_send_reply_message"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/app.py",
-      "source_location": "L50",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_handle_text_message",
-      "target": "src_utils_aws_helper_is_s3_presigned_url"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_40",
-      "target": "src_app_handle_text_message"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_unit_test_app_testapp_test_text_message_event_no_command",
-      "target": "src_app_handle_text_message"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L97",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_unit_test_app_testapp_test_text_message_event_with_command",
-      "target": "src_app_handle_text_message"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_lambda_handler",
-      "target": "any"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L71",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_lambda_handler",
-      "target": "src_app_create_response"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L62",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_62",
-      "target": "src_app_lambda_handler"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L74",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_unit_test_app_testapp_test_lambda_handler_general_exception",
-      "target": "src_app_lambda_handler"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L57",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature",
-      "target": "src_app_lambda_handler"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_unit_test_app_testapp_test_lambda_handler_success",
-      "target": "src_app_lambda_handler"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L128",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_create_response",
-      "target": "any"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L86",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_86",
-      "target": "src_app_send_reply_message"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L81",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_send_reply_message",
-      "target": "messagingapi"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_mark_message_as_read",
-      "target": "messagingapi"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L94",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_send_reply_image",
-      "target": "messagingapi"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L99",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_99",
-      "target": "src_app_send_reply_image"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L118",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_118",
-      "target": "src_app_mark_message_as_read"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app.py",
-      "source_location": "L129",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_rationale_129",
-      "target": "src_app_create_response"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/line/command_mappings.py",
       "source_location": "L43",
       "weight": 1.0,
@@ -10269,182 +10336,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app",
-      "target": "tests_unit_test_app_testapp"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_12",
-      "target": "tests_unit_test_app_testapp"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_setup_method"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L25",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_teardown_method"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L64",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_general_exception"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L30",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_success"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L105",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_test_text_message_event_no_command"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L82",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_testapp",
-      "target": "tests_unit_test_app_testapp_test_text_message_event_with_command"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_15",
-      "target": "tests_unit_test_app_testapp_setup_method"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_26",
-      "target": "tests_unit_test_app_testapp_teardown_method"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L31",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_31",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_success"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L48",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_48",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_invalid_signature"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L65",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_65",
-      "target": "tests_unit_test_app_testapp_test_lambda_handler_general_exception"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L83",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_83",
-      "target": "tests_unit_test_app_testapp_test_text_message_event_with_command"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/unit/test_app.py",
-      "source_location": "L106",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_test_app_rationale_106",
-      "target": "tests_unit_test_app_testapp_test_text_message_event_no_command"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "tests/unit/utils/test_groq_helper.py",
       "source_location": "L16",
       "weight": 1.0,
@@ -10572,16 +10463,6 @@
       "target": "_claude_claude_md_ssm_secrets"
     },
     {
-      "relation": "implements",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunction",
-      "target": "_claude_claude_md_line_webhook_lambda"
-    },
-    {
       "relation": "shares_data_with",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -10590,16 +10471,6 @@
       "weight": 1.0,
       "source": "_claude_claude_md_sync_tw_data_lambda",
       "target": "_claude_claude_md_twse_tpex_apis"
-    },
-    {
-      "relation": "implements",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_synctwdatafunction",
-      "target": "_claude_claude_md_sync_tw_data_lambda"
     },
     {
       "relation": "references",
@@ -10680,16 +10551,6 @@
       "weight": 1.0,
       "source": "_claude_claude_md_yfinance_source",
       "target": "_claude_claude_md_output_normalization"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunctionrole",
-      "target": "_claude_claude_md_ssm_secrets"
     },
     {
       "relation": "references",
@@ -10810,86 +10671,6 @@
       "weight": 1.0,
       "source": "readme_pharaoh_template_boilerplate",
       "target": "readme_line_messaging_api"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_aws_sam",
-      "target": "infrastructure_template_yaml_stack"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_stack",
-      "target": "infrastructure_template_yaml_mongodbparameter"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunction",
-      "target": "infrastructure_template_yaml_deadletterqueue"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunction",
-      "target": "infrastructure_template_yaml_imagebucket"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunction",
-      "target": "infrastructure_template_yaml_linewebhookapi"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_linewebhookfunction",
-      "target": "infrastructure_template_yaml_linewebhookfunctionrole"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_synctwdatafunction",
-      "target": "infrastructure_template_yaml_linewebhookfunctionrole"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "infrastructure_template_yaml_synctwdatafunction",
-      "target": "infrastructure_template_yaml_scheduled_sync"
     },
     {
       "relation": "annotates_high",
@@ -11150,22 +10931,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".claude/skills/image-response-design/SKILL.md"
-    },
-    {
-      "id": "sam_lambda_stack_composition",
-      "label": "SAM Lambda Stack Composition",
-      "nodes": [
-        "infrastructure_template_yaml_linewebhookfunction",
-        "infrastructure_template_yaml_linewebhookapi",
-        "infrastructure_template_yaml_linewebhookfunctionrole",
-        "infrastructure_template_yaml_imagebucket",
-        "infrastructure_template_yaml_deadletterqueue"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "infrastructure/template.yaml"
     }
   ],
-  "built_at_commit": "902e1486b734b13657a70d39cdd08b6cdd4f09a8"
+  "built_at_commit": "4145e46222a2a1bb5cbd2ec572e572097d7b626c"
 }

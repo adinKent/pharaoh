@@ -26,7 +26,11 @@
   "24": "format_stock_price_response",
   "25": "CLAUDE.md",
   "26": "get_tw_futopt_price",
+  "27": "test_tw_stock.py",
   "28": "command_mappings.py",
   "29": ".test_basic_analysis_omits_nan_moving_averages",
-  "30": ".test_command_too_long"
+  "30": ".test_command_too_long",
+  "31": "format_twse_buy_and_sell_result",
+  "32": "get_tw_stock_candles_png",
+  "33": "_fallback_stock_price"
 }

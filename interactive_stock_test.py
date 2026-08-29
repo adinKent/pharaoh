@@ -36,7 +36,7 @@ def interactive_test():
             print(f"📝 Processing: '{user_input}'")
 
             # Test the stock parser
-            result = parse_line_command(user_input)
+            result = parse_line_command(user_input, True)
 
             if result:
                 print("🎯 Bot Response:")

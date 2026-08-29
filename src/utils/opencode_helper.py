@@ -11,8 +11,9 @@ client = None
 
 base_url = "https://opencode.ai/zen/go/v1"
 main_model = "gpt-5.6-luna"
-fallback_model = "deepseek-v4-flash"
+fallback_models = ["deepseek-v4-flash", "ox-alpha-free"]
 _MAX_TOOL_ROUNDS = 3
+_LINE_COMMAND_CONFIDENCE_THRESHOLD = 0.8
 
 WEB_SEARCH_TOOLS = [
     {
@@ -135,6 +136,49 @@ def _chat_with_tools(opencode_client, model: str, messages: list[dict]) -> str:
     return messages[-1].get("content") if messages[-1].get("role") == "assistant" else ""
 
 
+def infer_line_command(text: str) -> str | None:
+    """Infer one supported LINE command from natural-language input."""
+    prompt = (
+        "將使用者訊息轉換成最可能的 Pharaoh LINE command。只能選擇以下格式："
+        "#<股票代號或公司名稱>（報價）、A<股票>（技術分析）、F<股票>（法人買賣超）、"
+        "P<股票>（當日走勢圖）、K<股票>（半年K線圖）、D除息。"
+        "若無法可靠判斷，command 必須為 null。只回傳 JSON："
+        '{"command": string|null, "confidence": number}。'
+        f"\n使用者訊息：{text}"
+    )
+
+    try:
+        opencode_client = get_opencode_client()
+        response = None
+        for model in (main_model, *fallback_models):
+            try:
+                response = opencode_client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                )
+                break
+            except Exception as error:
+                logger.warning("LINE command inference failed with %s: %s", model, error)
+
+        if response is None:
+            return None
+
+        content = response.choices[0].message.content or "{}"
+        if content.strip().startswith("```"):
+            content = content.strip().split("\n", 1)[1].rsplit("\n", 1)[0]
+        result = json.loads(content)
+        command = result.get("command")
+        confidence = float(result.get("confidence", 0))
+        if not isinstance(command, str) or confidence < _LINE_COMMAND_CONFIDENCE_THRESHOLD:
+            return None
+        if len(command) > 20 or not (command == "D除息" or (len(command) > 1 and command.startswith(("#", "A", "F", "P", "K")))):
+            return None
+        return command
+    except Exception as error:
+        logger.warning("Unable to infer LINE command: %s", error)
+        return None
+
+
 def generate_opencode_technical_analysis_response(
     prompt_content: str,
     *,
@@ -149,8 +193,6 @@ def generate_opencode_technical_analysis_response(
         f"\n {prompt_content}"
     )
 
-    print(f"symbol={symbol}")
-    print(f"market_type={market_type}")
     if symbol and market_type:
         latest = search_stock_by_market(symbol, market_type, name=name)
         if latest:
@@ -159,8 +201,12 @@ def generate_opencode_technical_analysis_response(
     opencode_client = get_opencode_client()
     messages = [{"role": "user", "content": contents}]
 
-    try:
-        return _chat_with_tools(opencode_client, main_model, list(messages))
-    except Exception as error:
-        logger.exception(error)
-        return _chat_with_tools(opencode_client, fallback_model, list(messages))
+    last_error = None
+    for model in (main_model, *fallback_models):
+        try:
+            return _chat_with_tools(opencode_client, model, list(messages))
+        except Exception as error:
+            logger.exception(error)
+            last_error = error
+
+    raise last_error
