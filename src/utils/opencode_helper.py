@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 client = None
 
 base_url = "https://opencode.ai/zen/go/v1"
-main_model = "gpt-5.6-luna"
-fallback_models = ["deepseek-v4-flash", "ox-alpha-free"]
+main_model = "glm-5.3-flash"
+fallback_models = ["deepseek-v4-flash", "hy3", "ox-alpha-free"]
 _MAX_TOOL_ROUNDS = 3
 _LINE_COMMAND_CONFIDENCE_THRESHOLD = 0.8
 _LINE_COMMAND_MAX_CANDIDATES = 5

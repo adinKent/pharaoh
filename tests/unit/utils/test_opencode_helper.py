@@ -184,6 +184,7 @@ def test_infer_line_command_retries_with_free_go_model(mocker):
     client.chat.completions.create.side_effect = [
         RuntimeError("primary unavailable"),
         RuntimeError("fallback unavailable"),
+        RuntimeError("fallback unavailable"),
         completion('{"command":"#2330","confidence":0.95}'),
     ]
     mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)

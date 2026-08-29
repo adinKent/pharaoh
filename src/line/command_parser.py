@@ -43,7 +43,7 @@ def get_tw_futopt_price(symbol: str) -> dict | None:
     }
 
 
-def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | None:
+def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | dict | None:
     """
     If text starts with '#', extract the symbol and return it with market type.
     For Taiwan stocks: #2330, #00930A -> ('2330', 'TW'), ('00930A', 'TW')
@@ -84,8 +84,7 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
 
         candidates = infer_line_candidate_commands(command_text)
         if candidates:
-            commands = "\n".join(f"{index}. {candidate['command']}" for index, candidate in enumerate(candidates, 1))
-            return f"你可能想查詢以下指令：\n{commands}\n請直接回覆正確的指令。"
+            return {"type": "line_command_candidates", "candidates": candidates}
 
     return None
 

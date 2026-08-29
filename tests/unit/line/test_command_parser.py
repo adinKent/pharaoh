@@ -278,6 +278,19 @@ class TestParseLineCommand:
         mock_infer.assert_called_once_with("今天有哪些除息股票？")
         mock_ex_dividend.assert_called_once_with()
 
+    @patch(
+        "line.command_parser.infer_line_candidate_commands",
+        return_value=[{"command": "#BTC-USD", "confidence": 0.4}],
+    )
+    @patch("line.command_parser.infer_line_command", return_value=None)
+    def test_returns_candidates_for_ambiguous_one_to_one_message(self, mock_infer, mock_candidates):
+        result = parse_line_command("查詢比特幣", is_one_to_one=True)
+
+        assert result == {
+            "type": "line_command_candidates",
+            "candidates": [{"command": "#BTC-USD", "confidence": 0.4}],
+        }
+
     @patch("line.command_parser.infer_line_command")
     def test_does_not_infer_command_for_group_message(self, mock_infer):
         assert parse_line_command("今天有哪些除息股票？") is None

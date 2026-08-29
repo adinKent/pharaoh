@@ -8,8 +8,11 @@ from linebot.v3.exceptions import InvalidSignatureError
 from linebot.v3.messaging import (
     ApiClient,
     Configuration,
+    FlexContainer,
+    FlexMessage,
     ImageMessage,
     MarkMessagesAsReadByTokenRequest,
+    MessageAction,
     MessagingApi,
     ReplyMessageRequest,
     TextMessage,
@@ -50,12 +53,18 @@ def handle_text_message(event):
         if event.message.mark_as_read_token:
             mark_message_as_read(line_bot_api, event.message.mark_as_read_token)
 
-        response_text = parse_line_command(text, is_one_to_one)
-        if response_text:
-            if is_s3_presigned_url(response_text):
-                send_reply_image(line_bot_api, reply_token, response_text)
+        response = parse_line_command(text, is_one_to_one)
+        if response:
+            if isinstance(response, dict) and response.get("type") == "line_command_candidates":
+                send_reply_flex(
+                    line_bot_api,
+                    reply_token,
+                    create_candidate_commands_flex(response["candidates"]),
+                )
+            elif is_s3_presigned_url(response):
+                send_reply_image(line_bot_api, reply_token, response)
             else:
-                send_reply_message(line_bot_api, reply_token, response_text)
+                send_reply_message(line_bot_api, reply_token, response)
         else:
             logger.info("No quote command is detected, not to reply.")
     except Exception as e:
@@ -94,6 +103,62 @@ def send_reply_message(
         logger.info("Send reply message successfully.")
     except Exception as e:
         logger.error("Failed to reply message: %s", e)
+
+
+def create_candidate_commands_flex(candidates: list[dict]) -> FlexMessage:
+    """Build clickable LINE commands so users can resolve ambiguous requests."""
+    bubbles = []
+    for candidate in candidates[:12]:
+        command = candidate["command"]
+        confidence = candidate.get("confidence", 0)
+        bubbles.append(
+            {
+                "type": "bubble",
+                "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "md",
+                    "contents": [
+                        {"type": "text", "text": command, "weight": "bold", "size": "xl"},
+                        {
+                            "type": "text",
+                            "text": f"信心度：{confidence:.0%}",
+                            "size": "sm",
+                            "color": "#888888",
+                        },
+                    ],
+                },
+                "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "button",
+                            "style": "primary",
+                            "action": MessageAction(label="執行此指令", text=command).to_dict(),
+                        }
+                    ],
+                },
+            }
+        )
+
+    return FlexMessage(
+        alt_text="請選擇要執行的指令",
+        contents=FlexContainer.from_dict({"type": "carousel", "contents": bubbles}),
+    )
+
+
+def send_reply_flex(
+    message_api: MessagingApi,
+    reply_token: str,
+    flex_message: FlexMessage,
+) -> None:
+    """Send a Flex Message reply through the LINE Messaging API."""
+    try:
+        message_api.reply_message(ReplyMessageRequest(reply_token=reply_token, messages=[flex_message]))
+        logger.info("Send Flex reply successfully.")
+    except Exception as e:
+        logger.error("Failed to reply Flex message: %s", e)
 
 
 def send_reply_image(
