@@ -51,6 +51,17 @@ pharaoh/
 
 ## ⚙️ Setup
 
+### Financial request routing
+
+The existing fixed LINE commands remain the compatibility path. Unmatched natural-language requests can be enabled during deployment with:
+
+```text
+EnableFinancialRouting=true
+SafetyMode=off
+```
+
+The private deployment defaults to routing disabled and `SafetyMode=off`. Long-running multi-tool analysis is acknowledged by the webhook and completed through the financial request worker and LINE push messaging. To roll back the new routing path, redeploy with `EnableFinancialRouting=false`; fixed commands remain available.
+
 ### 1. Clone and Install Dependencies
 
 ```bash

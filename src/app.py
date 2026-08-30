@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import os
@@ -20,6 +21,12 @@ from linebot.v3.messaging import (
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 from line.command_parser import parse_line_command
+from routing.async_requests import FinancialRequestJob, MongoRequestStatusStore, enqueue_financial_request
+from routing.config import natural_language_routing_enabled
+from routing.executor import FinancialExecutor
+from routing.models import ExecutionPlan, FinancialContext, Freshness
+from routing.observability import log_routing
+from routing.router import FinancialRouter
 from utils.aws_helper import is_s3_presigned_url
 
 # Configure logging
@@ -36,6 +43,9 @@ handler = WebhookHandler(channel_secret or "default-secret")
 configuration = Configuration(access_token=access_token or "default-token")
 api_client = ApiClient(configuration)
 line_bot_api = MessagingApi(api_client)
+financial_router = FinancialRouter()
+financial_executor = FinancialExecutor()
+request_status_store = MongoRequestStatusStore()
 
 
 @handler.add(MessageEvent, message=TextMessageContent)
@@ -66,7 +76,38 @@ def handle_text_message(event):
             else:
                 send_reply_message(line_bot_api, reply_token, response)
         else:
-            logger.info("No quote command is detected, not to reply.")
+            if natural_language_routing_enabled() and is_one_to_one:
+                plan = asyncio.run(
+                    financial_router.route_line_request(
+                        FinancialContext(user_id=getattr(source, "user_id", None) or "unknown", message=text),
+                        is_one_to_one=is_one_to_one,
+                    )
+                )
+                if isinstance(plan, ExecutionPlan):
+                    log_routing(logger, FinancialContext(user_id=getattr(source, "user_id", None) or "unknown", message=text), plan)
+                    if plan.freshness != Freshness.REALTIME or len(plan.tools) <= 1:
+                        send_reply_message(line_bot_api, reply_token, financial_executor.execute(plan, query=text))
+                    else:
+                        request_id = getattr(event, "webhook_event_id", None) or reply_token
+                        user_id = getattr(source, "user_id", None) or "unknown"
+                        enqueue_financial_request(
+                            FinancialRequestJob(
+                                request_id=request_id,
+                                user_id=user_id,
+                                conversation_id=user_id,
+                                message=text,
+                                event_id=getattr(event, "webhook_event_id", None),
+                            )
+                        )
+                        try:
+                            request_status_store.set_status(request_id, "pending")
+                        except Exception:
+                            logger.exception("Unable to persist financial request status")
+                        send_reply_message(line_bot_api, reply_token, "已收到請求，分析完成後會再通知你。")
+                else:
+                    logger.info("Financial request handled by compatibility layer.")
+            else:
+                logger.info("No quote command is detected, not to reply.")
     except Exception as e:
         logger.error("Error processing command: %s", e)
         logger.exception(e)
@@ -76,7 +117,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
     AWS Lambda function to handle Line Messaging API webhooks.
     """
-    logger.info("Received event: %s", json.dumps(event, indent=2))
+    logger.info("Received LINE webhook event", extra={"has_body": bool(event.get("body")), "header_count": len(event.get("headers", {}))})
     try:
         headers = event.get("headers", {})
         signature = headers.get("x-line-signature") or headers.get("X-Line-Signature")

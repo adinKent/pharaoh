@@ -149,7 +149,7 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
     )
     fixed_examples = "；".join(get_fixed_command_examples())
     prompt = (
-        "將使用者訊息轉換成最多 3 個最可能的 Pharaoh LINE command，依可能性排序。"
+        f"將使用者訊息轉換成最多 {_LINE_COMMAND_MAX_CANDIDATES} 個最可能的 Pharaoh LINE command，依可能性排序。"
         "請先自行判斷標的是台股、美股或加密貨幣，再輸出可直接執行的 ticker。"
         "台股必須使用台股代號（例如台積電使用 2330）；"
         "美股與加密貨幣必須使用 Yahoo Finance 可查詢的 ticker"

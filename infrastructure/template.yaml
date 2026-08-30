@@ -11,6 +11,16 @@ Parameters:
   MongoDbConnectionStr:
     Type: String
     Description: MongoDB connection string
+  EnableFinancialRouting:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+    Description: Enable unmatched natural-language financial routing
+  SafetyMode:
+    Type: String
+    Default: 'off'
+    AllowedValues: ['on', 'off']
+    Description: Deployment-scoped financial answer safety mode
     
 Resources:
   MongoDbConnectionStrParameter:
@@ -86,6 +96,17 @@ Resources:
               - Effect: Allow
                 Action: sqs:SendMessage
                 Resource: !GetAtt DeadLetterQueue.Arn
+        - PolicyName: FinancialRequestQueuePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource: !GetAtt FinancialRequestQueue.Arn
 
   SyncTwDataFunction:
     Type: AWS::Serverless::Function
@@ -143,10 +164,43 @@ Resources:
           LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-access-token}}'
           FUGLE_API_KEY: !Sub '{{resolve:ssm:/pharaoh/${Environment}/fugle/api-key}}'
           IMAGE_BUCKET_NAME: !Ref ImageBucket
+          ENABLE_FINANCIAL_ROUTING: !Ref EnableFinancialRouting
+          SAFETY_MODE: !Ref SafetyMode
+          FINANCIAL_REQUEST_QUEUE_URL: !Ref FinancialRequestQueue
       Tags:
         Environment: !Ref Environment
         Project: pharaoh
         Service: line-webhook
+    Metadata:
+      Dockerfile: infrastructure/Dockerfile
+      DockerContext: ../
+      DockerBuildTarget: app
+      DockerTag: pharaoh-app
+
+  FinancialRequestWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'financial-request-worker-${Environment}'
+      PackageType: Image
+      ImageConfig:
+        Command:
+          - async_worker.lambda_handler
+      Description: 'Processes long-running financial analysis requests.'
+      MemorySize: 256
+      Timeout: 300
+      Role: !GetAtt LineWebhookFunctionRole.Arn
+      Events:
+        FinancialRequestQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt FinancialRequestQueue.Arn
+            BatchSize: 1
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          LINE_CHANNEL_ACCESS_TOKEN: !Sub '{{resolve:ssm:/pharaoh/${Environment}/line/channel-access-token}}'
     Metadata:
       Dockerfile: infrastructure/Dockerfile
       DockerContext: ../
@@ -228,6 +282,20 @@ Resources:
           Value: pharaoh
         - Key: Service
           Value: line-webhook
+
+  FinancialRequestQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub 'financial-request-${Environment}'
+      VisibilityTimeout: 360
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt FinancialRequestDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  FinancialRequestDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub 'financial-request-dlq-${Environment}'
 
   # CloudWatch Alarms
   LambdaErrorAlarm:
