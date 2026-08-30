@@ -29,8 +29,8 @@ class TestApp:
     def test_create_candidate_commands_flex_uses_message_actions(self):
         message = create_candidate_commands_flex(
             [
-                {"command": "#BTC-USD", "confidence": 0.4},
-                {"command": "#ETH-USD", "confidence": 0.3},
+                {"command": "#BTC-USD", "text": "比特幣報價", "confidence": 0.4},
+                {"command": "#ETH-USD", "text": "以太幣報價", "confidence": 0.3},
             ]
         )
 
@@ -38,8 +38,8 @@ class TestApp:
         assert payload["type"] == "bubble"
         actions = [button["action"] for button in payload["footer"]["contents"]]
         assert actions == [
-            {"type": "message", "label": "#BTC-USD", "text": "#BTC-USD"},
-            {"type": "message", "label": "#ETH-USD", "text": "#ETH-USD"},
+            {"type": "message", "label": "比特幣報價", "text": "#BTC-USD"},
+            {"type": "message", "label": "以太幣報價", "text": "#ETH-USD"},
         ]
 
     @patch("app.send_reply_flex")
@@ -47,7 +47,7 @@ class TestApp:
     def test_text_message_event_with_candidate_commands(self, mock_parse_command, mock_send_flex):
         mock_parse_command.return_value = {
             "type": "line_command_candidates",
-            "candidates": [{"command": "#BTC-USD", "confidence": 0.4}],
+            "candidates": [{"command": "#BTC-USD", "text": "比特幣報價", "confidence": 0.4}],
         }
         mock_event = MagicMock(spec=MessageEvent)
         mock_event.reply_token = "test-reply-token"

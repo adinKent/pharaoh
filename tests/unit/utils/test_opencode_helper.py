@@ -153,22 +153,26 @@ def test_infer_line_candidate_commands_returns_ranked_candidates(mocker):
     client = Mock()
     client.chat.completions.create.return_value = completion(
         '{"candidates":['
-        '{"command":"#2330","confidence":0.62},'
-        '{"command":"A2330","confidence":0.51},'
-        '{"command":"P2330","confidence":0.43},'
+        '{"command":"#2330","text":"台積電報價","confidence":0.62},'
+        '{"command":"A2330","text":"台積電技術分析","confidence":0.51},'
+        '{"command":"P2330","text":"台積電走勢圖","confidence":0.43},'
         '{"command":"invalid","confidence":0.99}'
         "]}"
     )
     mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
 
     assert opencode_helper.infer_line_candidate_commands("想看看台積電") == [
-        {"command": "#2330", "confidence": 0.62},
-        {"command": "A2330", "confidence": 0.51},
-        {"command": "P2330", "confidence": 0.43},
+        {"command": "#2330", "text": "台積電報價", "confidence": 0.62},
+        {"command": "A2330", "text": "台積電技術分析", "confidence": 0.51},
+        {"command": "P2330", "text": "台積電走勢圖", "confidence": 0.43},
     ]
     prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
     assert "比特幣使用 BTC-USD" in prompt
-    assert "F 只適用台股" in prompt
+    assert "固定 alias 與 ticker 對照" in prompt
+    assert "比特幣 -> BTC-USD" in prompt
+    assert "台指期必須輸出 #台指期" in prompt
+    assert "不要輸出後端 symbol #TXFR1" in prompt
+    assert "F（" in prompt and "市場：TW" in prompt
 
 
 def test_infer_line_command_rejects_low_confidence_candidate(mocker):

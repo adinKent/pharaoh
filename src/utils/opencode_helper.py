@@ -3,6 +3,7 @@ import logging
 
 from openai import OpenAI
 
+from line.command_mappings import get_command_catalog, get_fixed_command_examples
 from utils.aws_helper import get_ssm_parameter
 from utils.web_search import search_stock_by_market, search_tw_stock, search_us_stock, web_search
 
@@ -143,6 +144,10 @@ def _is_valid_line_command(command: object) -> bool:
 
 def infer_line_candidate_commands(text: str) -> list[dict]:
     """Infer up to three supported LINE commands, ordered by confidence."""
+    command_rules = "；".join(
+        f"{prefix}（{details['name']}，市場：{', '.join(details['markets'])}）" for prefix, details in get_command_catalog().items()
+    )
+    fixed_examples = "；".join(get_fixed_command_examples())
     prompt = (
         "將使用者訊息轉換成最多 3 個最可能的 Pharaoh LINE command，依可能性排序。"
         "請先自行判斷標的是台股、美股或加密貨幣，再輸出可直接執行的 ticker。"
@@ -150,14 +155,19 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
         "美股與加密貨幣必須使用 Yahoo Finance 可查詢的 ticker"
         "（例如 Apple 使用 AAPL、比特幣使用 BTC-USD、以太幣使用 ETH-USD）。"
         "不可把中文公司名稱或幣種名稱直接當作美股 ticker。"
-        "只能選擇以下格式："
-        "#<ticker>（報價）、A<ticker>（技術分析）、F<台股代號>（法人買賣超）、"
-        "P<ticker>（當日走勢圖）、K<ticker>（半年K線圖）、D除息。"
+        f"可用指令規則：{command_rules}。"
+        f"固定 alias 與 ticker 對照：{fixed_examples}。"
+        "固定 alias 必須保留為使用者可輸入的 command；"
+        "例如台指期必須輸出 #台指期，不要輸出後端 symbol #TXFR1；"
+        "台積期必須輸出 #台積期，不要輸出後端 symbol #CDFR1。"
+        "指令格式中的 ticker 必須是實際可查詢的代號；"
         "F 只適用台股，不要對美股或加密貨幣產生 F 指令。"
         "若使用者只說查詢、價格或多少，優先使用 # 報價；"
         "只有明確要求技術分析、走勢圖或 K 線時，才使用 A、P 或 K。"
+        "每個候選的 text 必須是簡短、容易理解的中文說明，用於 LINE 按鈕顯示，"
+        "不要只重複 command；例如 #2330 的 text 是 台積電報價，#BTC-USD 的 text 是 比特幣報價。"
         "若完全沒有合理候選，candidates 必須為空陣列。只回傳 JSON："
-        '{"candidates":[{"command": string, "confidence": number}]}。'
+        '{"candidates":[{"command": string, "text": string, "confidence": number}]}。'
         f"\n使用者訊息：{text}"
     )
 
@@ -203,6 +213,10 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
             command = candidate.get("command")
             if not _is_valid_line_command(command) or command in seen_commands:
                 continue
+            display_text = candidate.get("text")
+            if not isinstance(display_text, str) or not display_text.strip():
+                display_text = command
+            display_text = display_text.strip()[:20]
             try:
                 confidence = float(candidate.get("confidence", 0))
             except (TypeError, ValueError):
@@ -210,7 +224,7 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
             if not 0 <= confidence <= 1:
                 continue
             seen_commands.add(command)
-            valid_candidates.append({"command": command, "confidence": confidence})
+            valid_candidates.append({"command": command, "text": display_text, "confidence": confidence})
 
         return sorted(
             valid_candidates,

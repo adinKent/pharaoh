@@ -111,7 +111,7 @@ def create_candidate_commands_flex(candidates: list[dict]) -> FlexMessage:
         {
             "type": "button",
             "style": "secondary",
-            "action": MessageAction(label=candidate["command"], text=candidate["command"]).to_dict(),
+            "action": MessageAction(label=candidate["text"], text=candidate["command"]).to_dict(),
         }
         for candidate in candidates[:12]
     ]

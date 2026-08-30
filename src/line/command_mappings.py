@@ -39,6 +39,18 @@ TW_STOCK_FUTURE_COMMANDS = {
     "台積期": ("CDFR1", "TW_FUT"),
 }
 
+# This catalog describes inference semantics separately from the fixed alias
+# mappings below.  It is consumed by natural-language command inference and
+# should not be confused with ALL_COMMANDS, whose values have mixed shapes.
+COMMAND_CATALOG = {
+    "#": {"name": "報價", "markets": ("TW", "US", "CRYPTO")},
+    "A": {"name": "技術分析", "markets": ("TW", "US", "CRYPTO")},
+    "F": {"name": "三大法人買賣超", "markets": ("TW",)},
+    "P": {"name": "當日走勢圖", "markets": ("TW", "US", "CRYPTO")},
+    "K": {"name": "半年 K 線圖", "markets": ("TW", "US", "CRYPTO")},
+    "D": {"name": "今日除息", "markets": ("TW",)},
+}
+
 
 def format_command_help(commands: dict):
     return ", ".join(map(lambda key: f"#{key}", commands.keys()))
@@ -78,3 +90,27 @@ ALL_COMMANDS = {
 
 def get_all_commands():
     return ALL_COMMANDS
+
+
+def get_command_catalog():
+    return COMMAND_CATALOG
+
+
+def get_fixed_command_examples():
+    """Return fixed aliases and their backend symbols for inference context."""
+    groups = (
+        INDEX_COMMANDS,
+        INDEX_FUTURE_COMMANDS,
+        CURRENCY_COMMANDS,
+        COMEX_COMMANDS,
+        BONDS_COMMANDS,
+        COIN_COMMANDS,
+        TW_STOCK_FUTURE_COMMANDS,
+    )
+    examples = []
+    for commands in groups:
+        for alias, value in commands.items():
+            values = value if isinstance(value, list) else [value]
+            symbols = ", ".join(symbol for symbol, _ in values)
+            examples.append(f"{alias} -> {symbols}")
+    return examples
