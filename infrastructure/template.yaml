@@ -144,7 +144,7 @@ Resources:
         Command:
           - app.lambda_handler
       Description: 'Handles Line Messaging API webhook notifications'
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 60
       DeadLetterQueue:
         Type: SQS
@@ -167,6 +167,7 @@ Resources:
           ENABLE_FINANCIAL_ROUTING: !Ref EnableFinancialRouting
           SAFETY_MODE: !Ref SafetyMode
           FINANCIAL_REQUEST_QUEUE_URL: !Ref FinancialRequestQueue
+          PYTHONFAULTHANDLER: '1'
       Tags:
         Environment: !Ref Environment
         Project: pharaoh

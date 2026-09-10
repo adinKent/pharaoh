@@ -15,8 +15,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 from line.command_parser import parse_line_command
 from routing.config import natural_language_routing_enabled
 from routing.executor import FinancialExecutor
+from routing.llm_router import llm_route
 from routing.models import ExecutionPlan, FinancialContext
 from routing.router import FinancialRouter
+from routing.semantic import semantic_route
 
 
 def process_message(user_input: str, *, enable_financial_routing: bool):
@@ -25,7 +27,7 @@ def process_message(user_input: str, *, enable_financial_routing: bool):
         return parse_line_command(user_input, True)
 
     result = asyncio.run(
-        FinancialRouter().route_line_request(
+        FinancialRouter(semantic_router=semantic_route, llm_router=llm_route).route_line_request(
             FinancialContext(user_id="interactive-test", conversation_id="interactive-test", message=user_input),
             is_one_to_one=True,
         )

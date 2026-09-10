@@ -1,5 +1,5 @@
 from routing.clarification import build_clarification_plan
-from routing.entities import resolve_entity
+from routing.entities import resolve_entities_in_text, resolve_entity
 from routing.models import Capability, EntityKind, Freshness
 from routing.rules import route_signals
 
@@ -17,6 +17,21 @@ def test_resolve_fixed_multi_index_alias_as_ambiguous():
 
     assert result.ambiguous is True
     assert len(result.entities) == 4
+
+
+def test_resolve_taiwan_market_as_index_entity():
+    result = resolve_entity("台股")
+
+    assert result.ambiguous is False
+    assert result.entities[0].canonical_id == "TW:IX0001"
+    assert result.entities[0].kind == EntityKind.INDEX
+
+
+def test_resolve_taiwan_company_name_as_issuer():
+    result = resolve_entities_in_text("國泰金的營運狀況")
+
+    assert result[0].canonical_id == "TW:2882"
+    assert result[0].kind == EntityKind.ISSUER
 
 
 def test_rules_keep_overlapping_signals_instead_of_returning_one_capability():

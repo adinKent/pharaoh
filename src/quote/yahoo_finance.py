@@ -13,6 +13,17 @@ from utils.aws_helper import is_running_on_lambda
 
 logger = logging.getLogger(__name__)
 
+# On Lambda or ephemeral environments, disable yfinance's SQLite WAL cache
+# to avoid SIGBUS / shared memory (-shm) crashes on /tmp.
+try:
+    import yfinance.cache as _yf_cache
+
+    _yf_cache._CookieCacheManager._cookie_cache = _yf_cache._CookieCacheDummy()
+    _yf_cache._TzCacheManager._tz_cache = _yf_cache._TzCacheDummy()
+    _yf_cache._ISINCacheManager._isin_cache = _yf_cache._ISINCacheDummy()
+except Exception as _exc:
+    logger.warning("Failed to initialize yfinance dummy cache: %s", _exc)
+
 
 def quote_stock(symbol: str, period: str = "2d") -> dict | None:
     """

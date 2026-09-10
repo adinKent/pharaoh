@@ -6,11 +6,13 @@ from linebot.v3.messaging import ApiClient, Configuration, MessagingApi, PushMes
 from routing.async_requests import FinancialRequestJob, MongoRequestStatusStore
 from routing.executor import FinancialExecutor
 from routing.idempotency import MongoIdempotencyStore
+from routing.llm_router import llm_route
 from routing.models import FinancialContext
 from routing.router import FinancialRouter
+from routing.semantic import semantic_route
 
 logger = logging.getLogger(__name__)
-router = FinancialRouter()
+router = FinancialRouter(semantic_router=semantic_route, llm_router=llm_route)
 executor = FinancialExecutor()
 idempotency = MongoIdempotencyStore()
 request_status = MongoRequestStatusStore()

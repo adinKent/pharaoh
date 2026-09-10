@@ -5,6 +5,15 @@ from html import unescape
 import requests
 import yfinance as yf
 
+try:
+    import yfinance.cache as _yf_cache
+
+    _yf_cache._CookieCacheManager._cookie_cache = _yf_cache._CookieCacheDummy()
+    _yf_cache._TzCacheManager._tz_cache = _yf_cache._TzCacheDummy()
+    _yf_cache._ISINCacheManager._isin_cache = _yf_cache._ISINCacheDummy()
+except Exception:
+    pass
+
 logger = logging.getLogger(__name__)
 
 _USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"

@@ -86,6 +86,44 @@ Resources:
             ]
           }
 
+  FinancialRequestWorkerRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub "pharaoh-financial-request-worker-${Environment}"
+      EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Delete untagged images after 7 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 7
+                },
+                "action": {
+                  "type": "expire"
+                }
+              },
+              {
+                "rulePriority": 2,
+                "description": "Keep the last 3 tagged images",
+                "selection": {
+                  "tagStatus": "tagged",
+                  "tagPatternList": ["*"],
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 3
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
 Outputs:
   LineWebhookRepositoryUri:
     Description: 'URI of the line-webhook ECR repository'
@@ -93,3 +131,6 @@ Outputs:
   SyncTwDataRepositoryUri:
     Description: 'URI of the sync-tw-data ECR repository'
     Value: !GetAtt SyncTwDataRepository.RepositoryUri
+  FinancialRequestWorkerRepositoryUri:
+    Description: 'URI of the financial-request-worker ECR repository'
+    Value: !GetAtt FinancialRequestWorkerRepository.RepositoryUri

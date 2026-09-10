@@ -35,7 +35,14 @@ def test_get_opencode_client_uses_ssm_api_key_and_caches_client(mocker):
 
     assert first_client is second_client
     get_ssm_parameter.assert_called_once_with("opencode/api-key")
-    openai.assert_called_once_with(api_key="test-api-key", base_url=opencode_helper.base_url)
+    openai.assert_called_once_with(
+        api_key="test-api-key",
+        base_url=opencode_helper.base_url,
+        default_headers={
+            "x-opencode-session": mocker.ANY,
+            "User-Agent": opencode_helper.DEFAULT_USER_AGENT,
+        },
+    )
 
 
 def test_generate_response_uses_main_model(mocker):
@@ -122,12 +129,14 @@ def test_generate_response_retries_with_fallback_model(mocker):
             messages=[{"role": "user", "content": mocker.ANY}],
             tools=opencode_helper.WEB_SEARCH_TOOLS,
             tool_choice="auto",
+            extra_headers={"x-opencode-session": mocker.ANY},
         ),
         call(
             model=opencode_helper.fallback_models[0],
             messages=[{"role": "user", "content": mocker.ANY}],
             tools=opencode_helper.WEB_SEARCH_TOOLS,
             tool_choice="auto",
+            extra_headers={"x-opencode-session": mocker.ANY},
         ),
     ]
 
@@ -211,3 +220,35 @@ def test_run_tool_routes(mocker):
     assert opencode_helper._run_tool("search_tw_stock", {"symbol": "2330"}) == "tw"
     assert opencode_helper._run_tool("search_us_stock", {"symbol": "AAPL"}) == "us"
     assert "Unknown" in opencode_helper._run_tool("nope", {})
+
+
+def test_get_source_session_id_extracts_group_and_user():
+    user_source = SimpleNamespace(type="user", user_id="U12345", group_id=None)
+    assert opencode_helper.get_source_session_id(user_source) == "U12345"
+
+    group_source = SimpleNamespace(type="group", user_id="U12345", group_id="G67890")
+    assert opencode_helper.get_source_session_id(group_source) == "G67890"
+
+    room_source = SimpleNamespace(type="room", user_id="U12345", room_id="R11111")
+    assert opencode_helper.get_source_session_id(room_source) == "R11111"
+
+    dict_source = {"group_id": "G999", "user_id": "U888"}
+    assert opencode_helper.get_source_session_id(dict_source) == "G999"
+
+    assert opencode_helper.get_source_session_id(None) is None
+
+
+def test_opencode_helpers_propagate_session_id(mocker):
+    client = Mock()
+    client.chat.completions.create.return_value = completion('{"candidates":[{"command":"#2330","confidence":0.9}]}')
+    mocker.patch.object(opencode_helper, "get_opencode_client", return_value=client)
+
+    opencode_helper.infer_line_candidate_commands("台積電", session_id="custom-group-123")
+    assert client.chat.completions.create.call_args.kwargs["extra_headers"] == {"x-opencode-session": "custom-group-123"}
+
+    opencode_helper.set_current_session_id("ambient-user-456")
+    try:
+        opencode_helper.infer_line_candidate_commands("台積電")
+        assert client.chat.completions.create.call_args.kwargs["extra_headers"] == {"x-opencode-session": "ambient-user-456"}
+    finally:
+        opencode_helper.set_current_session_id(None)

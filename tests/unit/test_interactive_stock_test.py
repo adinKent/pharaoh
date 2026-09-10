@@ -28,3 +28,26 @@ def test_process_message_uses_financial_router_when_enabled():
 
     assert "更明確" in result
     route.assert_awaited_once()
+
+
+def test_process_message_routes_recent_taiwan_market_request(monkeypatch):
+    from interactive_stock_test import process_message
+
+    monkeypatch.setattr("interactive_stock_test.FinancialExecutor.execute", lambda self, plan, query: plan)
+
+    result = process_message("最近台股如何", enable_financial_routing=True)
+
+    assert result.capabilities == [Capability.MARKET_DATA]
+    assert result.entities[0].canonical_id == "TW:IX0001"
+    assert result.freshness == Freshness.RECENT
+
+
+def test_process_message_routes_taiwan_company_name_to_issuer(monkeypatch):
+    from interactive_stock_test import process_message
+
+    monkeypatch.setattr("interactive_stock_test.FinancialExecutor.execute", lambda self, plan, query: plan)
+
+    result = process_message("國泰金的營運狀況", enable_financial_routing=True)
+
+    assert result.capabilities == [Capability.COMPANY_ANALYSIS]
+    assert result.entities[0].canonical_id == "TW:2882"

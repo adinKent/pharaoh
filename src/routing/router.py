@@ -2,7 +2,7 @@ from typing import Protocol
 
 from routing.capabilities import build_capability_requirements, validate_capability_registry
 from routing.clarification import build_clarification_plan
-from routing.entities import resolve_entity
+from routing.entities import resolve_entities_in_text
 from routing.models import Capability, EntityReference, ExecutionPlan, FinancialContext, Freshness, RouteCandidate, RouteDecision
 from routing.rules import route_signals
 
@@ -18,12 +18,9 @@ class LLMRouter(Protocol):
 def _extract_entities(ctx: FinancialContext) -> list[EntityReference]:
     """Resolve token-like symbols and retain already resolved conversation entities."""
     entities = list(ctx.known_entities)
-    for token in ctx.message.replace(",", " ").split():
-        resolution = resolve_entity(token.strip("?.!()"))
-        if resolution.entities and not resolution.ambiguous:
-            for entity in resolution.entities:
-                if entity.canonical_id not in {item.canonical_id for item in entities}:
-                    entities.append(entity)
+    for entity in resolve_entities_in_text(ctx.message):
+        if entity.canonical_id not in {item.canonical_id for item in entities}:
+            entities.append(entity)
     return entities
 
 
@@ -57,7 +54,12 @@ class FinancialRouter:
         if self.semantic_router is not None:
             candidate = await self.semantic_router(ctx)
             if candidate is not None and candidate.confidence >= 0.85:
-                return self.build_plan([candidate.capability], ctx, entities=entities)
+                return self.build_plan(
+                    [candidate.capability],
+                    ctx,
+                    entities=entities,
+                    freshness=candidate.freshness or Freshness.STATIC,
+                )
 
         if self.llm_router is not None:
             decision = await self.llm_router(ctx)
@@ -73,11 +75,13 @@ class FinancialRouter:
 
     async def route_line_request(self, ctx: FinancialContext, *, is_one_to_one: bool = False):
         """Preserve fixed LINE commands before routing unmatched text."""
+        stripped = ctx.message.strip()
+        if stripped == "D除息" or stripped.startswith(("#", "A", "F", "P", "K")):
+            from line.command_parser import parse_line_command
 
-        # legacy_response = parse_line_command(ctx.message, is_one_to_one)
-        # print(legacy_response)
-        # if legacy_response:
-        #     return legacy_response
+            legacy_response = parse_line_command(ctx.message, is_one_to_one)
+            if legacy_response:
+                return legacy_response
         return await self.route(ctx)
 
     def build_plan(

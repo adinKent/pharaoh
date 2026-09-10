@@ -11,6 +11,7 @@ class RoutingSignal:
 
 
 _REALTIME = r"今天|現在|目前|即時|最新價格|現價|now|today|right now|current price"
+_RECENT = r"最近|近期|近來|上週|本週|最近幾天|recent|lately|latest"
 _COMPARISON = r"比較|對比|哪一檔|哪個比較好|\bvs\.?\b|compare"
 _DIVIDEND = r"殖利率|配息|股息|股利|dividend|payout"
 _BOND = r"債券|bond|senior unsecured|到期殖利率|coupon"
@@ -35,5 +36,7 @@ def route_signals(message: str) -> list[RoutingSignal]:
         signals.append(RoutingSignal(Capability.FINANCIAL_NEWS, 0.9))
     if re.search(_REALTIME, text, flags=re.IGNORECASE):
         signals.append(RoutingSignal(Capability.MARKET_DATA, 0.95, Freshness.REALTIME))
+    elif re.search(_RECENT, text, flags=re.IGNORECASE) and re.search(_NEWS, text, flags=re.IGNORECASE):
+        signals.append(RoutingSignal(Capability.FINANCIAL_NEWS, 0.9, Freshness.RECENT))
 
     return signals

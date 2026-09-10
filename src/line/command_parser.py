@@ -43,7 +43,7 @@ def get_tw_futopt_price(symbol: str) -> dict | None:
     }
 
 
-def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | dict | None:
+def parse_line_command(command_text: str, is_one_to_one: bool = False, session_id: str | None = None) -> str | dict | None:
     """
     If text starts with '#', extract the symbol and return it with market type.
     For Taiwan stocks: #2330, #00930A -> ('2330', 'TW'), ('00930A', 'TW')
@@ -63,6 +63,8 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
 
     basic_analysis_command_match = re.match(r"^A(.+)", command_text.strip())
     if basic_analysis_command_match:
+        if session_id is not None:
+            return handle_stock_basic_analysis_quote(basic_analysis_command_match, session_id=session_id)
         return handle_stock_basic_analysis_quote(basic_analysis_command_match)
 
     buy_and_sell_quote_match = re.match(r"^F(.+)", command_text.strip())
@@ -78,11 +80,19 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False) -> str | 
         return handle_year_k_line(year_k_line_match)
 
     if is_one_to_one:
-        inferred_command = infer_line_command(command_text)
+        inferred_command = infer_line_command(command_text, session_id=session_id) if session_id is not None else infer_line_command(command_text)
         if inferred_command and inferred_command != command_text:
-            return parse_line_command(inferred_command)
+            return (
+                parse_line_command(inferred_command, is_one_to_one=is_one_to_one, session_id=session_id)
+                if session_id is not None
+                else parse_line_command(inferred_command, is_one_to_one=is_one_to_one)
+            )
 
-        candidates = infer_line_candidate_commands(command_text)
+        candidates = (
+            infer_line_candidate_commands(command_text, session_id=session_id)
+            if session_id is not None
+            else infer_line_candidate_commands(command_text)
+        )
         if candidates:
             return {"type": "line_command_candidates", "candidates": candidates}
 
@@ -158,7 +168,7 @@ def handle_ex_dividend_quote() -> str:
     return format_ex_dividend_response(ex_dividend_stocks, query_date)
 
 
-def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
+def handle_stock_basic_analysis_quote(symbol_in_command, session_id: str | None = None) -> str:
     symbol_name = symbol_in_command.group(1)
     symbol_list = get_stock_symbol_and_market_type(symbol_name)
     if isinstance(symbol_list, list):
@@ -237,11 +247,16 @@ def handle_stock_basic_analysis_quote(symbol_in_command) -> str:
 
     prompt = technical_analysis_content
     stock_name = stock_info.get("name") or full_info.get("longName") or full_info.get("shortName")
+    ai_analysis_kwargs = {
+        "symbol": symbol,
+        "market_type": market_type,
+        "name": stock_name,
+    }
+    if session_id is not None:
+        ai_analysis_kwargs["session_id"] = session_id
     ai_analysis_content = generate_opencode_technical_analysis_response(
         prompt,
-        symbol=symbol,
-        market_type=market_type,
-        name=stock_name,
+        **ai_analysis_kwargs,
     )
     return "\n".join([technical_analysis_content, "", "AI分析:", "", ai_analysis_content])
 

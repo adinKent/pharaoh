@@ -1,5 +1,5 @@
 # Builder stage: compile/install deps with the toolchain, then discard it.
-FROM public.ecr.aws/lambda/python:3.14 AS builder
+FROM public.ecr.aws/lambda/python:3.13 AS builder
 
 RUN dnf -y install gcc gcc-c++ make \
     && dnf -y clean all
@@ -11,7 +11,11 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Runtime stage: no compilers, just the installed deps + app code.
 # libstdc++/libgomp are the shared libs pandas/numpy/grpcio wheels link against.
-FROM public.ecr.aws/lambda/python:3.14 AS app
+FROM public.ecr.aws/lambda/python:3.13 AS app
+
+ENV XDG_CACHE_HOME=/tmp/.cache
+ENV MPLCONFIGDIR=/tmp/.matplotlib
+ENV PYTHONFAULTHANDLER=1
 
 RUN dnf -y install libstdc++ libgomp \
     && dnf -y clean all

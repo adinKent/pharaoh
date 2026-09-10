@@ -24,10 +24,13 @@ from line.command_parser import parse_line_command
 from routing.async_requests import FinancialRequestJob, MongoRequestStatusStore, enqueue_financial_request
 from routing.config import natural_language_routing_enabled
 from routing.executor import FinancialExecutor
+from routing.llm_router import llm_route
 from routing.models import ExecutionPlan, FinancialContext, Freshness
 from routing.observability import log_routing
 from routing.router import FinancialRouter
+from routing.semantic import semantic_route
 from utils.aws_helper import is_s3_presigned_url
+from utils.opencode_helper import get_source_session_id, set_current_session_id
 
 # Configure logging
 logger = logging.getLogger()
@@ -43,7 +46,7 @@ handler = WebhookHandler(channel_secret or "default-secret")
 configuration = Configuration(access_token=access_token or "default-token")
 api_client = ApiClient(configuration)
 line_bot_api = MessagingApi(api_client)
-financial_router = FinancialRouter()
+financial_router = FinancialRouter(semantic_router=semantic_route, llm_router=llm_route)
 financial_executor = FinancialExecutor()
 request_status_store = MongoRequestStatusStore()
 
@@ -55,6 +58,8 @@ def handle_text_message(event):
         text = event.message.text
         reply_token = event.reply_token
         source = event.source
+        session_id = get_source_session_id(source)
+        set_current_session_id(session_id)
         mention = getattr(event.message, "mention", None)
         mentionees = getattr(mention, "mentionees", None) or []
         is_bot_mentioned = any(getattr(mentionee, "is_self", False) for mentionee in mentionees)
@@ -77,24 +82,29 @@ def handle_text_message(event):
                 send_reply_message(line_bot_api, reply_token, response)
         else:
             if natural_language_routing_enabled() and is_one_to_one:
+                user_id = getattr(source, "user_id", None) or "unknown"
+                financial_ctx = FinancialContext(
+                    user_id=user_id,
+                    message=text,
+                    conversation_id=session_id,
+                )
                 plan = asyncio.run(
                     financial_router.route_line_request(
-                        FinancialContext(user_id=getattr(source, "user_id", None) or "unknown", message=text),
+                        financial_ctx,
                         is_one_to_one=is_one_to_one,
                     )
                 )
                 if isinstance(plan, ExecutionPlan):
-                    log_routing(logger, FinancialContext(user_id=getattr(source, "user_id", None) or "unknown", message=text), plan)
+                    log_routing(logger, financial_ctx, plan)
                     if plan.freshness != Freshness.REALTIME or len(plan.tools) <= 1:
                         send_reply_message(line_bot_api, reply_token, financial_executor.execute(plan, query=text))
                     else:
                         request_id = getattr(event, "webhook_event_id", None) or reply_token
-                        user_id = getattr(source, "user_id", None) or "unknown"
                         enqueue_financial_request(
                             FinancialRequestJob(
                                 request_id=request_id,
                                 user_id=user_id,
-                                conversation_id=user_id,
+                                conversation_id=session_id or user_id,
                                 message=text,
                                 event_id=getattr(event, "webhook_event_id", None),
                             )

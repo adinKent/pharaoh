@@ -71,6 +71,7 @@ class FinancialContext(BaseModel):
 class RouteCandidate(BaseModel):
     capability: Capability
     confidence: float = Field(ge=0, le=1)
+    freshness: Freshness | None = None
 
 
 class RouteDecision(BaseModel):

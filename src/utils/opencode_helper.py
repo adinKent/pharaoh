@@ -1,5 +1,8 @@
 import json
 import logging
+import uuid
+from contextvars import ContextVar
+from typing import Any
 
 from openai import OpenAI
 
@@ -16,6 +19,46 @@ fallback_models = ["deepseek-v4-flash", "hy3", "ox-alpha-free"]
 _MAX_TOOL_ROUNDS = 3
 _LINE_COMMAND_CONFIDENCE_THRESHOLD = 0.8
 _LINE_COMMAND_MAX_CANDIDATES = 5
+DEFAULT_USER_AGENT = "pharaoh/1.0"
+_DEFAULT_SESSION_ID = str(uuid.uuid4())
+
+_current_session_id: ContextVar[str | None] = ContextVar("current_session_id", default=None)
+
+
+def set_current_session_id(session_id: str | None):
+    return _current_session_id.set(session_id)
+
+
+def get_current_session_id() -> str | None:
+    return _current_session_id.get()
+
+
+def resolve_opencode_session_id(session_id: str | None = None) -> str:
+    return session_id or get_current_session_id() or _DEFAULT_SESSION_ID
+
+
+def get_source_session_id(source: Any) -> str | None:
+    """Extract group_id, room_id, or user_id as a session identifier from a LINE source."""
+    if source is None:
+        return None
+    if isinstance(source, dict):
+        val = (
+            source.get("group_id")
+            or source.get("groupId")
+            or source.get("room_id")
+            or source.get("roomId")
+            or source.get("user_id")
+            or source.get("userId")
+        )
+        return str(val).strip() if val else None
+
+    for attr in ("group_id", "room_id", "user_id"):
+        val = getattr(source, attr, None)
+        if isinstance(val, str) and val.strip():
+            return val.strip()
+
+    return None
+
 
 WEB_SEARCH_TOOLS = [
     {
@@ -71,6 +114,10 @@ def get_opencode_client():
         client = OpenAI(
             api_key=get_ssm_parameter("opencode/api-key"),
             base_url=base_url,
+            default_headers={
+                "x-opencode-session": _DEFAULT_SESSION_ID,
+                "User-Agent": DEFAULT_USER_AGENT,
+            },
         )
     return client
 
@@ -106,13 +153,15 @@ def _message_to_dict(message) -> dict:
     return payload
 
 
-def _chat_with_tools(opencode_client, model: str, messages: list[dict]) -> str:
+def _chat_with_tools(opencode_client, model: str, messages: list[dict], session_id: str | None = None) -> str:
+    extra_headers = {"x-opencode-session": resolve_opencode_session_id(session_id)}
     for _ in range(_MAX_TOOL_ROUNDS + 1):
         response = opencode_client.chat.completions.create(
             model=model,
             messages=messages,
             tools=WEB_SEARCH_TOOLS,
             tool_choice="auto",
+            extra_headers=extra_headers,
         )
         choice = response.choices[0]
         message = choice.message
@@ -142,7 +191,7 @@ def _is_valid_line_command(command: object) -> bool:
     return isinstance(command, str) and (command == "D除息" or (1 < len(command) <= 20 and command.startswith(("#", "A", "F", "P", "K"))))
 
 
-def infer_line_candidate_commands(text: str) -> list[dict]:
+def infer_line_candidate_commands(text: str, session_id: str | None = None) -> list[dict]:
     """Infer up to three supported LINE commands, ordered by confidence."""
     command_rules = "；".join(
         f"{prefix}（{details['name']}，市場：{', '.join(details['markets'])}）" for prefix, details in get_command_catalog().items()
@@ -171,6 +220,7 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
         f"\n使用者訊息：{text}"
     )
 
+    extra_headers = {"x-opencode-session": resolve_opencode_session_id(session_id)}
     try:
         opencode_client = get_opencode_client()
         response = None
@@ -179,6 +229,7 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
                 response = opencode_client.chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": prompt}],
+                    extra_headers=extra_headers,
                 )
                 break
             except Exception as error:
@@ -236,9 +287,9 @@ def infer_line_candidate_commands(text: str) -> list[dict]:
         return []
 
 
-def infer_line_command(text: str) -> str | None:
+def infer_line_command(text: str, session_id: str | None = None) -> str | None:
     """Infer one supported LINE command only when confidence is high enough."""
-    candidates = infer_line_candidate_commands(text)
+    candidates = infer_line_candidate_commands(text, session_id=session_id)
     if not candidates or candidates[0]["confidence"] < _LINE_COMMAND_CONFIDENCE_THRESHOLD:
         return None
     return candidates[0]["command"]
@@ -250,6 +301,7 @@ def generate_opencode_technical_analysis_response(
     symbol: str | None = None,
     market_type: str | None = None,
     name: str | None = None,
+    session_id: str | None = None,
 ) -> str:
     contents = (
         "根據以下資料用技術分析與基本面分析這檔股票，技術分析為主，基本面需要提供具體數字，"
@@ -269,7 +321,7 @@ def generate_opencode_technical_analysis_response(
     last_error = None
     for model in (main_model, *fallback_models):
         try:
-            return _chat_with_tools(opencode_client, model, list(messages))
+            return _chat_with_tools(opencode_client, model, list(messages), session_id=session_id)
         except Exception as error:
             logger.exception(error)
             last_error = error

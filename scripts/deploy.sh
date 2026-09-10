@@ -69,6 +69,7 @@ sam deploy --profile $AWS_PROFILE \
     --stack-name pharaoh-line-webhook-$ENVIRONMENT \
     --image-repositories LineWebhookFunction=$ECR_REGISTRY/pharaoh-line-webhook-$ENVIRONMENT \
     --image-repositories SyncTwDataFunction=$ECR_REGISTRY/pharaoh-sync-tw-data-$ENVIRONMENT \
+    --image-repositories FinancialRequestWorkerFunction=$ECR_REGISTRY/pharaoh-financial-request-worker-$ENVIRONMENT \
     --resolve-s3 \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --no-confirm-changeset \
