@@ -4,6 +4,7 @@ import re
 import pandas as pd
 
 from line.command_mappings import get_all_commands
+from quote.dividend import generate_dividend_chart_png
 from quote.output import FIXED_SYMBOL_NAME_MAPPINGS, format_ex_dividend_response, format_stock_price_response
 from quote.sinopac import get_futopt_snapshot
 from quote.tw_stock import (
@@ -57,9 +58,11 @@ def parse_line_command(command_text: str, is_one_to_one: bool = False, session_i
     if price_qutoe_command_match:
         return handle_stock_price_quote(price_qutoe_command_match)
 
-    ex_dividend_command_match = re.match(r"^D除息$", command_text.strip())
-    if ex_dividend_command_match:
-        return handle_ex_dividend_quote()
+    dividend_command_match = re.match(r"^[Dd](.+)", command_text.strip())
+    if dividend_command_match:
+        if command_text.strip() == "D除息":
+            return handle_ex_dividend_quote()
+        return handle_stock_dividend_chart(dividend_command_match)
 
     basic_analysis_command_match = re.match(r"^A(.+)", command_text.strip())
     if basic_analysis_command_match:
@@ -343,3 +346,30 @@ def handle_year_k_line(symbol_in_command) -> str:
     if market_type in ("TW", "TW_IND"):
         return get_tw_stock_year_candles_png(symbol)
     return get_us_stock_year_candles_png(symbol)
+
+
+def handle_stock_dividend_chart(symbol_in_command) -> str:
+    symbol_name = symbol_in_command.group(1)
+    symbol_list = get_stock_symbol_and_market_type(symbol_name)
+    if not symbol_list:
+        return ""
+    if isinstance(symbol_list, list):
+        (symbol, market_type) = symbol_list[0]
+    else:
+        (symbol, market_type) = symbol_list
+
+    chart_result = generate_dividend_chart_png(symbol, market_type)
+    if chart_result:
+        return chart_result
+
+    stock_name = FIXED_SYMBOL_NAME_MAPPINGS.get(symbol, symbol)
+    if market_type in ("TW", "TW_IND"):
+        tw_info = get_tw_stock_price(symbol)
+        if tw_info and tw_info.get("name"):
+            stock_name = tw_info["name"]
+    else:
+        us_info = quote_stock(symbol)
+        if us_info and us_info.get("name"):
+            stock_name = us_info["name"]
+
+    return f"{stock_name} ({symbol}) 近 6 年查無配息紀錄。"

@@ -188,7 +188,7 @@ def _chat_with_tools(opencode_client, model: str, messages: list[dict], session_
 
 
 def _is_valid_line_command(command: object) -> bool:
-    return isinstance(command, str) and (command == "D除息" or (1 < len(command) <= 20 and command.startswith(("#", "A", "F", "P", "K"))))
+    return isinstance(command, str) and (command == "D除息" or (1 < len(command) <= 20 and command.startswith(("#", "A", "F", "P", "K", "D", "d"))))
 
 
 def infer_line_candidate_commands(text: str, session_id: str | None = None) -> list[dict]:

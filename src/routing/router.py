@@ -76,7 +76,7 @@ class FinancialRouter:
     async def route_line_request(self, ctx: FinancialContext, *, is_one_to_one: bool = False):
         """Preserve fixed LINE commands before routing unmatched text."""
         stripped = ctx.message.strip()
-        if stripped == "D除息" or stripped.startswith(("#", "A", "F", "P", "K")):
+        if stripped.startswith(("#", "A", "F", "P", "K", "D", "d")):
             from line.command_parser import parse_line_command
 
             legacy_response = parse_line_command(ctx.message, is_one_to_one)

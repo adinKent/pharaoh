@@ -278,6 +278,32 @@ class TestParseLineCommand:
         mock_infer.assert_called_once_with("今天有哪些除息股票？")
         mock_ex_dividend.assert_called_once_with()
 
+    @patch("line.command_parser.handle_ex_dividend_quote", return_value="ex-dividend-result")
+    def test_d_ex_dividend_command(self, mock_ex_div):
+        assert parse_line_command("D除息") == "ex-dividend-result"
+        mock_ex_div.assert_called_once()
+
+    @patch("line.command_parser.generate_dividend_chart_png")
+    def test_d_stock_symbol_success(self, mock_gen_chart):
+        mock_gen_chart.return_value = "https://s3.amazonaws.com/test-bucket/2330_dividend_123.jpg"
+        result = parse_line_command("D2330")
+        assert result == "https://s3.amazonaws.com/test-bucket/2330_dividend_123.jpg"
+        mock_gen_chart.assert_called_once_with("2330", "TW")
+
+    @patch("line.command_parser.generate_dividend_chart_png")
+    def test_d_us_stock_symbol_success(self, mock_gen_chart):
+        mock_gen_chart.return_value = "https://s3.amazonaws.com/test-bucket/AAPL_dividend_123.jpg"
+        result = parse_line_command("DAAPL")
+        assert result == "https://s3.amazonaws.com/test-bucket/AAPL_dividend_123.jpg"
+        mock_gen_chart.assert_called_once_with("AAPL", "US")
+
+    @patch("line.command_parser.get_tw_stock_price")
+    @patch("line.command_parser.generate_dividend_chart_png", return_value=None)
+    def test_d_stock_symbol_no_records_empty_state(self, mock_gen_chart, mock_price):
+        mock_price.return_value = {"name": "台積電"}
+        result = parse_line_command("D2330")
+        assert result == "台積電 (2330) 近 6 年查無配息紀錄。"
+
     @patch(
         "line.command_parser.infer_line_candidate_commands",
         return_value=[{"command": "#BTC-USD", "confidence": 0.4}],
