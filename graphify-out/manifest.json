@@ -5,9 +5,9 @@
     "semantic_hash": "1e4e5f42871702900146a58aee1f085e"
   },
   "interactive_stock_test.py": {
-    "mtime": 1787995701.1172721,
-    "ast_hash": "d5270ebfc64f5f1fea5f1e8c4a1638f5",
-    "semantic_hash": "d5270ebfc64f5f1fea5f1e8c4a1638f5"
+    "mtime": 1788112079.131042,
+    "ast_hash": "5ab3b2d4aee179f6630a64176f0b8c22",
+    "semantic_hash": ""
   },
   "local-env.json": {
     "mtime": 1787998487.5552623,
@@ -20,9 +20,9 @@
     "semantic_hash": "30df460b1679815986f33c7eb7370088"
   },
   "scripts/deploy.sh": {
-    "mtime": 1784731995.541486,
-    "ast_hash": "eee189b124cf45ea6ae6e32d883e0421",
-    "semantic_hash": "eee189b124cf45ea6ae6e32d883e0421"
+    "mtime": 1788972845.0895603,
+    "ast_hash": "629708326e88d44d585b797da8e44a8a",
+    "semantic_hash": ""
   },
   "scripts/init.sh": {
     "mtime": 1787998487.6842246,
@@ -40,19 +40,19 @@
     "semantic_hash": "b8af78f390e18d193fb6011576d76b94"
   },
   "src/app.py": {
-    "mtime": 1788019047.0244393,
-    "ast_hash": "e26d01abb61736eea7d3b074a6237703",
-    "semantic_hash": "e26d01abb61736eea7d3b074a6237703"
+    "mtime": 1788884148.2144053,
+    "ast_hash": "6da0fde341d283d4689bc0f038a49de2",
+    "semantic_hash": ""
   },
   "src/line/command_mappings.py": {
-    "mtime": 1781415427.3501284,
-    "ast_hash": "e62478d3eeae2252af393478cb1ad1ab",
-    "semantic_hash": "e62478d3eeae2252af393478cb1ad1ab"
+    "mtime": 1789060048.5916247,
+    "ast_hash": "2b2d1650bb2134dfdba3c80d17c40dfb",
+    "semantic_hash": ""
   },
   "src/line/command_parser.py": {
-    "mtime": 1788013961.8879564,
-    "ast_hash": "b37eb766231c50c12dfbbc08b0efcc3a",
-    "semantic_hash": "b37eb766231c50c12dfbbc08b0efcc3a"
+    "mtime": 1789059965.3094845,
+    "ast_hash": "d8a39894c5cc9577cb21a6b8adf26b45",
+    "semantic_hash": ""
   },
   "src/quote/chart_common.py": {
     "mtime": 1784456738.447834,
@@ -70,9 +70,9 @@
     "semantic_hash": "db3d6f8bd1e7ba428fa5813a5ca7dfb5"
   },
   "src/quote/output.py": {
-    "mtime": 1784444194.9091465,
-    "ast_hash": "5c997879db923c9797e53836cb2ca2b8",
-    "semantic_hash": "5c997879db923c9797e53836cb2ca2b8"
+    "mtime": 1789285537.4407852,
+    "ast_hash": "3806a5127b71067d0fd00359c60eee30",
+    "semantic_hash": ""
   },
   "src/quote/sinopac.py": {
     "mtime": 1781416902.2518642,
@@ -85,9 +85,9 @@
     "semantic_hash": "5e8a4a3c59de294073f93521686366d7"
   },
   "src/quote/yahoo_finance.py": {
-    "mtime": 1784457122.4155526,
-    "ast_hash": "9adfc67323ad39df0036801c44d1cf8b",
-    "semantic_hash": "9adfc67323ad39df0036801c44d1cf8b"
+    "mtime": 1789057378.4146357,
+    "ast_hash": "a761c851dd739f929b292c7863aa9a53",
+    "semantic_hash": ""
   },
   "src/sync_tw_data.py": {
     "mtime": 1772209864.1419442,
@@ -115,9 +115,9 @@
     "semantic_hash": "7bf6fea9067114f9d57eedd25861a8d2"
   },
   "tests/unit/line/test_command_parser.py": {
-    "mtime": 1788013961.9974842,
-    "ast_hash": "acad0b944949ea729e8e5dcaac3acea8",
-    "semantic_hash": "acad0b944949ea729e8e5dcaac3acea8"
+    "mtime": 1789059965.3370295,
+    "ast_hash": "8a6676e63737fd9f10dd3d77c18de500",
+    "semantic_hash": ""
   },
   "tests/unit/quote/test_output.py": {
     "mtime": 1782311989.146629,
@@ -135,14 +135,14 @@
     "semantic_hash": "5031f4e1787e7869626b7cc28616370d"
   },
   "tests/unit/test_app.py": {
-    "mtime": 1788017150.506059,
-    "ast_hash": "1f224380f4993e49ef577faca490fc23",
-    "semantic_hash": "1f224380f4993e49ef577faca490fc23"
+    "mtime": 1788069758.861837,
+    "ast_hash": "765f3f71fdce50b0bdd77d32c288f34d",
+    "semantic_hash": ""
   },
   ".claude/CLAUDE.md": {
-    "mtime": 1787376120.354314,
-    "ast_hash": "eba667c3a76619185306ad69ee7378e4",
-    "semantic_hash": "eba667c3a76619185306ad69ee7378e4"
+    "mtime": 1789290313.2460485,
+    "ast_hash": "b5f0f8a68a52ac6e567335c7fd79ece0",
+    "semantic_hash": ""
   },
   ".claude/skills/image-response-design/SKILL.md": {
     "mtime": 1784445339.6350098,
@@ -155,9 +155,9 @@
     "semantic_hash": "d29ec156548967af7d5902bbee47c94a"
   },
   "README.md": {
-    "mtime": 1787998487.6413045,
-    "ast_hash": "c5b7dd2f2b0304919563e8abfcab4783",
-    "semantic_hash": "c5b7dd2f2b0304919563e8abfcab4783"
+    "mtime": 1788098987.4942036,
+    "ast_hash": "ee618136fae95f8ee1e3f112ddc5aba3",
+    "semantic_hash": ""
   },
   "environment.yml": {
     "mtime": 1772295053.0680778,
@@ -165,9 +165,9 @@
     "semantic_hash": "7d75a5f56d7b23c3aaf1a11543f08e74"
   },
   "infrastructure/template.yaml": {
-    "mtime": 1787998487.5980902,
-    "ast_hash": "d68820b7b0b549fddee6e50f6a7710b5",
-    "semantic_hash": "d68820b7b0b549fddee6e50f6a7710b5"
+    "mtime": 1789057625.8130298,
+    "ast_hash": "62f30335d2586ff7315072f7ee85745f",
+    "semantic_hash": ""
   },
   "requirements-dev.txt": {
     "mtime": 1787376518.0266607,
@@ -185,9 +185,9 @@
     "semantic_hash": "1d91ec932191ec7c126305aa11403d12"
   },
   "infrastructure/ecr.yaml": {
-    "mtime": 1784731964.739588,
-    "ast_hash": "f02f5121ccad47d7b27057eb03be0a41",
-    "semantic_hash": "f02f5121ccad47d7b27057eb03be0a41"
+    "mtime": 1788972845.0895603,
+    "ast_hash": "b99070c5e1f3e671a2eebbc0a4a4838e",
+    "semantic_hash": ""
   },
   "src/utils/groq_helper.py": {
     "mtime": 1784812759.372414,
@@ -205,19 +205,19 @@
     "semantic_hash": "3a8eceb0c7f05e891eb712117e885343"
   },
   "src/utils/opencode_helper.py": {
-    "mtime": 1788015020.924036,
-    "ast_hash": "8921e66f54b0f3c43718d7d675dd9bc4",
-    "semantic_hash": "8921e66f54b0f3c43718d7d675dd9bc4"
+    "mtime": 1789059965.336991,
+    "ast_hash": "6390ce2a6eb644411831ead9f622dc93",
+    "semantic_hash": ""
   },
   "tests/unit/utils/test_opencode_helper.py": {
-    "mtime": 1788015400.0279422,
-    "ast_hash": "869f47f23f28ea7f3346936ea1bd35e5",
-    "semantic_hash": "869f47f23f28ea7f3346936ea1bd35e5"
+    "mtime": 1789058904.410215,
+    "ast_hash": "c676872e1e759d0a48ee6c18848f236c",
+    "semantic_hash": ""
   },
   "src/utils/web_search.py": {
-    "mtime": 1787389849.8657293,
-    "ast_hash": "36e7ac1665fcb640575d4621a412c9f8",
-    "semantic_hash": "36e7ac1665fcb640575d4621a412c9f8"
+    "mtime": 1789057378.4210014,
+    "ast_hash": "3563986413a007108cecc24a796a0452",
+    "semantic_hash": ""
   },
   "tests/unit/utils/test_web_search.py": {
     "mtime": 1787389849.8588054,
@@ -228,5 +228,405 @@
     "mtime": 1787996543.7112591,
     "ast_hash": "023b1ff13e1bde6515eb98bd20ee000b",
     "semantic_hash": "023b1ff13e1bde6515eb98bd20ee000b"
+  },
+  ".agents/skills/openspec-apply-change/SKILL.md": {
+    "mtime": 1788093248.4979827,
+    "ast_hash": "2a680b26f83840eb4199b93c78b1c773",
+    "semantic_hash": ""
+  },
+  ".agents/skills/openspec-archive-change/SKILL.md": {
+    "mtime": 1788093248.4990656,
+    "ast_hash": "0ebf06c51af4f279df44d58346b5605c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/openspec-explore/SKILL.md": {
+    "mtime": 1788093248.4975593,
+    "ast_hash": "2a13636f02a054b4ed8e0c9a53cda902",
+    "semantic_hash": ""
+  },
+  ".agents/skills/openspec-propose/SKILL.md": {
+    "mtime": 1788093248.4993815,
+    "ast_hash": "c3c61e0e30027b5d95339fbdd9d5ecfe",
+    "semantic_hash": ""
+  },
+  ".agents/skills/openspec-sync-specs/SKILL.md": {
+    "mtime": 1788093248.4987152,
+    "ast_hash": "f96ee3abedeeb7817f8e019fbe4c257d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/openspec-update-change/SKILL.md": {
+    "mtime": 1788093248.4983478,
+    "ast_hash": "89078acd49723d0340c6591b53080f2a",
+    "semantic_hash": ""
+  },
+  "CONTEXT.md": {
+    "mtime": 1788094579.7306695,
+    "ast_hash": "25db803f157f7537ab9301d5a619cf23",
+    "semantic_hash": ""
+  },
+  "docs/adr/0001-capability-based-financial-routing.md": {
+    "mtime": 1788094229.7624712,
+    "ast_hash": "5ea2970c896fc7351c8770a3c7c8991d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0002-configurable-safety-mode.md": {
+    "mtime": 1788094766.8916233,
+    "ast_hash": "7819a01a96f5f73245407f06d82b9137",
+    "semantic_hash": ""
+  },
+  "docs/adr/0003-planner-execution-graph.md": {
+    "mtime": 1788094405.836028,
+    "ast_hash": "9a178b3d67ff6bd489df147fb92aec9e",
+    "semantic_hash": ""
+  },
+  "docs/adr/0004-preserve-existing-line-command-flow.md": {
+    "mtime": 1788094405.8862662,
+    "ast_hash": "77f9ef89c80099f1b8a1c8ba51761617",
+    "semantic_hash": ""
+  },
+  "docs/adr/0005-standardize-financial-tool-results.md": {
+    "mtime": 1788094579.813822,
+    "ast_hash": "191242a7208c67f2be83f06c0991b0d7",
+    "semantic_hash": ""
+  },
+  "docs/adr/0006-separate-entity-resolution.md": {
+    "mtime": 1788094579.889557,
+    "ast_hash": "6a7414683b142ca5267cde98a2c26e3f",
+    "semantic_hash": ""
+  },
+  "docs/adr/0007-explicit-workflow-state-machines.md": {
+    "mtime": 1788094579.956497,
+    "ast_hash": "aa55c69522f1b5fcad8f7fe739da9ba9",
+    "semantic_hash": ""
+  },
+  "docs/adr/0008-use-asynchronous-processing-for-long-line-requests.md": {
+    "mtime": 1788094580.0186462,
+    "ast_hash": "a8cb160f49f8fe18b374c89cfe9d9376",
+    "semantic_hash": ""
+  },
+  "docs/adr/0009-version-routing-evaluation-set.md": {
+    "mtime": 1788094766.832208,
+    "ast_hash": "fdb2839bfc982eba4bce8efaf8698479",
+    "semantic_hash": ""
+  },
+  "docs/adr/0010-support-full-capability-taxonomy.md": {
+    "mtime": 1788094766.7793455,
+    "ast_hash": "b83efdad001e310d723785cc9ee7a79d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0011-define-capability-and-research-boundaries.md": {
+    "mtime": 1788094899.074511,
+    "ast_hash": "b18ef0b51aa910cf33ad003361b5b0da",
+    "semantic_hash": ""
+  },
+  "financial_ai_request_routing_proposal.md": {
+    "mtime": 1788094899.025049,
+    "ast_hash": "603581656d6151fad5d0980dcfe24f6b",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/.openspec.yaml": {
+    "mtime": 1788095011.5386455,
+    "ast_hash": "d002e9c711953f69c65a0ac30f57a724",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/design.md": {
+    "mtime": 1788095138.2970757,
+    "ast_hash": "a55ba0e40034c68ff420b6491ee581ba",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/proposal.md": {
+    "mtime": 1788095055.6445558,
+    "ast_hash": "c0ee2497d08b31ad632a66886f5f3a68",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/financial-analysis-capabilities/spec.md": {
+    "mtime": 1788095110.1647086,
+    "ast_hash": "56b8b0d5e9da28ee5da385311b45e6a8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/financial-data-freshness/spec.md": {
+    "mtime": 1788095110.0715847,
+    "ast_hash": "1c83210e0c2caab70e44fc1e1ec5aba9",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/financial-request-routing/spec.md": {
+    "mtime": 1788095109.979866,
+    "ast_hash": "2aab22b5c8ae9166cc4f84a0be66c057",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/financial-workflows/spec.md": {
+    "mtime": 1788095110.258731,
+    "ast_hash": "4939fe9835edc26c5d8496602180cd06",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/line-financial-request-execution/spec.md": {
+    "mtime": 1788095110.3503149,
+    "ast_hash": "5fa8222cd3609d441b0dd48ce4ba8287",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/specs/routing-observability-and-evaluation/spec.md": {
+    "mtime": 1788095110.440675,
+    "ast_hash": "eaa3a269d9d97836d4e983e6ae2bc2ca",
+    "semantic_hash": ""
+  },
+  "openspec/changes/financial-ai-request-routing/tasks.md": {
+    "mtime": 1789290732.674075,
+    "ast_hash": "e2a99a6e906d83ffaff044a67d5f3678",
+    "semantic_hash": ""
+  },
+  "openspec/config.yaml": {
+    "mtime": 1788093248.5006523,
+    "ast_hash": "a88f7d80935e1a432dc9b5affe49eb27",
+    "semantic_hash": ""
+  },
+  "src/async_worker.py": {
+    "mtime": 1788112079.1310167,
+    "ast_hash": "b5562aa010952885fa5c157653dd51ab",
+    "semantic_hash": ""
+  },
+  "src/routing/__init__.py": {
+    "mtime": 1788095707.0022833,
+    "ast_hash": "0242e0def7a78d06541f1f3d7d101c47",
+    "semantic_hash": ""
+  },
+  "src/routing/acceptance.py": {
+    "mtime": 1788097968.0038445,
+    "ast_hash": "f3303a4f5faea7e9c201730e1cc6f73d",
+    "semantic_hash": ""
+  },
+  "src/routing/answer.py": {
+    "mtime": 1788095916.1309645,
+    "ast_hash": "55c9744a113de873119845966ca52c53",
+    "semantic_hash": ""
+  },
+  "src/routing/async_requests.py": {
+    "mtime": 1788096374.875156,
+    "ast_hash": "2d000244d5cc165a53c509eba6b278ff",
+    "semantic_hash": ""
+  },
+  "src/routing/capabilities.py": {
+    "mtime": 1788095652.2904367,
+    "ast_hash": "fd8d1ca1593381453d6293b8a202677b",
+    "semantic_hash": ""
+  },
+  "src/routing/clarification.py": {
+    "mtime": 1788095567.46568,
+    "ast_hash": "39e3a3d088ae8e10bfa1e940abc04571",
+    "semantic_hash": ""
+  },
+  "src/routing/config.py": {
+    "mtime": 1788110885.8646529,
+    "ast_hash": "12a3b6cec7f3ec5a125a79ebfd6f07cd",
+    "semantic_hash": ""
+  },
+  "src/routing/context.py": {
+    "mtime": 1788096028.0641315,
+    "ast_hash": "d7d1795aa19b6f44e7e0b0d7be1eaf6a",
+    "semantic_hash": ""
+  },
+  "src/routing/data_quality.py": {
+    "mtime": 1788095916.0781317,
+    "ast_hash": "888815dc1a3453d67ec38ae44cda46f0",
+    "semantic_hash": ""
+  },
+  "src/routing/entities.py": {
+    "mtime": 1788112743.7578793,
+    "ast_hash": "f51bff1abfdc0f891f3f4fa6f03fea14",
+    "semantic_hash": ""
+  },
+  "src/routing/evaluation.py": {
+    "mtime": 1788097968.0547237,
+    "ast_hash": "18c8a1341b8003937fc93a9be26b57b9",
+    "semantic_hash": ""
+  },
+  "src/routing/executor.py": {
+    "mtime": 1788111456.3326511,
+    "ast_hash": "f2e47ab591550551461bdc9780263ccc",
+    "semantic_hash": ""
+  },
+  "src/routing/freshness.py": {
+    "mtime": 1788095873.096344,
+    "ast_hash": "08e8762e23b4d39ff9400ee9f09e3d41",
+    "semantic_hash": ""
+  },
+  "src/routing/idempotency.py": {
+    "mtime": 1788096304.853919,
+    "ast_hash": "ecb52bb7512fe6d67ef1a7fc5700621e",
+    "semantic_hash": ""
+  },
+  "src/routing/models.py": {
+    "mtime": 1788112073.9835262,
+    "ast_hash": "7a468d9624f5aa5bbd4cc9f4e3adb27a",
+    "semantic_hash": ""
+  },
+  "src/routing/models_config.py": {
+    "mtime": 1788095707.002287,
+    "ast_hash": "de40ff334630063db921078cff96e928",
+    "semantic_hash": ""
+  },
+  "src/routing/observability.py": {
+    "mtime": 1788097967.9014022,
+    "ast_hash": "1c4265dfc8c6961bf2db31cf90b0c213",
+    "semantic_hash": ""
+  },
+  "src/routing/planner.py": {
+    "mtime": 1788095696.2933173,
+    "ast_hash": "4fe2ea22464f4f5d0a7d9dcdb57d9185",
+    "semantic_hash": ""
+  },
+  "src/routing/policy.py": {
+    "mtime": 1788095955.4405122,
+    "ast_hash": "3c69b6833ce0733b4d95e7ffd0659b03",
+    "semantic_hash": ""
+  },
+  "src/routing/router.py": {
+    "mtime": 1789059965.3369591,
+    "ast_hash": "ffa5e97ea665b787e8cd616799bbb386",
+    "semantic_hash": ""
+  },
+  "src/routing/rules.py": {
+    "mtime": 1788112116.134223,
+    "ast_hash": "85be7c7eb872fbde2be3418d2a0554b2",
+    "semantic_hash": ""
+  },
+  "src/routing/tool_results.py": {
+    "mtime": 1788095517.3945885,
+    "ast_hash": "ec0a83691cb21a1308be41286d4e63bf",
+    "semantic_hash": ""
+  },
+  "src/routing/tools.py": {
+    "mtime": 1788111961.1379004,
+    "ast_hash": "d91f5dd1cdda4760bfab8b17586c166f",
+    "semantic_hash": ""
+  },
+  "src/routing/workflows.py": {
+    "mtime": 1788096052.0603943,
+    "ast_hash": "7c6a0b621e70d7884e009c144b6afdca",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_acceptance.py": {
+    "mtime": 1788097968.1075368,
+    "ast_hash": "365b04977eee3e553a7f46b879cc6670",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_async_requests.py": {
+    "mtime": 1788096375.0344539,
+    "ast_hash": "3212f21d88fd8e9b6c2514e284e8c1f7",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_context_workflows.py": {
+    "mtime": 1788096020.1077852,
+    "ast_hash": "144073a93a9621f80450a740dd1141a7",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_data_quality_and_policy.py": {
+    "mtime": 1788111961.1379004,
+    "ast_hash": "0bc4e8693088c19298c5e5b63d8598d2",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_entities_and_rules.py": {
+    "mtime": 1788112744.0591497,
+    "ast_hash": "c2194e96124b836d90bdc57dd45bdb7e",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_entrypoint.py": {
+    "mtime": 1788095734.4633596,
+    "ast_hash": "6dc7be98dffb20b9beb787cb3c1865b6",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_executor.py": {
+    "mtime": 1788096214.716293,
+    "ast_hash": "0502cc308cba26aca5813056e7a6db1d",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_freshness.py": {
+    "mtime": 1788095873.1497068,
+    "ast_hash": "a6fad6e52b348b7c29a0d15e35b4af34",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_idempotency.py": {
+    "mtime": 1788096304.9594347,
+    "ast_hash": "0054863ee81efcb32185cea356653600",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_models.py": {
+    "mtime": 1788095504.8518949,
+    "ast_hash": "9da529055c1b47432e14f265bebcf8d0",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_observability_evaluation.py": {
+    "mtime": 1788096425.5238688,
+    "ast_hash": "0b5e4bd6d324ad174fddc6b223ab7328",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_planner.py": {
+    "mtime": 1788095696.4561,
+    "ast_hash": "8dd66f249ccd6e6c694c362ffd367df6",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_router.py": {
+    "mtime": 1788095669.159352,
+    "ast_hash": "e1b2c554f8985b245fd5695c7c91d1d2",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_tools.py": {
+    "mtime": 1788095823.4110181,
+    "ast_hash": "ceb59ab5e91ea54ddd56e56448048bc0",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_app_routing.py": {
+    "mtime": 1788110860.1388538,
+    "ast_hash": "c4377d7e7ed133d674b9d25626e84bb2",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_interactive_stock_test.py": {
+    "mtime": 1788112744.164229,
+    "ast_hash": "07fcdaedfffeb84f9750e944f605d919",
+    "semantic_hash": ""
+  },
+  "docs/financial-routing-inventory.md": {
+    "mtime": 1788095504.7605643,
+    "ast_hash": "f240f3e11126cd29d310b167054ea69b",
+    "semantic_hash": ""
+  },
+  "src/routing/llm_router.py": {
+    "mtime": 1788884148.192986,
+    "ast_hash": "3b8d19c82be01b175ccaca8d0bb7a29e",
+    "semantic_hash": ""
+  },
+  "src/routing/semantic.py": {
+    "mtime": 1788112743.906083,
+    "ast_hash": "b343361177010063714d6c1ec53555ac",
+    "semantic_hash": ""
+  },
+  "tests/unit/routing/test_semantic_and_llm_router.py": {
+    "mtime": 1788112744.112914,
+    "ast_hash": "333ca584027ae0af9cfc9a0c701a3f2f",
+    "semantic_hash": ""
+  },
+  "docs/adr/0012-stock-dividend-history-command-and-chart.md": {
+    "mtime": 1789056509.3353293,
+    "ast_hash": "934ccd67fb974bd71ee36b63f7642c6e",
+    "semantic_hash": ""
+  },
+  "src/quote/dividend.py": {
+    "mtime": 1789285537.4407625,
+    "ast_hash": "53961a7acc1c1dd1273b181a661c6c12",
+    "semantic_hash": ""
+  },
+  "tests/unit/quote/test_dividend.py": {
+    "mtime": 1789285537.4407976,
+    "ast_hash": "2cddaa82a879615414e2257f1e9cbd29",
+    "semantic_hash": ""
+  },
+  "docs/financial-routing-operations.md": {
+    "mtime": 1789288605.7548726,
+    "ast_hash": "428c5a73dd52e119cff53221bf04b29a",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1789290151.4174626,
+    "ast_hash": "f2a62ca466c17117ec0dc43b80753cf4",
+    "semantic_hash": ""
   }
 }
