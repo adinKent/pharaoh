@@ -7,10 +7,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import requests
 import yfinance as yf
+from matplotlib.offsetbox import AnchoredOffsetbox, HPacker, TextArea
 
 from quote.chart_common import load_chart_font_name, save_or_upload_fig
 from quote.chart_theme import get_chart_theme
-from quote.output import FIXED_SYMBOL_NAME_MAPPINGS
+from quote.output import FIXED_SYMBOL_NAME_MAPPINGS, get_info_for_day_candle_picture
 from quote.tw_stock import get_tw_stock_price
 from quote.yahoo_finance import quote_stock
 from utils.aws_helper import is_running_on_lambda
@@ -163,21 +164,26 @@ def aggregate_dividend_records(records: list[dict], current_year: int, start_yea
 
 
 def fetch_stock_header_info(symbol: str, market_type: str, records: list[dict]) -> dict:
-    """Retrieve stock name, price, dividend yield, and TTM cash dividend for the banner."""
+    """Retrieve stock name, price, price change info, dividend yield, and TTM cash dividend for the banner."""
     name = FIXED_SYMBOL_NAME_MAPPINGS.get(symbol, symbol)
     current_price = None
-    div_yield_pct = None
+    previous_price = None
+    title_info = None
 
     if market_type in ("TW", "TW_IND"):
-        tw_info = get_tw_stock_price(symbol)
-        if tw_info:
-            name = tw_info.get("name") or name
-            current_price = tw_info.get("price")
+        stock_info = get_tw_stock_price(symbol)
     else:
-        us_info = quote_stock(symbol)
-        if us_info:
-            name = us_info.get("name") or name
-            current_price = us_info.get("price")
+        stock_info = quote_stock(symbol)
+
+    if stock_info:
+        name = stock_info.get("name") or name
+        current_price = stock_info.get("price")
+        previous_price = stock_info.get("previous_price")
+        if current_price is not None and previous_price is not None:
+            stock_info_for_title = dict(stock_info)
+            stock_info_for_title["name"] = name
+            stock_info_for_title["symbol"] = symbol
+            title_info = get_info_for_day_candle_picture(stock_info_for_title)
 
     # Calculate TTM cash dividend (last 365 days)
     now = datetime.now()
@@ -187,6 +193,7 @@ def fetch_stock_header_info(symbol: str, market_type: str, records: list[dict]) 
         if r.get("date", "") >= one_year_ago:
             ttm_cash += r.get("cash", 0.0)
 
+    div_yield_pct = None
     if current_price and current_price > 0 and ttm_cash > 0:
         div_yield_pct = round((ttm_cash / current_price) * 100, 2)
 
@@ -194,6 +201,8 @@ def fetch_stock_header_info(symbol: str, market_type: str, records: list[dict]) 
         "symbol": symbol,
         "name": name,
         "price": current_price,
+        "previous_price": previous_price,
+        "title_info": title_info,
         "yield_pct": div_yield_pct,
         "ttm_cash": round(ttm_cash, 2),
     }
@@ -244,8 +253,8 @@ def generate_dividend_chart_png(symbol: str, market_type: str, save_to_local_fil
     bar_width = 0.52
 
     # Color tokens
-    cash_color = theme.stat_accent if hasattr(theme, "stat_accent") else "#3a6fd8"
-    stock_color = theme.ma5 if hasattr(theme, "ma5") else "#f5a623"
+    cash_color = theme.intraday_mark if hasattr(theme, "intraday_mark") else "#2962ff"
+    stock_color = theme.ma5 if hasattr(theme, "ma5") else "#ffa726"
 
     p1 = ax.bar(x_indices, cash_vals, width=bar_width, color=cash_color, label="現金股利", zorder=3)
     p2 = None
@@ -305,17 +314,86 @@ def generate_dividend_chart_png(symbol: str, market_type: str, save_to_local_fil
     fig.text(0.08, 0.94, title_text, fontfamily=font_name, fontsize=15, fontweight="bold", color=theme.ink)
 
     stats_items = []
-    if header.get("price") is not None:
-        stats_items.append(f"現價: {header['price']:.2f}")
     if header.get("yield_pct") is not None:
         stats_items.append(f"現金殖利率: {header['yield_pct']:.2f}%")
     if header.get("ttm_cash") is not None and header["ttm_cash"] > 0:
         currency = "元" if market_type in ("TW", "TW_IND") else "$"
         stats_items.append(f"近一年現金股利: {header['ttm_cash']:.2f}{currency}")
 
-    if stats_items:
-        stats_text = "   |   ".join(stats_items)
-        fig.text(0.08, 0.88, stats_text, fontfamily=font_name, fontsize=11, color=theme.stat_label)
+    stats_str = "   |   ".join(stats_items)
+
+    title_info = header.get("title_info")
+    boxes = []
+    if title_info and title_info.get("price"):
+        boxes.append(
+            TextArea(
+                title_info["price"],
+                textprops=dict(
+                    color=title_info["color"],
+                    fontsize=12,
+                    fontweight="bold",
+                    fontfamily=font_name,
+                ),
+            )
+        )
+        if stats_str:
+            boxes.append(
+                TextArea(
+                    f"   |   {stats_str}",
+                    textprops=dict(
+                        color=theme.stat_label,
+                        fontsize=11,
+                        fontfamily=font_name,
+                    ),
+                )
+            )
+    else:
+        if header.get("price") is not None:
+            boxes.append(
+                TextArea(
+                    f"現價: {header['price']:.2f}",
+                    textprops=dict(
+                        color=theme.stat_label,
+                        fontsize=11,
+                        fontfamily=font_name,
+                    ),
+                )
+            )
+            if stats_str:
+                boxes.append(
+                    TextArea(
+                        f"   |   {stats_str}",
+                        textprops=dict(
+                            color=theme.stat_label,
+                            fontsize=11,
+                            fontfamily=font_name,
+                        ),
+                    )
+                )
+        elif stats_str:
+            boxes.append(
+                TextArea(
+                    stats_str,
+                    textprops=dict(
+                        color=theme.stat_label,
+                        fontsize=11,
+                        fontfamily=font_name,
+                    ),
+                )
+            )
+
+    if boxes:
+        block = HPacker(children=boxes, sep=0, pad=0, align="baseline")
+        anchored = AnchoredOffsetbox(
+            loc="lower left",
+            child=block,
+            pad=0,
+            borderpad=0,
+            frameon=False,
+            bbox_to_anchor=(0.08, 0.875),
+            bbox_transform=fig.transFigure,
+        )
+        fig.add_artist(anchored)
 
     # Legend if stock dividend is present
     if has_stock:

@@ -95,26 +95,36 @@ def format_stock_price_response(stock_info) -> str:
     return f"{stock_info['name']} ({stock_info['symbol']}): {stock_info['price']} {icon} {price_diff:.2f} ({price_diff_percent_format}%)"
 
 
-def get_info_for_day_candle_picture(stock_info) -> str:
+def get_info_for_day_candle_picture(stock_info) -> dict:
     """Get icon representation for ups or downs status"""
     price_diff = stock_info["price"] - stock_info["previous_price"]
     price_diff_percent = (price_diff / stock_info["previous_price"] * 100) if stock_info["previous_price"] != 0 else 0
     theme = get_chart_theme()
-    price_diff_percent_format = "0"
+    price_diff_percent_format = "0.00"
     sign = " "  # Unchanged
     color = theme.flat
     if price_diff > 0:
         color = theme.up
         sign = "▲"
+        price_diff_format = f"+{price_diff:.2f}"
         price_diff_percent_format = f"+{price_diff_percent:.2f}"
     elif price_diff < 0:
         color = theme.down
         sign = "▼"
+        price_diff_format = f"{price_diff:.2f}"
         price_diff_percent_format = f"{price_diff_percent:.2f}"
+    else:
+        price_diff_format = f"{price_diff:.2f}"
+
+    price_val = stock_info["price"]
+    if isinstance(price_val, (int, float)):
+        price_str = f"{int(price_val)}" if price_val % 1 == 0 else f"{price_val:.2f}"
+    else:
+        price_str = str(price_val)
 
     return {
         "title": f"{stock_info['name']} ({stock_info['symbol']})",
-        "price": f"{stock_info['price']} {sign}{price_diff:.2f} ({price_diff_percent_format}%)",
+        "price": f"{price_str} {sign}{price_diff_format} ({price_diff_percent_format}%)",
         "color": color,
     }
 

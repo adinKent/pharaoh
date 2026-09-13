@@ -99,25 +99,42 @@ class TestFetchDividendsYfinance:
 
 class TestFetchStockHeaderInfo:
     @patch("quote.dividend.get_tw_stock_price")
-    def test_tw_stock_header_info(self, mock_get_price):
+    def test_tw_stock_header_info_rising(self, mock_get_price):
+        mock_get_price.return_value = {
+            "name": "台驊控股",
+            "price": 71.2,
+            "previous_price": 70.7,
+        }
+        records = [
+            {"date": "2026-07-21", "cash": 5.0, "stock": 0.0},
+        ]
+        info = fetch_stock_header_info("2636", "TW", records)
+        assert info["symbol"] == "2636"
+        assert info["name"] == "台驊控股"
+        assert info["price"] == 71.2
+        assert info["previous_price"] == 70.7
+        assert info["title_info"] is not None
+        assert "▲" in info["title_info"]["price"]
+        assert "+0.50" in info["title_info"]["price"]
+        assert "+0.71%" in info["title_info"]["price"]
+        assert info["ttm_cash"] == 5.0
+        assert info["yield_pct"] == 7.02
+
+    @patch("quote.dividend.get_tw_stock_price")
+    def test_tw_stock_header_info_falling(self, mock_get_price):
         mock_get_price.return_value = {
             "name": "台積電",
-            "price": 1000.0,
-            "previous_price": 990.0,
+            "price": 2450.0,
+            "previous_price": 2465.0,
         }
-        # TTM records (all within last 365 days from 2026-09)
         records = [
             {"date": "2026-06-15", "cash": 4.0, "stock": 0.0},
-            {"date": "2026-03-18", "cash": 4.0, "stock": 0.0},
-            {"date": "2025-12-15", "cash": 3.5, "stock": 0.0},
-            {"date": "2025-09-15", "cash": 3.5, "stock": 0.0},
         ]
         info = fetch_stock_header_info("2330", "TW", records)
-        assert info["symbol"] == "2330"
-        assert info["name"] == "台積電"
-        assert info["price"] == 1000.0
-        assert info["ttm_cash"] == 15.0
-        assert info["yield_pct"] == 1.5  # 15 / 1000 * 100
+        assert info["title_info"] is not None
+        assert "▼" in info["title_info"]["price"]
+        assert "-15.00" in info["title_info"]["price"]
+        assert "-0.61%" in info["title_info"]["price"]
 
 
 class TestGenerateDividendChartPng:
@@ -130,16 +147,22 @@ class TestGenerateDividendChartPng:
             {"date": "2024-06-15", "cash": 12.0, "stock": 0.0},
         ]
         mock_header.return_value = {
-            "symbol": "2330",
-            "name": "台積電",
-            "price": 1000.0,
-            "yield_pct": 1.2,
-            "ttm_cash": 12.0,
+            "symbol": "2636",
+            "name": "台驊控股",
+            "price": 71.2,
+            "previous_price": 70.7,
+            "title_info": {
+                "title": "台驊控股 (2636)",
+                "price": "71.20 ▲+0.50 (+0.71%)",
+                "color": "red",
+            },
+            "yield_pct": 7.02,
+            "ttm_cash": 5.0,
         }
-        mock_save.return_value = "https://s3.amazonaws.com/test-bucket/2330_dividend_123.jpg"
+        mock_save.return_value = "https://s3.amazonaws.com/test-bucket/2636_dividend_123.jpg"
 
-        result = generate_dividend_chart_png("2330", "TW", save_to_local_file=False)
-        assert result == "https://s3.amazonaws.com/test-bucket/2330_dividend_123.jpg"
+        result = generate_dividend_chart_png("2636", "TW", save_to_local_file=False)
+        assert result == "https://s3.amazonaws.com/test-bucket/2636_dividend_123.jpg"
         mock_save.assert_called_once()
 
     @patch("quote.dividend.fetch_tw_stock_dividends_finmind")
