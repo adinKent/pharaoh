@@ -16,6 +16,8 @@
 #     ./scripts/init.sh --env dev --groq-api-key <key>
 #   Update OpenCode API key:
 #     ./scripts/init.sh --env dev --opencode-api-key <key>
+#   Update OpenAI API key:
+#     ./scripts/init.sh --env dev --openai-api-key <key>
 #   Update SinoPac credentials:
 #     ./scripts/init.sh --env dev --sinopac-api-key <key> --sinopac-api-secret <secret>
 
@@ -33,6 +35,7 @@ LINE_CHANNEL_ACCESS_TOKEN=""
 GEMINI_API_KEY=""
 GROQ_API_KEY=""
 OPENCODE_API_KEY=""
+OPENAI_API_KEY=""
 FUGLE_API_KEY=""
 SINOPAC_API_KEY=""
 SINOPAC_API_SECRET=""
@@ -73,6 +76,10 @@ while [[ $# -gt 0 ]]; do
         OPENCODE_API_KEY="$2"
         shift 2
         ;;
+        --openai-api-key)
+        OPENAI_API_KEY="$2"
+        shift 2
+        ;;
         --fugle-api-key)
         FUGLE_API_KEY="$2"
         shift 2
@@ -92,9 +99,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ] && [ -z "$GROQ_API_KEY" ] && [ -z "$OPENCODE_API_KEY" ] && [ -z "$FUGLE_API_KEY" ] && [ -z "$SINOPAC_API_KEY" ] && [ -z "$SINOPAC_API_SECRET" ]; then
+if [ -z "$MONGODB_USERNAME" ] && [ -z "$MONGODB_PASSWORD" ] && [ -z "$LINE_CHANNEL_SECRET" ] && [ -z "$LINE_CHANNEL_ACCESS_TOKEN" ] && [ -z "$GEMINI_API_KEY" ] && [ -z "$GROQ_API_KEY" ] && [ -z "$OPENCODE_API_KEY" ] && [ -z "$OPENAI_API_KEY" ] && [ -z "$FUGLE_API_KEY" ] && [ -z "$SINOPAC_API_KEY" ] && [ -z "$SINOPAC_API_SECRET" ]; then
     echo "Error: No credentials provided to update."
-    echo "Usage: ./scripts/init.sh [--env <env>] [--groq-api-key <key>] [--opencode-api-key <key>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
+    echo "Usage: ./scripts/init.sh [--env <env>] [--groq-api-key <key>] [--opencode-api-key <key>] [--openai-api-key <key>] [--mongo-user <user> --mongo-password <pass>] [--line-channel-secret <secret> --line-channel-access-token <token>]"
     exit 1
 fi
 
@@ -161,7 +168,7 @@ if [ -n "$GROQ_API_KEY" ]; then
 fi
 
 if [ -n "$OPENCODE_API_KEY" ]; then
-    PARAM_NAME="/pharaoh/$ENVIRONMENT/opencode/api-key"
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/openai/api-key"
     echo "Checking for existing OpenCode API key parameter: $PARAM_NAME"
 
     if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
@@ -169,6 +176,17 @@ if [ -n "$OPENCODE_API_KEY" ]; then
     fi
 
     aws ssm put-parameter --name "$PARAM_NAME" --description "OpenCode API key for Pharaoh in $ENVIRONMENT" --overwrite --value "$OPENCODE_API_KEY" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
+fi
+
+if [ -n "$OPENAI_API_KEY" ]; then
+    PARAM_NAME="/pharaoh/$ENVIRONMENT/openai/api-key"
+    echo "Checking for existing OpenAI API key parameter: $PARAM_NAME"
+
+    if aws ssm get-parameter --name "$PARAM_NAME" --profile "$AWS_PROFILE" --region "$AWS_REGION" >/dev/null 2>&1; then
+        echo "OpenAI API key parameter already exists. Updating its value..."
+    fi
+
+    aws ssm put-parameter --name "$PARAM_NAME" --description "OpenAI API key for Pharaoh in $ENVIRONMENT" --overwrite --value "$OPENAI_API_KEY" --type String --profile "$AWS_PROFILE" --region "$AWS_REGION"
 fi
 
 if [ -n "$FUGLE_API_KEY" ]; then

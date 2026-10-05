@@ -69,7 +69,6 @@
   "67": "get_institues_buy_sell_today_result",
   "68": "groq_helper.py",
   "69": "ExecutionPlan",
-  "70": "AcceptanceReport",
   "71": "TestQuoteStock",
   "72": "Financial Request Routing Operational Guide & Release Checklist",
   "73": "observability.py",
@@ -78,6 +77,5 @@
   "76": "SKILL.md",
   "77": "SKILL.md",
   "78": "SKILL.md",
-  "79": "SKILL.md",
-  "80": "get_mongo_client"
+  "79": "SKILL.md"
 }

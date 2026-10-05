@@ -22,8 +22,8 @@ from quote.yahoo_finance import (
     get_us_stock_year_candles_png,
     quote_stock,
 )
-from utils.opencode_helper import (
-    generate_opencode_technical_analysis_response,
+from utils.openai_helper import (
+    generate_openai_technical_analysis_response,
     infer_line_candidate_commands,
     infer_line_command,
 )
@@ -257,7 +257,7 @@ def handle_stock_basic_analysis_quote(symbol_in_command, session_id: str | None 
     }
     if session_id is not None:
         ai_analysis_kwargs["session_id"] = session_id
-    ai_analysis_content = generate_opencode_technical_analysis_response(
+    ai_analysis_content = generate_openai_technical_analysis_response(
         prompt,
         **ai_analysis_kwargs,
     )

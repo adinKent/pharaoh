@@ -25,9 +25,9 @@
     "semantic_hash": ""
   },
   "scripts/init.sh": {
-    "mtime": 1787998487.6842246,
-    "ast_hash": "79a5a384789482c341f921f6c71b8742",
-    "semantic_hash": "79a5a384789482c341f921f6c71b8742"
+    "mtime": 1791209304.6853585,
+    "ast_hash": "2a917411be83dad06046fc29c7eca470",
+    "semantic_hash": ""
   },
   "scripts/local.sh": {
     "mtime": 1772295044.9130144,
@@ -40,8 +40,8 @@
     "semantic_hash": "b8af78f390e18d193fb6011576d76b94"
   },
   "src/app.py": {
-    "mtime": 1788884148.2144053,
-    "ast_hash": "6da0fde341d283d4689bc0f038a49de2",
+    "mtime": 1791209284.387674,
+    "ast_hash": "9986fbdd143e82917d4fe21be965b8f8",
     "semantic_hash": ""
   },
   "src/line/command_mappings.py": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "src/line/command_parser.py": {
-    "mtime": 1789059965.3094845,
-    "ast_hash": "d8a39894c5cc9577cb21a6b8adf26b45",
+    "mtime": 1791209284.4061117,
+    "ast_hash": "c9a8dca55e7db450b5914bab79e06209",
     "semantic_hash": ""
   },
   "src/quote/chart_common.py": {
@@ -115,8 +115,8 @@
     "semantic_hash": "7bf6fea9067114f9d57eedd25861a8d2"
   },
   "tests/unit/line/test_command_parser.py": {
-    "mtime": 1789059965.3370295,
-    "ast_hash": "8a6676e63737fd9f10dd3d77c18de500",
+    "mtime": 1791209304.6513524,
+    "ast_hash": "d72d95865314488c3b2b3ff5ad452246",
     "semantic_hash": ""
   },
   "tests/unit/quote/test_output.py": {
@@ -203,16 +203,6 @@
     "mtime": 1787376143.310828,
     "ast_hash": "3a8eceb0c7f05e891eb712117e885343",
     "semantic_hash": "3a8eceb0c7f05e891eb712117e885343"
-  },
-  "src/utils/opencode_helper.py": {
-    "mtime": 1789059965.336991,
-    "ast_hash": "6390ce2a6eb644411831ead9f622dc93",
-    "semantic_hash": ""
-  },
-  "tests/unit/utils/test_opencode_helper.py": {
-    "mtime": 1789058904.410215,
-    "ast_hash": "c676872e1e759d0a48ee6c18848f236c",
-    "semantic_hash": ""
   },
   "src/utils/web_search.py": {
     "mtime": 1789057378.4210014,
@@ -370,7 +360,7 @@
     "semantic_hash": ""
   },
   "openspec/changes/financial-ai-request-routing/tasks.md": {
-    "mtime": 1789290732.674075,
+    "mtime": 1789291023.715225,
     "ast_hash": "e2a99a6e906d83ffaff044a67d5f3678",
     "semantic_hash": ""
   },
@@ -585,13 +575,13 @@
     "semantic_hash": ""
   },
   "docs/financial-routing-inventory.md": {
-    "mtime": 1788095504.7605643,
-    "ast_hash": "f240f3e11126cd29d310b167054ea69b",
+    "mtime": 1791209304.6698713,
+    "ast_hash": "726dfc0d46aa7bd0336a2a7693edd5c3",
     "semantic_hash": ""
   },
   "src/routing/llm_router.py": {
-    "mtime": 1788884148.192986,
-    "ast_hash": "3b8d19c82be01b175ccaca8d0bb7a29e",
+    "mtime": 1791209284.4218934,
+    "ast_hash": "78251f3025e76cb18adb5e159bff9068",
     "semantic_hash": ""
   },
   "src/routing/semantic.py": {
@@ -627,6 +617,16 @@
   "AGENTS.md": {
     "mtime": 1789290151.4174626,
     "ast_hash": "f2a62ca466c17117ec0dc43b80753cf4",
+    "semantic_hash": ""
+  },
+  "src/utils/openai_helper.py": {
+    "mtime": 1791209291.280945,
+    "ast_hash": "57416f309379a6d2be8903a369fe3ad4",
+    "semantic_hash": ""
+  },
+  "tests/unit/utils/test_openai_helper.py": {
+    "mtime": 1791208415.1039257,
+    "ast_hash": "c8b4876f5c94da818c68953a43143851",
     "semantic_hash": ""
   }
 }

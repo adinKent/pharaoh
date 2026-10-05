@@ -30,7 +30,7 @@ from routing.observability import log_routing
 from routing.router import FinancialRouter
 from routing.semantic import semantic_route
 from utils.aws_helper import is_s3_presigned_url
-from utils.opencode_helper import get_source_session_id, set_current_session_id
+from utils.openai_helper import get_source_session_id, set_current_session_id
 
 # Configure logging
 logger = logging.getLogger()

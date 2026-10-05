@@ -53,11 +53,11 @@ def _normalize_entities(payload: dict) -> dict:
 async def llm_route(ctx: FinancialContext, *, client=None) -> RouteDecision | None:
     """Use an OpenAI-compatible client only after deterministic routing is uncertain."""
     if client is None:
-        from utils.opencode_helper import fallback_models, get_opencode_client, main_model, resolve_opencode_session_id
+        from utils.openai_helper import fallback_models, get_openai_client, main_model
 
-        client = get_opencode_client()
+        client = get_openai_client()
     else:
-        from utils.opencode_helper import fallback_models, main_model, resolve_opencode_session_id
+        from utils.openai_helper import fallback_models, main_model
 
     prompt = (
         "Classify this finance-only request. Return JSON only with keys: "
@@ -72,9 +72,6 @@ async def llm_route(ctx: FinancialContext, *, client=None) -> RouteDecision | No
         f"Known entities: {[entity.canonical_id for entity in ctx.known_entities]}"
     )
 
-    session_id = resolve_opencode_session_id(ctx.conversation_id or ctx.user_id)
-    extra_headers = {"x-opencode-session": session_id}
-
     try:
         for model in (main_model, *fallback_models):
             try:
@@ -83,7 +80,6 @@ async def llm_route(ctx: FinancialContext, *, client=None) -> RouteDecision | No
                     model=model,
                     messages=[{"role": "user", "content": prompt}],
                     response_format={"type": "json_object"},
-                    extra_headers=extra_headers,
                 )
                 payload = _normalize_entities(_normalize_capability_aliases(_parse_json(response.choices[0].message.content)))
                 return RouteDecision.model_validate(payload)

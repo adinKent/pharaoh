@@ -49,6 +49,6 @@
 
 ## 8. Migration and release validation
 
-- [ ] 8.1 Deploy the new pipeline behind the feature flag while preserving the existing parser path; verify rollback by disabling the flag.
+- [x] 8.1 Deploy the new pipeline behind the feature flag while preserving the existing parser path; verify rollback by disabling the flag.
 - [x] 8.2 Run compatibility, unit, integration, and routing evaluation suites against the full capability taxonomy; verify configured acceptance thresholds pass.
-- [ ] 8.3 Enable natural-language routing for the intended LINE contexts and document operational configuration, data-source limitations, safety mode, and rollback procedure; verify the release checklist is complete.
+- [x] 8.3 Enable natural-language routing for the intended LINE contexts and document operational configuration, data-source limitations, safety mode, and rollback procedure; verify the release checklist is complete.
