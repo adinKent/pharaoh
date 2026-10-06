@@ -6,6 +6,7 @@ from linebot.v3.exceptions import InvalidSignatureError
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 from app import create_candidate_commands_flex, handle_text_message, lambda_handler, line_bot_api
+from line.help_flex import create_command_help_flex
 
 
 class TestApp:
@@ -61,6 +62,26 @@ class TestApp:
 
         mock_send_flex.assert_called_once()
         assert isinstance(mock_send_flex.call_args.args[2], type(create_candidate_commands_flex([])))
+
+    @patch("app.send_reply_flex")
+    @patch("app.parse_line_command")
+    def test_text_message_event_with_help_command(self, mock_parse_command, mock_send_flex):
+        mock_parse_command.return_value = {
+            "type": "line_command_help",
+            "text": "help text fallback",
+        }
+        mock_event = MagicMock(spec=MessageEvent)
+        mock_event.reply_token = "test-reply-token"
+        mock_event.message = MagicMock(spec=TextMessageContent)
+        mock_event.message.text = "#指令"
+        mock_event.message.mark_as_read_token = None
+        mock_event.source = MagicMock()
+        mock_event.source.type = "user"
+
+        handle_text_message(mock_event)
+
+        mock_send_flex.assert_called_once()
+        assert isinstance(mock_send_flex.call_args.args[2], type(create_command_help_flex()))
 
     @patch("app.handler")
     def test_lambda_handler_success(self, mock_handler):

@@ -75,9 +75,11 @@ class TestGetStockSymbolAndMarketType:
         assert isinstance(result, list)
         assert len(result) == 4
 
-    def test_tw_company_name(self):
+    @patch("line.command_parser.get_tw_stock_symbol_from_company_name")
+    def test_tw_company_name(self, mock_get_symbol):
         """Test tw company commands like #台積電, #長榮, etc."""
         # These should be handled by get_tw_stock_symbol_from_company_name internally
+        mock_get_symbol.side_effect = lambda name: {"台積電": "2330", "長榮": "2603"}.get(name)
         result = get_stock_symbol_and_market_type("台積電")
         assert result == ("2330", "TW")
 
@@ -485,6 +487,19 @@ class TestParseLineCommand:
         assert "2026-06-17 今日除息股票 (1 檔):" in result
         assert "台積電 (2330) 現金股利: 4" in result
         mock_get_today_ex_dividend_stocks.assert_called_once_with()
+
+    def test_help_command(self):
+        """Test #指令 returns structured help command dict with fallback text."""
+        result = parse_line_command("#指令")
+        assert isinstance(result, dict)
+        assert result.get("type") == "line_command_help"
+        assert "text" in result
+        assert "指數:" in result["text"]
+        assert "個股:" in result["text"]
+
+        result_spaced = parse_line_command("# 指令")
+        assert isinstance(result_spaced, dict)
+        assert result_spaced.get("type") == "line_command_help"
 
 
 if __name__ == "__main__":

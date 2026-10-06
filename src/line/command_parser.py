@@ -3,7 +3,7 @@ import re
 
 import pandas as pd
 
-from line.command_mappings import get_all_commands
+from line.command_mappings import HELP_COMMANDS, get_all_commands
 from quote.dividend import generate_dividend_chart_png
 from quote.output import FIXED_SYMBOL_NAME_MAPPINGS, format_ex_dividend_response, format_stock_price_response
 from quote.sinopac import get_futopt_snapshot
@@ -134,8 +134,13 @@ def get_stock_symbol_from_fixed_command(
     return command_mappings.get(symbol, None)
 
 
-def handle_stock_price_quote(symbol_in_command) -> str:
-    symbol_name = symbol_in_command.group(1)
+def handle_stock_price_quote(symbol_in_command) -> str | dict:
+    symbol_name = symbol_in_command.group(1).strip()
+    if symbol_name == "指令":
+        return {
+            "type": "line_command_help",
+            "text": HELP_COMMANDS["指令"],
+        }
     symbol_list = get_stock_symbol_and_market_type(symbol_name)
     if symbol_list is None:
         return ""

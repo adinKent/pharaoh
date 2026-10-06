@@ -62,8 +62,8 @@ def test_llm_router_uses_fallback_model_after_main_model_failure():
     decision = asyncio.run(llm_route(FinancialContext(user_id="u1", message="Explain EPS"), client=client))
 
     assert decision.capabilities == [Capability.KNOWLEDGE]
-    assert models[0] == "glm-5.3-flash"
-    assert models[1] == "deepseek-v4-flash"
+    assert models[0] == "gpt-6-luna"
+    assert models[1] == "gpt-5.6-luna"
 
 
 def test_llm_router_normalizes_known_capability_aliases():

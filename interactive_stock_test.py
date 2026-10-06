@@ -75,7 +75,11 @@ def interactive_test(*, enable_financial_routing: bool | None = None):
 
             if result:
                 print("🎯 Bot Response:")
-                print(result)
+                if isinstance(result, dict) and result.get("type") == "line_command_help":
+                    print("[LINE Flex Message: 指令說明]")
+                    print(result.get("text", ""))
+                else:
+                    print(result)
             else:
                 print("ℹ️  No stock command detected (message would be ignored)")
 

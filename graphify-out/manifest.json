@@ -620,13 +620,23 @@
     "semantic_hash": ""
   },
   "src/utils/openai_helper.py": {
-    "mtime": 1791209291.280945,
-    "ast_hash": "57416f309379a6d2be8903a369fe3ad4",
+    "mtime": 1791211413.3141286,
+    "ast_hash": "3b298eff08506a788a9192cb6ae0e2b5",
     "semantic_hash": ""
   },
   "tests/unit/utils/test_openai_helper.py": {
-    "mtime": 1791208415.1039257,
-    "ast_hash": "c8b4876f5c94da818c68953a43143851",
+    "mtime": 1791211175.5850244,
+    "ast_hash": "b69ddc852da1f3d6fc8926d4ef74708b",
+    "semantic_hash": ""
+  },
+  "src/utils/opencode_helper.py": {
+    "mtime": 1791209672.0041142,
+    "ast_hash": "6390ce2a6eb644411831ead9f622dc93",
+    "semantic_hash": ""
+  },
+  "tests/unit/utils/test_opencode_helper.py": {
+    "mtime": 1791209675.8146338,
+    "ast_hash": "c676872e1e759d0a48ee6c18848f236c",
     "semantic_hash": ""
   }
 }

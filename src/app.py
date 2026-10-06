@@ -21,6 +21,7 @@ from linebot.v3.messaging import (
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 from line.command_parser import parse_line_command
+from line.help_flex import create_command_help_flex
 from routing.async_requests import FinancialRequestJob, MongoRequestStatusStore, enqueue_financial_request
 from routing.config import natural_language_routing_enabled
 from routing.executor import FinancialExecutor
@@ -75,6 +76,12 @@ def handle_text_message(event):
                     line_bot_api,
                     reply_token,
                     create_candidate_commands_flex(response["candidates"]),
+                )
+            elif isinstance(response, dict) and response.get("type") == "line_command_help":
+                send_reply_flex(
+                    line_bot_api,
+                    reply_token,
+                    create_command_help_flex(),
                 )
             elif is_s3_presigned_url(response):
                 send_reply_image(line_bot_api, reply_token, response)
